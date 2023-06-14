@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "Zy999D5Jo82mlx/VwmMkiplKr3fYm1SjC3JQrKIXTgYnhEULjhF6J+87Prj3TLFZFRDzwF0IOAP/xXTxahuO8g==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\drwho\\OneDrive\\Programming\\C#\\Ultimate Tic Tac Toe\\Version 1\\Version 1.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\drwho\\.nuget\\packages\\raylib-cs\\4.2.0.2\\raylib-cs.4.2.0.2.nupkg.sha512",
+    "C:\\Users\\drwho\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512"
+  ],
+  "logs": []
+}
