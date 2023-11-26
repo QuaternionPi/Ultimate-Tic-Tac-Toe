@@ -5,7 +5,7 @@
         "type": "coreclr",
         "request": "launch",
         "preLaunchTask": "build",
-        "program": "${workspaceFolder}/bin/Debug/net7.0/Version 1.dll",
+        "program": "${workspaceFolder}/bin/Debug/net7.0/Ultimate Tic Tac Toe.dll",
         "args": [],
         "cwd": "${workspaceFolder}",
         "stopAtEntry": false,
