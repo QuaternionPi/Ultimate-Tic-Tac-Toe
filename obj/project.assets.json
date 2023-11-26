@@ -133,11 +133,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\drwho\\OneDrive\\Programming\\C#\\Ultimate Tic Tac Toe\\Version 1\\Version 1.csproj",
-      "projectName": "Version 1",
-      "projectPath": "C:\\Users\\drwho\\OneDrive\\Programming\\C#\\Ultimate Tic Tac Toe\\Version 1\\Version 1.csproj",
+      "projectUniqueName": "C:\\Users\\drwho\\OneDrive\\Programming\\C#\\Ultimate Tic Tac Toe\\Ultimate Tic Tac Toe.csproj",
+      "projectName": "Ultimate Tic Tac Toe",
+      "projectPath": "C:\\Users\\drwho\\OneDrive\\Programming\\C#\\Ultimate Tic Tac Toe\\Ultimate Tic Tac Toe.csproj",
       "packagesPath": "C:\\Users\\drwho\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\drwho\\OneDrive\\Programming\\C#\\Ultimate Tic Tac Toe\\Version 1\\obj\\",
+      "outputPath": "C:\\Users\\drwho\\OneDrive\\Programming\\C#\\Ultimate Tic Tac Toe\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\drwho\\AppData\\Roaming\\NuGet\\NuGet.Config"

@@ -13,7 +13,7 @@ namespace UltimateTicTacToe
         {
             InitWindow(900, 650, "Ultimate Tic Tac Toe");
             SetTargetFPS(30);
-            Game currentGame = new Game();
+            _ = new Game();
             while (!WindowShouldClose())
             {
                 GameManager.UpdateAll();
