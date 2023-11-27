@@ -5,7 +5,7 @@ using static Raylib_cs.Raylib;
 using static Raylib_cs.Raymath;
 using static Raylib_cs.KeyboardKey;
 
-class SuperGrid : GameObject, ITransform
+class SuperGrid : IDrawable, ITransform
 {
     public SuperGrid(Vector2 position)
     {
@@ -209,7 +209,7 @@ class SuperGrid : GameObject, ITransform
             _grids[i, j].DrawPossibilities();
         }
     }
-    public override void Draw()
+    public void Draw()
     {
         int lineGap = 200;
         int lineLength = 550;
@@ -218,6 +218,18 @@ class SuperGrid : GameObject, ITransform
         DrawRectangle((int)Position.X - lineWidth / 2 - lineGap / 2, (int)Position.Y - lineLength / 2, lineWidth, lineLength, Color.LIGHTGRAY);
         DrawRectangle((int)Position.X - lineLength / 2, (int)Position.Y - lineWidth / 2 + lineGap / 2, lineLength, lineWidth, Color.LIGHTGRAY);
         DrawRectangle((int)Position.X - lineLength / 2, (int)Position.Y - lineWidth / 2 - lineGap / 2, lineLength, lineWidth, Color.LIGHTGRAY);
+
+        foreach (Grid grid in _grids)
+        {
+            grid.Draw();
+        }
+    }
+    public void Update()
+    {
+        foreach (Grid grid in _grids)
+        {
+            grid.Update();
+        }
     }
     public bool Solved
     {

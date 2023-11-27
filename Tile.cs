@@ -5,7 +5,7 @@ using static Raylib_cs.Raylib;
 using static Raylib_cs.Raymath;
 using static Raylib_cs.KeyboardKey;
 
-class Tile : GameObject, ITransform
+class Tile : IDrawable, IUpdateable, ITransform
 {
     public enum TileShape { DEFAULT = 0, X, O };
     private Tile(TileShape shape, Color color)
@@ -24,7 +24,7 @@ class Tile : GameObject, ITransform
     {
         Position = new Vector2(Position.X, Position.Y - deltaY);
     }
-    public override void Update()
+    public void Update()
     {
         bool leftMouse = IsMouseButtonReleased(0);
         Vector2 mousePosition = GetMousePosition();
@@ -35,7 +35,7 @@ class Tile : GameObject, ITransform
             Clicked?.Invoke(this, EventArgs.Empty);
         }
     }
-    public override void Draw()
+    public void Draw()
     {
         Color drawColor;
         if (_drawGray)

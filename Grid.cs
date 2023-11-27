@@ -5,7 +5,7 @@ using static Raylib_cs.Raylib;
 using static Raylib_cs.Raymath;
 using static Raylib_cs.KeyboardKey;
 
-class Grid : GameObject, ITransform
+class Grid : IDrawable, ITransform
 {
     public Grid(Vector2 position)
     {
@@ -72,7 +72,6 @@ class Grid : GameObject, ITransform
         int i = (int)position.X;
         int j = (int)position.Y;
         tile.Position = PixelPosition(new Vector2(i, j));
-        _tiles[i, j].Destroy();
         _tiles[i, j] = tile;
 
         TestForShape();
@@ -184,16 +183,6 @@ class Grid : GameObject, ITransform
             _victoryTile.Position = Position;
             _victoryTile.Scale *= 5;
         }
-        if (Solved)
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    _tiles[i, j].Destroy();
-                }
-            }
-        }
     }
     public void HandleClickedTile(object? sender, EventArgs eventArgs)
     {
@@ -237,8 +226,13 @@ class Grid : GameObject, ITransform
             }
         }
     }
-    public override void Draw()
+    public void Draw()
     {
+        if (Solved)
+        {
+            _victoryTile?.Draw();
+            return;
+        }
         int lineGap = 50;
         int lineLength = 150;
         int lineWidth = 4;
@@ -246,19 +240,16 @@ class Grid : GameObject, ITransform
         DrawRectangle((int)Position.X - lineWidth / 2 - lineGap / 2, (int)Position.Y - lineLength / 2, lineWidth, lineLength, Color.LIGHTGRAY);
         DrawRectangle((int)Position.X - lineLength / 2, (int)Position.Y - lineWidth / 2 + lineGap / 2, lineLength, lineWidth, Color.LIGHTGRAY);
         DrawRectangle((int)Position.X - lineLength / 2, (int)Position.Y - lineWidth / 2 - lineGap / 2, lineLength, lineWidth, Color.LIGHTGRAY);
-    }
-    public override void OnDestroy()
-    {
-        for (int i = 0; i < 3; i++)
+        foreach (Tile tile in _tiles)
         {
-            for (int j = 0; j < 3; j++)
-            {
-                _tiles[i, j].Destroy();
-            }
+            tile.Draw();
         }
-        if (_victoryTile != null)
+    }
+    public void Update()
+    {
+        foreach (Tile tile in _tiles)
         {
-            _victoryTile.Destroy();
+            tile.Update();
         }
     }
     public Tile.TileShape Shape

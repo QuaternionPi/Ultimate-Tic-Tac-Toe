@@ -13,14 +13,14 @@ namespace UltimateTicTacToe
         {
             InitWindow(900, 650, "Ultimate Tic Tac Toe");
             SetTargetFPS(30);
-            _ = new Game();
+            Game game = new Game();
             while (!WindowShouldClose())
             {
-                GameManager.UpdateAll();
+                game.Update();
                 BeginDrawing();
                 ClearBackground(Color.RAYWHITE);
 
-                GameManager.DrawAll();
+                game.Draw();
                 EndDrawing();
             }
         }

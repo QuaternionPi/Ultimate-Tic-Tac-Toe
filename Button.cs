@@ -5,7 +5,7 @@ using static Raylib_cs.Raylib;
 using static Raylib_cs.Raymath;
 using static Raylib_cs.KeyboardKey;
 
-class Button : GameObject, ITransform
+class Button : IDrawable, IUpdateable, ITransform
 {
     public Button(Vector2 position, float width, float height, string message, Color color)
     {
@@ -15,11 +15,11 @@ class Button : GameObject, ITransform
         _message = message;
         _color = color;
     }
-    public override void Update()
+    public void Update()
     {
 
     }
-    public override void Draw()
+    public void Draw()
     {
         int width = (int)_width;
         int height = (int)_height;
