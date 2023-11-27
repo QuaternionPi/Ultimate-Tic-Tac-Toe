@@ -18,7 +18,7 @@ namespace UltimateTicTacToe
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    Vector2 tilePosition = PixelPosition(new Address(i, j));
+                    Vector2 tilePosition = this.PixelPosition(new Address(i, j));
                     LinearTransform tileTransform = new LinearTransform(tilePosition, 0, 1);
                     Grid grid = new Grid(tileTransform);
                     Cells[i, j] = grid;
@@ -90,14 +90,6 @@ namespace UltimateTicTacToe
                 }
             }
             return tile;
-        }
-        public Vector2 PixelPosition(Address address)
-        {
-            int i = address.X;
-            int j = address.Y;
-            int x = (int)(Transform.Position.X + (i - 1) * 50 * Transform.Scale);
-            int y = (int)(Transform.Position.Y + (j - 1) * 50 * Transform.Scale);
-            return new Vector2(x, y);
         }
         public Address GridAddress(Grid grid)
         {

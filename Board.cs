@@ -27,6 +27,14 @@ namespace UltimateTicTacToe
     }
     public static class BoardExtensions
     {
+        public static Vector2 PixelPosition<CellT>(this IBoard<CellT> board, Address address) where CellT : ICell
+        {
+            int i = address.X;
+            int j = address.Y;
+            int x = (int)(board.Transform.Position.X + (i - 1) * 50 * board.Transform.Scale);
+            int y = (int)(board.Transform.Position.Y + (j - 1) * 50 * board.Transform.Scale);
+            return new Vector2(x, y);
+        }
         public static Team? Winner<CellT>(this IBoard<CellT> board) where CellT : ICell
         {
             bool hasWinner;
