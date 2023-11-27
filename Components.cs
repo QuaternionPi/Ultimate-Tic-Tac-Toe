@@ -5,18 +5,22 @@ using static Raylib_cs.Raylib;
 using static Raylib_cs.Raymath;
 using static Raylib_cs.KeyboardKey;
 
-interface ITransform
+
+namespace UltimateTicTacToe
 {
-    Vector2 Position
+    interface ITransform
     {
-        get;
-    }
-    float Rotation
-    {
-        get;
-    }
-    float Scale
-    {
-        get;
+        Vector2 Position
+        {
+            get;
+        }
+        float Rotation
+        {
+            get;
+        }
+        float Scale
+        {
+            get;
+        }
     }
 }

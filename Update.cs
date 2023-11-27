@@ -5,7 +5,10 @@ using static Raylib_cs.Raylib;
 using static Raylib_cs.Raymath;
 using static Raylib_cs.KeyboardKey;
 
-interface IUpdateable
+namespace UltimateTicTacToe
 {
-    public void Update();
+    interface IUpdateable
+    {
+        public void Update();
+    }
 }
