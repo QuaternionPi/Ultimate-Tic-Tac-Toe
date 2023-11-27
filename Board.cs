@@ -49,6 +49,21 @@ namespace UltimateTicTacToe
             }
             throw new ArgumentException("Cell not found");
         }
+        public static void DrawGrid<CellT>(this IBoard<CellT> board) where CellT : ICell
+        {
+            LinearTransform transform = board.Transform;
+            int lineGap = (int)(50 * transform.Scale);
+            int lineLength = (int)(150 * transform.Scale);
+            int lineWidth = (int)(2 * transform.Scale);
+            int x = (int)transform.Position.X;
+            int y = (int)transform.Position.Y;
+            Color color = Color.LIGHTGRAY;
+
+            DrawRectangle(x - lineWidth / 2 + lineGap / 2, y - lineLength / 2, lineWidth, lineLength, color);
+            DrawRectangle(x - lineWidth / 2 - lineGap / 2, y - lineLength / 2, lineWidth, lineLength, color);
+            DrawRectangle(x - lineLength / 2, y - lineWidth / 2 + lineGap / 2, lineLength, lineWidth, color);
+            DrawRectangle(x - lineLength / 2, y - lineWidth / 2 - lineGap / 2, lineLength, lineWidth, color);
+        }
         public static Team? Winner<CellT>(this IBoard<CellT> board) where CellT : ICell
         {
             bool hasWinner;

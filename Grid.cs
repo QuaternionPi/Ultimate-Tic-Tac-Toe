@@ -111,14 +111,8 @@ namespace UltimateTicTacToe
                 _victoryTile?.Draw();
                 return;
             }
-            int lineGap = (int)(50 * Transform.Scale);
-            int lineLength = (int)(150 * Transform.Scale);
-            int lineWidth = (int)(2 * Transform.Scale);
 
-            DrawRectangle((int)Transform.Position.X - lineWidth / 2 + lineGap / 2, (int)Transform.Position.Y - lineLength / 2, lineWidth, lineLength, Color.LIGHTGRAY);
-            DrawRectangle((int)Transform.Position.X - lineWidth / 2 - lineGap / 2, (int)Transform.Position.Y - lineLength / 2, lineWidth, lineLength, Color.LIGHTGRAY);
-            DrawRectangle((int)Transform.Position.X - lineLength / 2, (int)Transform.Position.Y - lineWidth / 2 + lineGap / 2, lineLength, lineWidth, Color.LIGHTGRAY);
-            DrawRectangle((int)Transform.Position.X - lineLength / 2, (int)Transform.Position.Y - lineWidth / 2 - lineGap / 2, lineLength, lineWidth, Color.LIGHTGRAY);
+            this.DrawGrid();
 
             foreach (Tile tile in Cells)
             {
