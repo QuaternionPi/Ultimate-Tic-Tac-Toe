@@ -22,7 +22,7 @@ namespace UltimateTicTacToe
             };
             _ui = new UI(Teams);
         }
-        public void PlaceTile(Vector2 position, Vector2 subPosition)
+        public void PlaceTile(Address address, Address subAddress)
         {
             Team team;
             if (_previousPlayer == 2)
@@ -35,7 +35,7 @@ namespace UltimateTicTacToe
                 _previousPlayer = 2;
                 team = Teams[0];
             }
-            Tile tile = _board.PlaceTile(team, position, subPosition);
+            Tile tile = _board.PlaceTile(team, address, subAddress);
             _ui.Activate(team.Shape);
         }
         public void HandleClickedBoard(object? sender, SuperGrid.ClickedEventArgs args)
@@ -48,11 +48,11 @@ namespace UltimateTicTacToe
             Grid grid = args._grid;
             SuperGrid superGrid = (SuperGrid)sender;
 
-            Vector2 gridPosition = grid.GridPosition(tile);
-            Vector2 superGridPosition = superGrid.GridPosition(grid);
-            if (superGrid.IsValidPlacement(superGridPosition, gridPosition))
+            Address gridAddress = grid.GridAddress(tile);
+            Address superGridAddress = superGrid.GridAddress(grid);
+            if (superGrid.IsValidPlacement(superGridAddress, gridAddress))
             {
-                PlaceTile(superGridPosition, gridPosition);
+                PlaceTile(superGridAddress, gridAddress);
                 if (_board.Team != null)
                 {
                     _ui.IncrimentScore(_board.Team.Shape);

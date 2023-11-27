@@ -17,7 +17,7 @@ namespace UltimateTicTacToe
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    Vector2 tilePosition = PixelPosition(new Vector2(i, j));
+                    Vector2 tilePosition = PixelPosition(new Address(i, j));
                     LinearTransform tileTransform = new LinearTransform(tilePosition, 0, 1);
                     Tile tile = new Tile(null, tileTransform);
                     Cells[i, j] = tile;
@@ -44,37 +44,32 @@ namespace UltimateTicTacToe
             }
             return validPositions;
         }
-        public bool IsValidPlacement(Vector2 position)
+        public bool IsValidPlacement(Address address)
         {
             if (Team != null)
             {
                 return false;
             }
 
-            int i = (int)position.X;
-            int j = (int)position.Y;
-            if (i > 2 | i < 0 | j > 2 | j < 0)
-            {
-                throw new IndexOutOfRangeException("Position not in grid");
-            }
-
-            if (Cells[i, j].Team != null)
+            int x = address.X;
+            int y = address.Y;
+            if (Cells[x, y].Team != null)
             {
                 return false;
             }
             return true;
         }
-        public Tile PlaceTile(Team team, Vector2 position)
+        public Tile PlaceTile(Team team, Address address)
         {
-            if (IsValidPlacement(position) == false)
+            if (IsValidPlacement(address) == false)
             {
                 throw new Exception("Cannot place tile");
             }
-            int i = (int)position.X;
-            int j = (int)position.Y;
-            LinearTransform transform = Cells[i, j].Transform;
+            int x = address.X;
+            int y = address.Y;
+            LinearTransform transform = Cells[x, y].Transform;
             Tile tile = new Tile(team, transform);
-            Cells[i, j] = tile;
+            Cells[x, y] = tile;
 
             if (this.Winner() != null)
             {
@@ -83,19 +78,15 @@ namespace UltimateTicTacToe
             }
             return tile;
         }
-        public Vector2 PixelPosition(Vector2 positionInGrid)
+        public Vector2 PixelPosition(Address address)
         {
-            int i = (int)positionInGrid.X;
-            int j = (int)positionInGrid.Y;
-            if (i > 2 | i < 0 | j > 2 | j < 0)
-            {
-                throw new IndexOutOfRangeException("Position not in grid");
-            }
+            int i = address.X;
+            int j = address.Y;
             int x = (int)(Transform.Position.X + (i - 1) * 50 * Transform.Scale);
             int y = (int)(Transform.Position.Y + (j - 1) * 50 * Transform.Scale);
             return new Vector2(x, y);
         }
-        public Vector2 GridPosition(Tile tile)
+        public Address GridAddress(Tile tile)
         {
             for (int i = 0; i < 3; i++)
             {
@@ -103,7 +94,7 @@ namespace UltimateTicTacToe
                 {
                     if (Cells[i, j] == tile)
                     {
-                        return new Vector2(i, j);
+                        return new Address(i, j);
                     }
                 }
             }

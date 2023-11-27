@@ -12,52 +12,48 @@ namespace UltimateTicTacToe
         public SuperGrid(LinearTransform transform)
         {
             Transform = transform;
-            _validGrids = new List<Vector2>();
+            _validGrids = new List<Address>();
             Cells = new Grid[3, 3];
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    Vector2 tilePosition = PixelPosition(new Vector2(i, j));
+                    Vector2 tilePosition = PixelPosition(new Address(i, j));
                     LinearTransform tileTransform = new LinearTransform(tilePosition, 0, 1);
                     Grid grid = new Grid(tileTransform);
                     Cells[i, j] = grid;
                     grid.Clicked += HandleClickedGrid;
-                    _validGrids.Add(new Vector2(i, j));
+                    _validGrids.Add(new Address(i, j));
                 }
             }
         }
-        public List<Vector2> ValidPositions()
+        public List<Address> ValidPositions()
         {
-            List<Vector2> validPositions = new List<Vector2>();
+            List<Address> validPositions = new List<Address>();
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
                     if (Cells[i, j].Winner() != null)
                     {
-                        validPositions.Add(new Vector2(i, j));
+                        validPositions.Add(new Address(i, j));
                     }
                 }
             }
             return validPositions;
         }
-        public bool IsValidPlacement(Vector2 position, Vector2 subPosition)
+        public bool IsValidPlacement(Address address, Address subAddress)
         {
             if (Team != null)
             {
                 return false;
             }
-            int x = (int)position.X;
-            int y = (int)position.Y;
-            if (x > 2 | x < 0 | y > 2 | y < 0)
-            {
-                throw new IndexOutOfRangeException("Position not in grid");
-            }
-            if (_validGrids.Contains(position))
+            int x = address.X;
+            int y = address.Y;
+            if (_validGrids.Contains(address))
             {
                 Grid grid = Cells[x, y];
-                if (grid.IsValidPlacement(subPosition))
+                if (grid.IsValidPlacement(subAddress))
                 {
                     return true;
                 }
@@ -65,23 +61,23 @@ namespace UltimateTicTacToe
             }
             return false;
         }
-        public Tile PlaceTile(Team team, Vector2 position, Vector2 subPosition)
+        public Tile PlaceTile(Team team, Address address, Address subAddress)
         {
-            if (IsValidPlacement(position, subPosition) == false)
+            if (IsValidPlacement(address, subAddress) == false)
             {
                 throw new Exception("Cannot place tile");
             }
-            int x = (int)position.X;
-            int y = (int)position.Y;
+            int x = (int)address.X;
+            int y = (int)address.Y;
             Grid grid = Cells[x, y];
-            Tile tile = grid.PlaceTile(team, subPosition);
+            Tile tile = grid.PlaceTile(team, subAddress);
 
             _validGrids.Clear();
-            int i = (int)subPosition.X;
-            int j = (int)subPosition.Y;
+            int i = (int)subAddress.X;
+            int j = (int)subAddress.Y;
             if (Cells[i, j].ValidPositions().Count() > 0)
             {
-                _validGrids.Add(new Vector2(i, j));
+                _validGrids.Add(new Address(i, j));
             }
             else
             {
@@ -89,25 +85,21 @@ namespace UltimateTicTacToe
                 {
                     for (j = 0; j < 3; j++)
                     {
-                        _validGrids.Add(new Vector2(i, j));
+                        _validGrids.Add(new Address(i, j));
                     }
                 }
             }
             return tile;
         }
-        public Vector2 PixelPosition(Vector2 positionInGrid)
+        public Vector2 PixelPosition(Address address)
         {
-            int i = (int)positionInGrid.X;
-            int j = (int)positionInGrid.Y;
-            if (i > 2 | i < 0 | j > 2 | j < 0)
-            {
-                throw new IndexOutOfRangeException("Position not in grid");
-            }
+            int i = address.X;
+            int j = address.Y;
             int x = (int)(Transform.Position.X + (i - 1) * 50 * Transform.Scale);
             int y = (int)(Transform.Position.Y + (j - 1) * 50 * Transform.Scale);
             return new Vector2(x, y);
         }
-        public Vector2 GridPosition(Grid grid)
+        public Address GridAddress(Grid grid)
         {
             for (int i = 0; i < 3; i++)
             {
@@ -115,7 +107,7 @@ namespace UltimateTicTacToe
                 {
                     if (Cells[i, j] == grid)
                     {
-                        return new Vector2(i, j);
+                        return new Address(i, j);
                     }
                 }
             }
@@ -134,11 +126,11 @@ namespace UltimateTicTacToe
         }
         public void DrawPossibilities()
         {
-            foreach (Vector2 position in _validGrids)
+            foreach (Address address in _validGrids)
             {
-                int i = (int)position.X;
-                int j = (int)position.Y;
-                Cells[i, j].DrawPossibilities();
+                int x = address.X;
+                int y = address.Y;
+                Cells[x, y].DrawPossibilities();
             }
         }
         public void Draw()
@@ -178,6 +170,6 @@ namespace UltimateTicTacToe
             public Grid _grid;
         }
         public Grid[,] Cells { get; protected set; }
-        private List<Vector2> _validGrids;
+        private List<Address> _validGrids;
     }
 }
