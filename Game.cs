@@ -12,7 +12,8 @@ namespace UltimateTicTacToe
         public Game()
         {
             Vector2 position = new Vector2(450, 350);
-            _board = new SuperGrid(position);
+            LinearTransform transform = new LinearTransform(position, 0, 4);
+            _board = new SuperGrid(transform);
             _board.Clicked += HandleClickedBoard;
             _previousPlayer = 0;
             Teams = new Team[]{
@@ -54,7 +55,7 @@ namespace UltimateTicTacToe
                 PlaceTile(superGridPosition, gridPosition);
                 if (_board.Team != null)
                 {
-                    _ui.IncrimentScore(_board.Shape);
+                    _ui.IncrimentScore(_board.Team.Shape);
                 }
             }
         }
@@ -69,7 +70,9 @@ namespace UltimateTicTacToe
             _board.Update();
             if (_board.Team != null)
             {
-                _board = new SuperGrid(new Vector2(450, 350));
+                _board.Clicked -= HandleClickedBoard;
+                _board = new SuperGrid(_board.Transform);
+                _board.Clicked += HandleClickedBoard;
             }
             _ui.Update();
         }

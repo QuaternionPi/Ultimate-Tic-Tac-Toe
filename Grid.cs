@@ -9,17 +9,17 @@ namespace UltimateTicTacToe
 {
     public class Grid : IBoard<Tile>
     {
-        public Grid(Vector2 position)
+        public Grid(LinearTransform transform)
         {
-            Transform = new LinearTransform(position, 0, 1);
+            Transform = transform;
             Cells = new Tile[3, 3];
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
                     Vector2 tilePosition = PixelPosition(new Vector2(i, j));
-                    LinearTransform transform = new LinearTransform(tilePosition, 0, 1);
-                    Tile tile = new Tile(null, transform);
+                    LinearTransform tileTransform = new LinearTransform(tilePosition, 0, 1);
+                    Tile tile = new Tile(null, tileTransform);
                     Cells[i, j] = tile;
                     tile.Clicked += HandleClickedTile;
                 }
@@ -55,7 +55,7 @@ namespace UltimateTicTacToe
             int j = (int)position.Y;
             if (i > 2 | i < 0 | j > 2 | j < 0)
             {
-                return false;
+                throw new IndexOutOfRangeException("Position not in grid");
             }
 
             if (Cells[i, j].Team != null)
@@ -72,14 +72,13 @@ namespace UltimateTicTacToe
             }
             int i = (int)position.X;
             int j = (int)position.Y;
-            Vector2 tilePosition = PixelPosition(new Vector2(i, j));
-            LinearTransform transform = new LinearTransform(tilePosition);
+            LinearTransform transform = Cells[i, j].Transform;
             Tile tile = new Tile(team, transform);
             Cells[i, j] = tile;
 
             if (this.Winner() != null)
             {
-                transform = new LinearTransform(Transform.Position, 0, 2);
+                transform = new LinearTransform(Transform.Position, 0, 4);
                 _victoryTile = new Tile(team, transform);
             }
             return tile;
@@ -92,8 +91,8 @@ namespace UltimateTicTacToe
             {
                 throw new IndexOutOfRangeException("Position not in grid");
             }
-            int x = (int)Transform.Position.X + (i - 1) * 50;
-            int y = (int)Transform.Position.Y + (j - 1) * 50;
+            int x = (int)(Transform.Position.X + (i - 1) * 50 * Transform.Scale);
+            int y = (int)(Transform.Position.Y + (j - 1) * 50 * Transform.Scale);
             return new Vector2(x, y);
         }
         public Vector2 GridPosition(Tile tile)
@@ -125,19 +124,15 @@ namespace UltimateTicTacToe
             {
                 return;
             }
-            for (int i = 0; i < 3; i++)
+            foreach (Tile cell in Cells)
             {
-                for (int j = 0; j < 3; j++)
+                if (cell.Winner() != null)
                 {
-                    Tile cell = Cells[i, j];
-                    if (cell.Winner() != null)
-                    {
-                        continue;
-                    }
-                    Vector2 position = cell.Transform.Position;
-                    int width = 20;
-                    DrawRectangle((int)position.X - width / 2, (int)position.Y - width / 2, width, width, Color.LIGHTGRAY);
+                    continue;
                 }
+                Vector2 position = cell.Transform.Position;
+                int width = 20;
+                DrawRectangle((int)position.X - width / 2, (int)position.Y - width / 2, width, width, Color.LIGHTGRAY);
             }
         }
         public void Draw()
@@ -147,13 +142,15 @@ namespace UltimateTicTacToe
                 _victoryTile?.Draw();
                 return;
             }
-            int lineGap = 50;
-            int lineLength = 150;
-            int lineWidth = 4;
+            int lineGap = (int)(50 * Transform.Scale);
+            int lineLength = (int)(150 * Transform.Scale);
+            int lineWidth = (int)(2 * Transform.Scale);
+
             DrawRectangle((int)Transform.Position.X - lineWidth / 2 + lineGap / 2, (int)Transform.Position.Y - lineLength / 2, lineWidth, lineLength, Color.LIGHTGRAY);
             DrawRectangle((int)Transform.Position.X - lineWidth / 2 - lineGap / 2, (int)Transform.Position.Y - lineLength / 2, lineWidth, lineLength, Color.LIGHTGRAY);
             DrawRectangle((int)Transform.Position.X - lineLength / 2, (int)Transform.Position.Y - lineWidth / 2 + lineGap / 2, lineLength, lineWidth, Color.LIGHTGRAY);
             DrawRectangle((int)Transform.Position.X - lineLength / 2, (int)Transform.Position.Y - lineWidth / 2 - lineGap / 2, lineLength, lineWidth, Color.LIGHTGRAY);
+
             foreach (Tile tile in Cells)
             {
                 tile.Draw();
@@ -165,10 +162,6 @@ namespace UltimateTicTacToe
             {
                 tile.Update();
             }
-        }
-        public Tile.TileShape Shape
-        {
-            get; protected set;
         }
         public Team? Team { get { return this.Winner(); } }
         public LinearTransform Transform { get; }
