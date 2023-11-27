@@ -25,20 +25,20 @@ namespace UltimateTicTacToe
                 }
             }
         }
-        public List<Vector2> ValidPositions()
+        public List<Address> ValidPositions()
         {
             if (Team != null)
             {
-                return new List<Vector2>();
+                return new List<Address>();
             }
-            List<Vector2> validPositions = new List<Vector2>();
+            List<Address> validPositions = new List<Address>();
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
                     if (Cells[i, j].Winner() == null)
                     {
-                        validPositions.Add(new Vector2(i, j));
+                        validPositions.Add(new Address(i, j));
                     }
                 }
             }
