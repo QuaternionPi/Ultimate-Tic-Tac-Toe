@@ -91,20 +91,6 @@ namespace UltimateTicTacToe
             }
             return tile;
         }
-        public Address GridAddress(Grid grid)
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    if (Cells[i, j] == grid)
-                    {
-                        return new Address(i, j);
-                    }
-                }
-            }
-            throw new ArgumentException("Tile not found");
-        }
         public void HandleClickedGrid(object? sender, Grid.ClickedEventArgs args)
         {
             if (sender == null)

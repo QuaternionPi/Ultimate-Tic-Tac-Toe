@@ -48,8 +48,8 @@ namespace UltimateTicTacToe
             Grid grid = args._grid;
             SuperGrid superGrid = (SuperGrid)sender;
 
-            Address gridAddress = grid.GridAddress(tile);
-            Address superGridAddress = superGrid.GridAddress(grid);
+            Address gridAddress = grid.FindAddress(tile);
+            Address superGridAddress = superGrid.FindAddress(grid);
             if (superGrid.IsValidPlacement(superGridAddress, gridAddress))
             {
                 PlaceTile(superGridAddress, gridAddress);

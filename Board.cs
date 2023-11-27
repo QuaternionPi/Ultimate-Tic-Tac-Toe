@@ -35,6 +35,20 @@ namespace UltimateTicTacToe
             int y = (int)(board.Transform.Position.Y + (j - 1) * 50 * board.Transform.Scale);
             return new Vector2(x, y);
         }
+        public static Address FindAddress<CellT>(this IBoard<CellT> board, CellT cell) where CellT : ICell
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (board.Cells[i, j].Equals(cell))
+                    {
+                        return new Address(i, j);
+                    }
+                }
+            }
+            throw new ArgumentException("Cell not found");
+        }
         public static Team? Winner<CellT>(this IBoard<CellT> board) where CellT : ICell
         {
             bool hasWinner;
