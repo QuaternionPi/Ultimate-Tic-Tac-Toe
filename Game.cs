@@ -7,7 +7,7 @@ using static Raylib_cs.KeyboardKey;
 
 namespace UltimateTicTacToe
 {
-    class Game : IDrawable, IUpdateable
+    public class Game : IDrawable, IUpdateable
     {
         public Game()
         {
@@ -15,26 +15,27 @@ namespace UltimateTicTacToe
             _board = new SuperGrid(position);
             _board.Clicked += HandleClickedBoard;
             _previousPlayer = 0;
-            _ui = new UI();
-            _slideDownSpeed = 0;
-            PreviousTile = Tile.defaultTile();
+            Teams = new Team[]{
+                new Team(Tile.TileShape.X, Color.RED),
+                new Team(Tile.TileShape.O, Color.BLUE)
+            };
+            _ui = new UI(Teams);
         }
         public void PlaceTile(Vector2 position, Vector2 subPosition)
         {
-            Tile tile;
+            Team team;
             if (_previousPlayer == 2)
             {
                 _previousPlayer = 1;
-                tile = Tile.oTile();
+                team = Teams[1];
             }
             else
             {
                 _previousPlayer = 2;
-                tile = Tile.xTile();
+                team = Teams[0];
             }
-            _board.PlaceTile(tile, position, subPosition);
-            _ui.Activate(PreviousTile.Shape);
-            PreviousTile = tile;
+            Tile tile = _board.PlaceTile(team, position, subPosition);
+            _ui.Activate(team.Shape);
         }
         public void HandleClickedBoard(object? sender, SuperGrid.ClickedEventArgs args)
         {
@@ -51,7 +52,7 @@ namespace UltimateTicTacToe
             if (superGrid.IsValidPlacement(superGridPosition, gridPosition))
             {
                 PlaceTile(superGridPosition, gridPosition);
-                if (_board.Solved)
+                if (_board.Team != null)
                 {
                     _ui.IncrimentScore(_board.Shape);
                 }
@@ -59,39 +60,21 @@ namespace UltimateTicTacToe
         }
         public void Draw()
         {
-            if (_slideDownSpeed == 0)
-            {
-                _board.DrawPossibilities();
-            }
+            _board.DrawPossibilities();
             _board.Draw();
             _ui.Draw();
         }
         public void Update()
         {
-            if (_board.Solved)
+            _board.Update();
+            if (_board.Team != null)
             {
-                _board.SlideDown(_slideDownSpeed);
-                _slideDownSpeed += 0.3f;
-            }
-            else
-            {
-                _board.Update();
-            }
-            if (_slideDownSpeed > 25)
-            {
-                _slideDownSpeed = 0;
-                _board.Clicked -= HandleClickedBoard;
                 _board = new SuperGrid(new Vector2(450, 350));
-                _board.Clicked += HandleClickedBoard;
             }
             _ui.Update();
         }
-        private float _slideDownSpeed;
         private int _previousPlayer;
-        public Tile PreviousTile
-        {
-            get; private set;
-        }
+        private readonly Team[] Teams;
         private UI _ui;
         private SuperGrid _board;
     }

@@ -12,14 +12,13 @@ namespace UltimateTicTacToe
     {
         protected class Banner : IDrawable, IUpdateable, ITransform
         {
-            public Banner(Tile tile, Vector2 position)
+            public Banner(Team team, Vector2 position)
             {
                 _font = GetFontDefault();
-                _active = tile.Shape == Tile.TileShape.X;
-                _tile = tile;
+                _active = team.Shape == Tile.TileShape.X;
                 Position = position;
-                _tile.Position = Position + new Vector2(75, 75);
-                _tile.Scale *= 3;
+                LinearTransform transform = new(Position + new Vector2(75, 75), 0, 3);
+                _tile = new Tile(team, transform);
                 _score = 0;
             }
             public void Update()
@@ -60,11 +59,11 @@ namespace UltimateTicTacToe
             public int _score;
             Font _font;
         }
-        public UI()
+        public UI(Team[] teams)
         {
             _font = GetFontDefault();
-            _leftBanner = new Banner(Tile.xTile(), new Vector2(0, 0));
-            _rightBanner = new Banner(Tile.oTile(), new Vector2(750, 0));
+            _leftBanner = new Banner(teams[1], new Vector2(0, 0));
+            _rightBanner = new Banner(teams[0], new Vector2(750, 0));
         }
         public void Activate(Tile.TileShape shape)
         {

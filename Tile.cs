@@ -7,30 +7,26 @@ using static Raylib_cs.KeyboardKey;
 
 namespace UltimateTicTacToe
 {
-    class Tile : IDrawable, IUpdateable, ITransform
+    public class Tile : ICell
     {
         public enum TileShape { DEFAULT = 0, X, O };
-        private Tile(TileShape shape, Color color)
+        public Tile()
         {
-            Position = Vector2.Zero;
-            Rotation = 0;
-            Scale = 1;
-            Shape = shape;
-            _color = color;
+            Team = null;
+            Transform = new LinearTransform(Vector2.Zero, 0, 0);
             _drawGray = false;
         }
-        public static Tile defaultTile() => new Tile(TileShape.DEFAULT, Color.WHITE);
-        public static Tile xTile() => new Tile(TileShape.X, Color.RED);
-        public static Tile oTile() => new Tile(TileShape.O, Color.BLUE);
-        public void SlideDown(float deltaY)
+        public Tile(Team? team, LinearTransform transform)
         {
-            Position = new Vector2(Position.X, Position.Y - deltaY);
+            Team = team;
+            Transform = transform;
+            _drawGray = false;
         }
         public void Update()
         {
             bool leftMouse = IsMouseButtonReleased(0);
             Vector2 mousePosition = GetMousePosition();
-            Rectangle rectangle = new Rectangle(Position.X - 25, Position.Y - 25, 50, 50);
+            Rectangle rectangle = new Rectangle(Transform.Position.X - 25, Transform.Position.Y - 25, 50, 50);
             bool collision = CheckCollisionPointRec(mousePosition, rectangle);
             if (leftMouse && collision)
             {
@@ -39,6 +35,10 @@ namespace UltimateTicTacToe
         }
         public void Draw()
         {
+            if (Team == null)
+            {
+                return;
+            }
             Color drawColor;
             if (_drawGray)
             {
@@ -46,50 +46,51 @@ namespace UltimateTicTacToe
             }
             else
             {
-                drawColor = _color;
+                drawColor = Team.Color;
             }
-            switch (Shape)
+            switch (Team.Shape)
             {
                 case TileShape.DEFAULT:
                     return;
                 case TileShape.X:
                     {
-                        int width = 5 * (int)Scale;
-                        int length = 40 * (int)Scale;
-                        Rectangle rectangle = new Rectangle(Position.X, Position.Y, width, length);
+                        int width = 5 * (int)Transform.Scale;
+                        int length = 40 * (int)Transform.Scale;
+                        Rectangle rectangle = new Rectangle(Transform.Position.X, Transform.Position.Y, width, length);
                         DrawRectanglePro(rectangle, new Vector2(width / 2, length / 2), 45, drawColor);
                         DrawRectanglePro(rectangle, new Vector2(width / 2, length / 2), -45, drawColor);
                         return;
                     }
                 case TileShape.O:
                     {
-                        int width = 4 * (int)Scale;
-                        int innerRadius = 13 * (int)Scale;
+                        int width = 4 * (int)Transform.Scale;
+                        int innerRadius = 13 * (int)Transform.Scale;
                         int outerRadius = innerRadius + width;
 
-                        DrawRing(Position, innerRadius, outerRadius, 0, 360, 50, drawColor);
+                        DrawRing(Transform.Position, innerRadius, outerRadius, 0, 360, 50, drawColor);
                         return;
                     }
             }
         }
-        public Vector2 Position
+        public Team? Winner()
         {
-            get; set;
+            return Team;
         }
-        public float Rotation
+        public Team? Team
         {
-            get; protected set;
+            get
+            {
+                return _team;
+            }
+            set
+            {
+                if (_team != null) { throw new Exception("Cannot reassign Tile team"); }
+                _team = value;
+            }
         }
-        public float Scale
-        {
-            get; set;
-        }
-        public TileShape Shape
-        {
-            get; protected set;
-        }
+        public LinearTransform Transform { get; protected set; }
         public event EventHandler? Clicked;
-        protected Color _color;
+        protected Team? _team;
         public bool _drawGray;
     }
 }

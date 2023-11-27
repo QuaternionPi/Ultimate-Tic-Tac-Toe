@@ -7,14 +7,14 @@ using static Raylib_cs.KeyboardKey;
 
 namespace UltimateTicTacToe
 {
-    class Team
+    public class Team
     {
         public Team(Tile.TileShape shape, Color color)
         {
             Shape = shape;
             Color = color;
         }
-        protected Tile.TileShape Shape;
-        protected Color Color;
+        public Tile.TileShape Shape { get; protected set; }
+        public Color Color { get; protected set; }
     }
 }

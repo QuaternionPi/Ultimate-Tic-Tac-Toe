@@ -8,7 +8,7 @@ using static Raylib_cs.KeyboardKey;
 
 namespace UltimateTicTacToe
 {
-    interface IDrawable
+    public interface IDrawable
     {
         public void Draw();
     }
