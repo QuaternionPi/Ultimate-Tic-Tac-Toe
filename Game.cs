@@ -29,14 +29,15 @@ namespace UltimateTicTacToe
             {
                 _previousPlayer = 1;
                 team = Teams[1];
+                _ui.Activate(Teams[0]);
             }
             else
             {
                 _previousPlayer = 2;
                 team = Teams[0];
+                _ui.Activate(Teams[1]);
             }
             Tile tile = _board.PlaceTile(team, address, subAddress);
-            _ui.Activate(team.Shape);
         }
         public void HandleClickedBoard(object? sender, SuperGrid.ClickedEventArgs args)
         {
@@ -55,7 +56,7 @@ namespace UltimateTicTacToe
                 PlaceTile(superGridAddress, gridAddress);
                 if (_board.Team != null)
                 {
-                    _ui.IncrimentScore(_board.Team.Shape);
+                    _ui.AddPoints(_board.Team!, 1);
                 }
             }
         }
@@ -74,7 +75,6 @@ namespace UltimateTicTacToe
                 _board = new SuperGrid(_board.Transform);
                 _board.Clicked += HandleClickedBoard;
             }
-            _ui.Update();
         }
         private int _previousPlayer;
         private readonly Team[] Teams;

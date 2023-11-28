@@ -14,13 +14,15 @@ namespace UltimateTicTacToe
         {
             Team = null;
             Transform = new LinearTransform(Vector2.Zero, 0, 0);
-            _drawGray = false;
+            Placeable = false;
+            DrawGray = true;
         }
-        public Tile(Team? team, LinearTransform transform)
+        public Tile(Team? team, LinearTransform transform, bool placeable, bool drawGray)
         {
             Team = team;
             Transform = transform;
-            _drawGray = false;
+            Placeable = placeable;
+            DrawGray = drawGray;
         }
         public void Update()
         {
@@ -40,7 +42,7 @@ namespace UltimateTicTacToe
                 return;
             }
             Color drawColor;
-            if (_drawGray)
+            if (DrawGray)
             {
                 drawColor = Color.GRAY;
             }
@@ -76,21 +78,10 @@ namespace UltimateTicTacToe
         {
             return Team;
         }
-        public Team? Team
-        {
-            get
-            {
-                return _team;
-            }
-            set
-            {
-                if (_team != null) { throw new Exception("Cannot reassign Tile team"); }
-                _team = value;
-            }
-        }
-        public LinearTransform Transform { get; protected set; }
+        public Team? Team { get; }
+        public LinearTransform Transform { get; }
         public event EventHandler? Clicked;
-        protected Team? _team;
-        public bool _drawGray;
+        public bool Placeable { get; }
+        public bool DrawGray { get; }
     }
 }

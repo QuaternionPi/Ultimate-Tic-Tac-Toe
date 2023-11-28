@@ -10,31 +10,21 @@ namespace UltimateTicTacToe
 {
     class UI : IDrawable
     {
-        protected class Banner : IDrawable, IUpdateable, ITransform
+        protected class Banner : IDrawable, ITransform
         {
-            public Banner(Team team, Vector2 position)
+            public Banner(Team team, Vector2 position, bool active, int score)
             {
+                Team = team;
                 _font = GetFontDefault();
-                _active = team.Shape == Tile.TileShape.X;
                 Position = position;
                 LinearTransform transform = new(Position + new Vector2(75, 75), 0, 3);
-                _tile = new Tile(team, transform);
-                _score = 0;
-            }
-            public void Update()
-            {
-                if (_active)
-                {
-                    _tile._drawGray = false;
-                }
-                else
-                {
-                    _tile._drawGray = true;
-                }
+                _tile = new Tile(team, transform, true, !active);
+                Active = active;
+                Score = score;
             }
             public void Draw()
             {
-                string message = _score.ToString();
+                string message = Score.ToString();
                 float spacing = 3;
                 float fontSize = 80;
                 float messageWidth = MeasureTextEx(_font, message, fontSize, spacing).X;
@@ -54,39 +44,59 @@ namespace UltimateTicTacToe
             {
                 get; protected set;
             }
-            public bool _active;
+            public Team Team { get; }
+            public bool Active { get; }
             protected Tile _tile;
-            public int _score;
+            public int Score { get; }
             Font _font;
         }
         public UI(Team[] teams)
         {
             _font = GetFontDefault();
-            _leftBanner = new Banner(teams[1], new Vector2(0, 0));
-            _rightBanner = new Banner(teams[0], new Vector2(750, 0));
+            _leftBanner = new Banner(teams[1], new Vector2(0, 0), false, 0);
+            _rightBanner = new Banner(teams[0], new Vector2(750, 0), true, 0);
         }
-        public void Activate(Tile.TileShape shape)
+        public void Activate(Team team)
         {
-            if (shape == Tile.TileShape.X)
+            _leftBanner = new Banner(
+                _leftBanner.Team,
+                _leftBanner.Position,
+                _leftBanner.Team == team,
+                _leftBanner.Score
+            );
+            _rightBanner = new Banner(
+                _rightBanner.Team,
+                _rightBanner.Position,
+                _rightBanner.Team == team,
+                _rightBanner.Score
+            );
+        }
+        public void AddPoints(Team team, int points)
+        {
+            Banner banner;
+            if (_leftBanner.Team == team)
             {
-                _leftBanner._active = true;
-                _rightBanner._active = false;
+                banner = _leftBanner;
+            }
+            else if (_rightBanner.Team == team)
+            {
+                banner = _rightBanner;
             }
             else
             {
-                _rightBanner._active = true;
-                _leftBanner._active = false;
+                throw new Exception("This team is not on either of the banners");
             }
-        }
-        public void IncrimentScore(Tile.TileShape shape)
-        {
-            if (shape == Tile.TileShape.X)
+            Vector2 position = banner.Position;
+            bool active = banner.Active;
+            int score = banner.Score + points;
+            banner = new Banner(team, position, active, score);
+            if (_leftBanner.Team == team)
             {
-                _leftBanner._score++;
+                _leftBanner = banner;
             }
-            else
+            else if (_rightBanner.Team == team)
             {
-                _rightBanner._score++;
+                _rightBanner = banner;
             }
         }
         public void Draw()
@@ -98,11 +108,6 @@ namespace UltimateTicTacToe
             DrawTextEx(_font, message, new Vector2(450 - messageWidth / 2, 20), fontSize, spacing, Color.GRAY);
             _leftBanner.Draw();
             _rightBanner.Draw();
-        }
-        public void Update()
-        {
-            _leftBanner.Update();
-            _rightBanner.Update();
         }
         Banner _leftBanner;
         Banner _rightBanner;

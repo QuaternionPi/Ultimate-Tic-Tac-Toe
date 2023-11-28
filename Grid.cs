@@ -19,7 +19,7 @@ namespace UltimateTicTacToe
                 {
                     Vector2 tilePosition = this.PixelPosition(new Address(i, j));
                     LinearTransform tileTransform = new LinearTransform(tilePosition, 0, 1);
-                    Tile tile = new Tile(null, tileTransform);
+                    Tile tile = new Tile(null, tileTransform, true, false);
                     Cells[i, j] = tile;
                     tile.Clicked += HandleClickedTile;
                 }
@@ -68,13 +68,13 @@ namespace UltimateTicTacToe
             int x = address.X;
             int y = address.Y;
             LinearTransform transform = Cells[x, y].Transform;
-            Tile tile = new Tile(team, transform);
+            Tile tile = new Tile(team, transform, true, false);
             Cells[x, y] = tile;
 
             if (this.Winner() != null)
             {
                 transform = new LinearTransform(Transform.Position, 0, 4);
-                _victoryTile = new Tile(team, transform);
+                _victoryTile = new Tile(team, transform, true, false);
             }
             return tile;
         }
