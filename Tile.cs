@@ -24,29 +24,6 @@ namespace UltimateTicTacToe
             Placeable = placeable && Team == null;
             DrawGray = drawGray;
         }
-        public ICell Create(Team? team, LinearTransform transform, bool placeable, bool drawGray)
-        {
-            return new Tile(team, transform, placeable, drawGray);
-        }
-        public ICell Place(IEnumerable<Address> path, Team team, bool placeable, bool isRoot)
-        {
-            return new Tile(team, Transform, placeable, false);
-        }
-        public ICell Clone(bool placeable)
-        {
-            return new Tile(Team, Transform, placeable, DrawGray);
-        }
-        public void Update()
-        {
-            bool leftMouse = IsMouseButtonReleased(0);
-            Vector2 mousePosition = GetMousePosition();
-            Rectangle rectangle = new Rectangle(Transform.Position.X - 25, Transform.Position.Y - 25, 50, 50);
-            bool collision = CheckCollisionPointRec(mousePosition, rectangle);
-            if (leftMouse && collision)
-            {
-                Clicked?.Invoke(this, new Address[0], Placeable);
-            }
-        }
         public void Draw()
         {
             if (Placeable)
@@ -91,10 +68,33 @@ namespace UltimateTicTacToe
                     }
             }
         }
+        public void Update()
+        {
+            bool leftMouse = IsMouseButtonReleased(0);
+            Vector2 mousePosition = GetMousePosition();
+            Rectangle rectangle = new Rectangle(Transform.Position.X - 25, Transform.Position.Y - 25, 50, 50);
+            bool collision = CheckCollisionPointRec(mousePosition, rectangle);
+            if (leftMouse && collision)
+            {
+                Clicked?.Invoke(this, new Address[0], Placeable);
+            }
+        }
+        public ICell Create(Team? team, LinearTransform transform, bool placeable, bool drawGray)
+        {
+            return new Tile(team, transform, placeable, drawGray);
+        }
+        public ICell Place(IEnumerable<Address> path, Team team, bool placeable, bool isRoot)
+        {
+            return new Tile(team, Transform, placeable, false);
+        }
+        public ICell Clone(bool placeable)
+        {
+            return new Tile(Team, Transform, placeable, DrawGray);
+        }
         public Team? Team { get; }
+        public bool Placeable { get; }
         public LinearTransform Transform { get; }
         public event ICell.ClickHandler? Clicked;
-        public bool Placeable { get; }
         public bool DrawGray { get; }
     }
 }

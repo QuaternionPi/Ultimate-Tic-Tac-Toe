@@ -7,7 +7,7 @@ using static Raylib_cs.KeyboardKey;
 
 namespace UltimateTicTacToe
 {
-    public class Grid<CellT> : IBoard<CellT> where CellT : ICell, new()
+    public class Grid<CellT> : ICell where CellT : ICell, new()
     {
         public Grid()
         {
@@ -30,7 +30,7 @@ namespace UltimateTicTacToe
                 }
             }
             LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
-            _victoryTile = new Tile(Team, victoryTileTransform, true, false);
+            WinningTeamTile = new Tile(Team, victoryTileTransform, true, false);
         }
         public Grid(Grid<CellT> original, bool placeable)
         {
@@ -47,7 +47,7 @@ namespace UltimateTicTacToe
                 }
             }
             LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
-            _victoryTile = new Tile(Team, victoryTileTransform, true, false);
+            WinningTeamTile = new Tile(Team, victoryTileTransform, true, false);
         }
         public Grid(Grid<CellT> original, IEnumerable<Address> path, Team team, bool placeable, bool isRoot)
         {
@@ -78,7 +78,7 @@ namespace UltimateTicTacToe
             }
 
             LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
-            _victoryTile = new Tile(Team, victoryTileTransform, false, false);
+            WinningTeamTile = new Tile(Team, victoryTileTransform, false, false);
             if (path.Count() == 1 || Team != null)
             {
                 foreach (CellT cell in Cells)
@@ -121,43 +121,11 @@ namespace UltimateTicTacToe
                 cell.Clicked += HandleClickedTile;
             }
         }
-        public ICell Create(Team? team, LinearTransform transform, bool placeable, bool drawGray)
-        {
-            return new Grid<CellT>(team, transform, placeable, drawGray);
-        }
-        public ICell Place(IEnumerable<Address> path, Team team, bool placeable, bool isRoot)
-        {
-            return new Grid<CellT>(this, path, team, placeable, isRoot);
-        }
-        public ICell Clone(bool placeable)
-        {
-            return new Grid<CellT>(this, placeable);
-        }
-        public bool IsValidPlacement(Address address)
-        {
-            if (Team != null)
-            {
-                return false;
-            }
-            int x = address.X;
-            int y = address.Y;
-            if (Cells[x, y].Team != null)
-            {
-                return false;
-            }
-            return true;
-        }
-        public void HandleClickedTile(ICell cell, IEnumerable<Address> from, bool placeable)
-        {
-            Address address = this.FindAddress((CellT)cell);
-            var newFrom = from.Prepend(address);
-            Clicked?.Invoke(this, newFrom, placeable && IsValidPlacement(address));
-        }
         public void Draw()
         {
             if (Team != null)
             {
-                _victoryTile?.Draw();
+                WinningTeamTile?.Draw();
                 return;
             }
             this.DrawGrid();
@@ -174,6 +142,121 @@ namespace UltimateTicTacToe
                 cell.Update();
             }
         }
+        public ICell Create(Team? team, LinearTransform transform, bool placeable, bool drawGray)
+        {
+            return new Grid<CellT>(team, transform, placeable, drawGray);
+        }
+        public ICell Place(IEnumerable<Address> path, Team team, bool placeable, bool isRoot)
+        {
+            return new Grid<CellT>(this, path, team, placeable, isRoot);
+        }
+        public ICell Clone(bool placeable)
+        {
+            return new Grid<CellT>(this, placeable);
+        }
+        public void HandleClickedTile(ICell cell, IEnumerable<Address> from, bool placeable)
+        {
+            Address address = this.FindAddress((CellT)cell);
+            var newFrom = from.Prepend(address);
+            Clicked?.Invoke(this, newFrom, placeable);
+        }
+        public Vector2 PixelPosition(Address address)
+        {
+            int i = address.X;
+            int j = address.Y;
+            int x = (int)(Transform.Position.X + (i - 1) * 50 * Transform.Scale);
+            int y = (int)(Transform.Position.Y + (j - 1) * 50 * Transform.Scale);
+            return new Vector2(x, y);
+        }
+        public Address FindAddress(CellT cell)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (Cells[i, j].Equals(cell))
+                    {
+                        return new Address(i, j);
+                    }
+                }
+            }
+            throw new ArgumentException("Cell not found");
+        }
+        public void DrawGrid()
+        {
+            LinearTransform transform = Transform;
+            int lineGap = (int)(50 * transform.Scale);
+            int lineLength = (int)(150 * transform.Scale);
+            int lineWidth = (int)(2 * transform.Scale);
+            int x = (int)transform.Position.X;
+            int y = (int)transform.Position.Y;
+            Color color = Color.LIGHTGRAY;
+
+            DrawRectangle(x - lineWidth / 2 + lineGap / 2, y - lineLength / 2, lineWidth, lineLength, color);
+            DrawRectangle(x - lineWidth / 2 - lineGap / 2, y - lineLength / 2, lineWidth, lineLength, color);
+            DrawRectangle(x - lineLength / 2, y - lineWidth / 2 + lineGap / 2, lineLength, lineWidth, color);
+            DrawRectangle(x - lineLength / 2, y - lineWidth / 2 - lineGap / 2, lineLength, lineWidth, color);
+        }
+        public Team? Winner()
+        {
+            bool hasWinner;
+            Team[,] cellWinners =
+                from cell in Cells
+                select cell.Team;
+
+            // Column 0
+            hasWinner = cellWinners[0, 0] != null
+                && cellWinners[0, 0] == cellWinners[0, 1]
+                && cellWinners[0, 1] == cellWinners[0, 2];
+            if (hasWinner)
+                return cellWinners[0, 0];
+            // Column 1
+            hasWinner = cellWinners[1, 0] != null
+                && cellWinners[1, 0] == cellWinners[1, 1]
+                && cellWinners[1, 1] == cellWinners[1, 2];
+            if (hasWinner)
+                return cellWinners[1, 0];
+            // Column 2
+            hasWinner = cellWinners[2, 0] != null
+                && cellWinners[2, 0] == cellWinners[2, 1]
+                && cellWinners[2, 1] == cellWinners[2, 2];
+            if (hasWinner)
+                return cellWinners[2, 0];
+
+            // Row 0
+            hasWinner = cellWinners[0, 0] != null
+                && cellWinners[0, 0] == cellWinners[1, 0]
+                && cellWinners[1, 0] == cellWinners[2, 0];
+            if (hasWinner)
+                return cellWinners[0, 0];
+            // Row 1
+            hasWinner = cellWinners[0, 1] != null
+                && cellWinners[0, 1] == cellWinners[1, 1]
+                && cellWinners[1, 1] == cellWinners[2, 1];
+            if (hasWinner)
+                return cellWinners[0, 1];
+            // Row 2
+            hasWinner = cellWinners[0, 2] != null
+                && cellWinners[0, 2] == cellWinners[1, 2]
+                && cellWinners[1, 2] == cellWinners[2, 2];
+            if (hasWinner)
+                return cellWinners[0, 2];
+
+            // Diagonals
+            hasWinner = cellWinners[1, 1] != null
+                && cellWinners[0, 0] == cellWinners[1, 1]
+                && cellWinners[1, 1] == cellWinners[2, 2];
+            if (hasWinner)
+                return cellWinners[1, 1];
+            hasWinner = cellWinners[1, 1] != null
+                && cellWinners[0, 2] == cellWinners[1, 1]
+                && cellWinners[1, 1] == cellWinners[2, 0];
+            if (hasWinner)
+                return cellWinners[1, 1];
+
+            return null;
+        }
+        public LinearTransform Transform { get; }
         public Team? Team { get { return this.Winner(); } }
         public bool Placeable
         {
@@ -186,10 +269,8 @@ namespace UltimateTicTacToe
                     ).Any();
             }
         }
-        public LinearTransform Transform { get; }
         public event ICell.ClickHandler? Clicked;
         public CellT[,] Cells { get; }
-        public CellT? LastPlaced { get; }
-        private Tile? _victoryTile;
+        protected Tile? WinningTeamTile;
     }
 }
