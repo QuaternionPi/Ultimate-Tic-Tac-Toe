@@ -20,5 +20,6 @@ namespace UltimateTicTacToe
         }
         public int X { get; }
         public int Y { get; }
+        public (int, int) XY { get { return (X, Y); } }
     }
 }

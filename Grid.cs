@@ -55,8 +55,7 @@ namespace UltimateTicTacToe
             Transform = original.Transform;
             Cells = new CellT[3, 3];
 
-            int x = address.X;
-            int y = address.Y;
+            (int x, int y) = address.XY;
             CellT targetCell = original.Cells[x, y];
 
             for (int i = 0; i < 3; i++)
@@ -89,8 +88,7 @@ namespace UltimateTicTacToe
             }
 
             Address nextPlayableAddress = path.Skip(1).First();
-            int nextX = nextPlayableAddress.X;
-            int nextY = nextPlayableAddress.Y;
+            (int nextX, int nextY) = nextPlayableAddress.XY;
 
             CellT nextCell = Cells[nextX, nextY];
 
@@ -162,8 +160,7 @@ namespace UltimateTicTacToe
         }
         public Vector2 PixelPosition(Address address)
         {
-            int i = address.X;
-            int j = address.Y;
+            (int i, int j) = address.XY;
             int x = (int)(Transform.Position.X + (i - 1) * 50 * Transform.Scale);
             int y = (int)(Transform.Position.Y + (j - 1) * 50 * Transform.Scale);
             return new Vector2(x, y);
