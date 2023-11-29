@@ -17,7 +17,7 @@ namespace UltimateTicTacToe
             Active = active;
             Score = score;
             Font = GetFontDefault();
-            _tile = new Tile(Team, Transform, false, !Active);
+            Tile = new Tile(Team, Transform, false, !Active);
         }
         public void Draw()
         {
@@ -27,13 +27,13 @@ namespace UltimateTicTacToe
             float messageWidth = MeasureTextEx(Font, message, fontSize, spacing).X;
             Vector2 drawPosition = Transform.Position + new Vector2(-messageWidth / 2, 70);
             DrawTextEx(Font, message, drawPosition, fontSize, spacing, Color.LIGHTGRAY);
-            _tile.Draw();
+            Tile.Draw();
         }
         public LinearTransform Transform { get; protected set; }
         public Team Team { get; }
         public bool Active { get; }
-        protected Tile _tile;
+        protected Tile Tile;
         public int Score { get; }
-        Font Font;
+        protected Font Font;
     }
 }
