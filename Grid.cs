@@ -22,7 +22,7 @@ namespace UltimateTicTacToe
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    Vector2 tilePosition = this.PixelPosition(new Address(i, j));
+                    Vector2 tilePosition = PixelPosition(new Address(i, j));
                     LinearTransform tileTransform = new LinearTransform(tilePosition, 0, 1);
                     CellT cell = (CellT)new CellT().Create(null, tileTransform, placeable, false);
                     Cells[i, j] = cell;
@@ -128,7 +128,7 @@ namespace UltimateTicTacToe
                 WinningTeamTile?.Draw();
                 return;
             }
-            this.DrawGrid();
+            DrawGrid();
 
             foreach (CellT cell in Cells)
             {
@@ -156,7 +156,7 @@ namespace UltimateTicTacToe
         }
         public void HandleClickedTile(ICell cell, IEnumerable<Address> from, bool placeable)
         {
-            Address address = this.FindAddress((CellT)cell);
+            Address address = FindAddress((CellT)cell);
             var newFrom = from.Prepend(address);
             Clicked?.Invoke(this, newFrom, placeable);
         }
@@ -257,7 +257,7 @@ namespace UltimateTicTacToe
             return null;
         }
         public LinearTransform Transform { get; }
-        public Team? Team { get { return this.Winner(); } }
+        public Team? Team { get { return Winner(); } }
         public bool Placeable
         {
             get
