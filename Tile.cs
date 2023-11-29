@@ -9,7 +9,7 @@ namespace UltimateTicTacToe
 {
     public class Tile : ICell
     {
-        public enum TileShape { DEFAULT = 0, X, O };
+        public enum TileShape { X, O };
         public Tile()
         {
             Team = null;
@@ -44,29 +44,7 @@ namespace UltimateTicTacToe
             {
                 drawColor = Team.Color;
             }
-            switch (Team.Shape)
-            {
-                case TileShape.DEFAULT:
-                    return;
-                case TileShape.X:
-                    {
-                        int width = 5 * (int)Transform.Scale;
-                        int length = 40 * (int)Transform.Scale;
-                        Rectangle rectangle = new Rectangle(Transform.Position.X, Transform.Position.Y, width, length);
-                        DrawRectanglePro(rectangle, new Vector2(width / 2, length / 2), 45, drawColor);
-                        DrawRectanglePro(rectangle, new Vector2(width / 2, length / 2), -45, drawColor);
-                        return;
-                    }
-                case TileShape.O:
-                    {
-                        int width = 4 * (int)Transform.Scale;
-                        int innerRadius = 13 * (int)Transform.Scale;
-                        int outerRadius = innerRadius + width;
-
-                        DrawRing(Transform.Position, innerRadius, outerRadius, 0, 360, 50, drawColor);
-                        return;
-                    }
-            }
+            Team.Draw(Transform, drawColor);
         }
         public void Update()
         {

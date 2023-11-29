@@ -14,6 +14,31 @@ namespace UltimateTicTacToe
             Shape = shape;
             Color = color;
         }
+        public void Draw(LinearTransform transform, Color color)
+        {
+
+            switch (Shape)
+            {
+                case Tile.TileShape.X:
+                    {
+                        int width = 5 * (int)transform.Scale;
+                        int length = 40 * (int)transform.Scale;
+                        Rectangle rectangle = new Rectangle(transform.Position.X, transform.Position.Y, width, length);
+                        DrawRectanglePro(rectangle, new Vector2(width / 2, length / 2), 45, color);
+                        DrawRectanglePro(rectangle, new Vector2(width / 2, length / 2), -45, color);
+                        return;
+                    }
+                case Tile.TileShape.O:
+                    {
+                        int width = 4 * (int)transform.Scale;
+                        int innerRadius = 13 * (int)transform.Scale;
+                        int outerRadius = innerRadius + width;
+
+                        DrawRing(transform.Position, innerRadius, outerRadius, 0, 360, 50, color);
+                        return;
+                    }
+            }
+        }
         public Tile.TileShape Shape { get; protected set; }
         public Color Color { get; protected set; }
     }
