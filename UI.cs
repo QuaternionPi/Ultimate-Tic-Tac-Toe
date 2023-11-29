@@ -8,14 +8,14 @@ using static Raylib_cs.KeyboardKey;
 
 namespace UltimateTicTacToe
 {
-    class UI : IDrawable
+    public class UI : IDrawable
     {
         protected class Banner : IDrawable, ITransform
         {
             public Banner(Team team, Vector2 position, bool active, int score)
             {
                 Team = team;
-                _font = GetFontDefault();
+                Font = GetFontDefault();
                 Position = position;
                 LinearTransform transform = new(Position + new Vector2(75, 75), 0, 3);
                 _tile = new Tile(team, transform, false, !active);
@@ -27,9 +27,9 @@ namespace UltimateTicTacToe
                 string message = Score.ToString();
                 float spacing = 3;
                 float fontSize = 80;
-                float messageWidth = MeasureTextEx(_font, message, fontSize, spacing).X;
+                float messageWidth = MeasureTextEx(Font, message, fontSize, spacing).X;
                 Vector2 drawPosition = Position + new Vector2(-messageWidth / 2 + 75, 170);
-                DrawTextEx(_font, message, drawPosition, fontSize, spacing, Color.LIGHTGRAY);
+                DrawTextEx(Font, message, drawPosition, fontSize, spacing, Color.LIGHTGRAY);
                 _tile.Draw();
             }
             public Vector2 Position
@@ -48,39 +48,39 @@ namespace UltimateTicTacToe
             public bool Active { get; }
             protected Tile _tile;
             public int Score { get; }
-            Font _font;
+            Font Font;
         }
         public UI(Team[] teams)
         {
-            _font = GetFontDefault();
-            _leftBanner = new Banner(teams[1], new Vector2(0, 0), false, 0);
-            _rightBanner = new Banner(teams[0], new Vector2(750, 0), true, 0);
+            Font = GetFontDefault();
+            LeftBanner = new Banner(teams[1], new Vector2(0, 0), false, 0);
+            RightBanner = new Banner(teams[0], new Vector2(750, 0), true, 0);
         }
         public void Activate(Team team)
         {
-            _leftBanner = new Banner(
-                _leftBanner.Team,
-                _leftBanner.Position,
-                _leftBanner.Team == team,
-                _leftBanner.Score
+            LeftBanner = new Banner(
+                LeftBanner.Team,
+                LeftBanner.Position,
+                LeftBanner.Team == team,
+                LeftBanner.Score
             );
-            _rightBanner = new Banner(
-                _rightBanner.Team,
-                _rightBanner.Position,
-                _rightBanner.Team == team,
-                _rightBanner.Score
+            RightBanner = new Banner(
+                RightBanner.Team,
+                RightBanner.Position,
+                RightBanner.Team == team,
+                RightBanner.Score
             );
         }
         public void AddPoints(Team team, int points)
         {
             Banner banner;
-            if (_leftBanner.Team == team)
+            if (LeftBanner.Team == team)
             {
-                banner = _leftBanner;
+                banner = LeftBanner;
             }
-            else if (_rightBanner.Team == team)
+            else if (RightBanner.Team == team)
             {
-                banner = _rightBanner;
+                banner = RightBanner;
             }
             else
             {
@@ -90,13 +90,13 @@ namespace UltimateTicTacToe
             bool active = banner.Active;
             int score = banner.Score + points;
             banner = new Banner(team, position, active, score);
-            if (_leftBanner.Team == team)
+            if (LeftBanner.Team == team)
             {
-                _leftBanner = banner;
+                LeftBanner = banner;
             }
-            else if (_rightBanner.Team == team)
+            else if (RightBanner.Team == team)
             {
-                _rightBanner = banner;
+                RightBanner = banner;
             }
         }
         public void Draw()
@@ -104,13 +104,13 @@ namespace UltimateTicTacToe
             string message = "Ultimate Tic Tac Toe";
             float spacing = 3;
             float fontSize = 30;
-            float messageWidth = MeasureTextEx(_font, message, fontSize, spacing).X;
-            DrawTextEx(_font, message, new Vector2(450 - messageWidth / 2, 20), fontSize, spacing, Color.GRAY);
-            _leftBanner.Draw();
-            _rightBanner.Draw();
+            float messageWidth = MeasureTextEx(Font, message, fontSize, spacing).X;
+            DrawTextEx(Font, message, new Vector2(450 - messageWidth / 2, 20), fontSize, spacing, Color.GRAY);
+            LeftBanner.Draw();
+            RightBanner.Draw();
         }
-        Banner _leftBanner;
-        Banner _rightBanner;
-        Font _font;
+        protected Banner LeftBanner;
+        protected Banner RightBanner;
+        protected readonly Font Font;
     }
 }

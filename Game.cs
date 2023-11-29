@@ -19,18 +19,18 @@ namespace UltimateTicTacToe
                 new Team(Tile.TileShape.X, Color.RED),
                 new Team(Tile.TileShape.O, Color.BLUE)
             };
-            _activeTeam = Teams[0];
-            _ui = new UI(Teams);
+            ActiveTeam = Teams[0];
+            UI = new UI(Teams);
         }
         protected void NextTeam()
         {
-            if (_activeTeam == Teams[0])
+            if (ActiveTeam == Teams[0])
             {
-                _activeTeam = Teams[1];
+                ActiveTeam = Teams[1];
             }
-            else if (_activeTeam == Teams[1])
+            else if (ActiveTeam == Teams[1])
             {
-                _activeTeam = Teams[0];
+                ActiveTeam = Teams[0];
             }
         }
         public void HandleClickedBoard(ICell cell, IEnumerable<Address> from, bool placeable)
@@ -43,21 +43,21 @@ namespace UltimateTicTacToe
             {
                 throw new Exception("Board click not from board");
             }
-            Board = (Grid<Grid<Tile>>)Board.Place(from, _activeTeam, placeable, true);
+            Board = (Grid<Grid<Tile>>)Board.Place(from, ActiveTeam, placeable, true);
             NextTeam();
-            _ui.Activate(_activeTeam);
+            UI.Activate(ActiveTeam);
         }
         public void Draw()
         {
             Board.Draw();
-            _ui.Draw();
+            UI.Draw();
         }
         public void Update()
         {
             Board.Update();
             if (_board.Team != null)
             {
-                _ui.AddPoints(_board.Team, 1);
+                UI.AddPoints(_board.Team, 1);
                 Board = new Grid<Grid<Tile>>(null, Board.Transform, true, false);
             }
         }
@@ -67,7 +67,7 @@ namespace UltimateTicTacToe
             {
                 return _board;
             }
-            private set
+            protected set
             {
                 _board.Clicked -= HandleClickedBoard;
                 _board = value;
@@ -75,8 +75,8 @@ namespace UltimateTicTacToe
             }
         }
         private Grid<Grid<Tile>> _board;
-        private Team _activeTeam;
-        private readonly Team[] Teams;
-        private UI _ui;
+        protected Team ActiveTeam;
+        protected readonly Team[] Teams;
+        protected UI UI;
     }
 }
