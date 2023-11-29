@@ -51,10 +51,10 @@ namespace UltimateTicTacToe
         }
         public Grid(Grid<CellT> original, IEnumerable<Address> path, Team team, bool placeable, bool isRoot)
         {
-            Address address = path.First();
             Transform = original.Transform;
             Cells = new CellT[3, 3];
 
+            Address address = path.First();
             (int x, int y) = address.XY;
             CellT targetCell = original.Cells[x, y];
 
@@ -73,6 +73,7 @@ namespace UltimateTicTacToe
                         newCell = (CellT)cell.DeepCopyPlacable(placeable);
                     }
                     Cells[i, j] = newCell;
+                    newCell.Clicked += HandleClickedTile;
                 }
             }
 
@@ -80,43 +81,35 @@ namespace UltimateTicTacToe
             WinningTeamTile = new Tile(Team, victoryTileTransform, false, false);
             if (path.Count() == 1 || Team != null)
             {
-                foreach (CellT cell in Cells)
-                {
-                    cell.Clicked += HandleClickedTile;
-                }
                 return;
             }
 
             Address nextPlayableAddress = path.Skip(1).First();
             (int nextX, int nextY) = nextPlayableAddress.XY;
-
             CellT nextCell = Cells[nextX, nextY];
 
-            if (nextCell.Placeable == true)
+            if (nextCell.Placeable == false)
             {
-                for (int i = 0; i < 3; i++)
-                {
-                    for (int j = 0; j < 3; j++)
-                    {
-                        CellT cell = original.Cells[i, j];
-                        CellT newCell;
-                        bool cellPlaceable = i == nextX && j == nextY;
-                        if (cell.Equals(targetCell))
-                        {
-                            newCell = (CellT)cell.Place(path.Skip(1), team, cellPlaceable, false);
-                        }
-                        else
-                        {
-                            newCell = (CellT)cell.DeepCopyPlacable(cellPlaceable);
-                        }
-                        Cells[i, j] = newCell;
-                    }
-                }
+                return;
             }
-
-            foreach (CellT cell in Cells)
+            for (int i = 0; i < 3; i++)
             {
-                cell.Clicked += HandleClickedTile;
+                for (int j = 0; j < 3; j++)
+                {
+                    CellT cell = original.Cells[i, j];
+                    CellT newCell;
+                    bool cellPlaceable = i == nextX && j == nextY;
+                    if (cell.Equals(targetCell))
+                    {
+                        newCell = (CellT)cell.Place(path.Skip(1), team, cellPlaceable, false);
+                    }
+                    else
+                    {
+                        newCell = (CellT)cell.DeepCopyPlacable(cellPlaceable);
+                    }
+                    Cells[i, j] = newCell;
+                    newCell.Clicked += HandleClickedTile;
+                }
             }
         }
         public void Draw()
