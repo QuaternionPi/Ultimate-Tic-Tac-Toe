@@ -21,8 +21,20 @@ namespace UltimateTicTacToe
         {
             Team = team;
             Transform = transform;
-            Placeable = placeable;
+            Placeable = placeable && Team == null;
             DrawGray = drawGray;
+        }
+        public ICell Create(Team? team, LinearTransform transform, bool placeable, bool drawGray)
+        {
+            return new Tile(team, transform, placeable, drawGray);
+        }
+        public ICell Place(IEnumerable<Address> path, Team team, bool placeable, bool isRoot)
+        {
+            return new Tile(team, Transform, placeable, false);
+        }
+        public ICell Clone(bool placeable)
+        {
+            return new Tile(Team, Transform, placeable, DrawGray);
         }
         public void Update()
         {
@@ -32,11 +44,16 @@ namespace UltimateTicTacToe
             bool collision = CheckCollisionPointRec(mousePosition, rectangle);
             if (leftMouse && collision)
             {
-                Clicked?.Invoke(this, EventArgs.Empty);
+                Clicked?.Invoke(this, new Address[0], Placeable);
             }
         }
         public void Draw()
         {
+            if (Placeable)
+            {
+                int width = 20;
+                DrawRectangle((int)Transform.Position.X - width / 2, (int)Transform.Position.Y - width / 2, width, width, Color.LIGHTGRAY);
+            }
             if (Team == null)
             {
                 return;
@@ -74,13 +91,9 @@ namespace UltimateTicTacToe
                     }
             }
         }
-        public Team? Winner()
-        {
-            return Team;
-        }
         public Team? Team { get; }
         public LinearTransform Transform { get; }
-        public event EventHandler? Clicked;
+        public event ICell.ClickHandler? Clicked;
         public bool Placeable { get; }
         public bool DrawGray { get; }
     }

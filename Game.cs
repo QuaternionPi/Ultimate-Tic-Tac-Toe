@@ -13,72 +13,70 @@ namespace UltimateTicTacToe
         {
             Vector2 position = new Vector2(450, 350);
             LinearTransform transform = new LinearTransform(position, 0, 4);
-            _board = new SuperGrid(transform);
+            _board = new Grid<Grid<Tile>>(null, transform, true, false);
             _board.Clicked += HandleClickedBoard;
-            _previousPlayer = 0;
             Teams = new Team[]{
                 new Team(Tile.TileShape.X, Color.RED),
                 new Team(Tile.TileShape.O, Color.BLUE)
             };
+            _activeTeam = Teams[0];
             _ui = new UI(Teams);
         }
-        public void PlaceTile(Address address, Address subAddress)
+        protected void NextTeam()
         {
-            Team team;
-            if (_previousPlayer == 2)
+            if (_activeTeam == Teams[0])
             {
-                _previousPlayer = 1;
-                team = Teams[1];
-                _ui.Activate(Teams[0]);
+                _activeTeam = Teams[1];
             }
-            else
+            else if (_activeTeam == Teams[1])
             {
-                _previousPlayer = 2;
-                team = Teams[0];
-                _ui.Activate(Teams[1]);
+                _activeTeam = Teams[0];
             }
-            Tile tile = _board.PlaceTile(team, address, subAddress);
         }
-        public void HandleClickedBoard(object? sender, SuperGrid.ClickedEventArgs args)
+        public void HandleClickedBoard(ICell cell, IEnumerable<Address> from, bool placeable)
         {
-            if (sender == null)
+            if (placeable == false)
             {
                 return;
             }
-            Tile tile = args._tile;
-            Grid grid = args._grid;
-            SuperGrid superGrid = (SuperGrid)sender;
-
-            Address gridAddress = grid.FindAddress(tile);
-            Address superGridAddress = superGrid.FindAddress(grid);
-            if (superGrid.IsValidPlacement(superGridAddress, gridAddress))
+            if (!cell.Equals(_board))
             {
-                PlaceTile(superGridAddress, gridAddress);
-                if (_board.Team != null)
-                {
-                    _ui.AddPoints(_board.Team!, 1);
-                }
+                throw new Exception("Board click not from board");
             }
+            Board = (Grid<Grid<Tile>>)Board.Place(from, _activeTeam, placeable, true);
+            NextTeam();
+            _ui.Activate(_activeTeam);
         }
         public void Draw()
         {
-            _board.DrawPossibilities();
-            _board.Draw();
+            Board.Draw();
             _ui.Draw();
         }
         public void Update()
         {
-            _board.Update();
+            Board.Update();
             if (_board.Team != null)
             {
+                _ui.AddPoints(_board.Team, 1);
+                Board = new Grid<Grid<Tile>>(null, Board.Transform, true, false);
+            }
+        }
+        public Grid<Grid<Tile>> Board
+        {
+            get
+            {
+                return _board;
+            }
+            private set
+            {
                 _board.Clicked -= HandleClickedBoard;
-                _board = new SuperGrid(_board.Transform);
+                _board = value;
                 _board.Clicked += HandleClickedBoard;
             }
         }
-        private int _previousPlayer;
+        private Grid<Grid<Tile>> _board;
+        private Team _activeTeam;
         private readonly Team[] Teams;
         private UI _ui;
-        private SuperGrid _board;
     }
 }

@@ -7,42 +7,131 @@ using static Raylib_cs.KeyboardKey;
 
 namespace UltimateTicTacToe
 {
-    public class Grid : IBoard<Tile>
+    public class Grid<CellT> : IBoard<CellT> where CellT : ICell, new()
     {
-        public Grid(LinearTransform transform)
+        public Grid()
+        {
+            Transform = new LinearTransform(Vector2.Zero, 0, 1);
+            Cells = new CellT[3, 3];
+        }
+        public Grid(Team? team, LinearTransform transform, bool placeable, bool drawGray)
         {
             Transform = transform;
-            Cells = new Tile[3, 3];
+            Cells = new CellT[3, 3];
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
                     Vector2 tilePosition = this.PixelPosition(new Address(i, j));
                     LinearTransform tileTransform = new LinearTransform(tilePosition, 0, 1);
-                    Tile tile = new Tile(null, tileTransform, true, false);
-                    Cells[i, j] = tile;
-                    tile.Clicked += HandleClickedTile;
+                    CellT cell = (CellT)new CellT().Create(null, tileTransform, placeable, false);
+                    Cells[i, j] = cell;
+                    cell.Clicked += HandleClickedTile;
                 }
             }
+            LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
+            _victoryTile = new Tile(Team, victoryTileTransform, true, false);
         }
-        public List<Address> ValidPositions()
+        public Grid(Grid<CellT> original, bool placeable)
         {
-            if (Team != null)
-            {
-                return new List<Address>();
-            }
-            List<Address> validPositions = new List<Address>();
+            Transform = original.Transform;
+            Cells = new CellT[3, 3];
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    if (Cells[i, j].Winner() == null)
+                    CellT cell = original.Cells[i, j];
+                    CellT newCell = (CellT)cell.Clone(placeable);
+                    Cells[i, j] = newCell;
+                    newCell.Clicked += HandleClickedTile;
+                }
+            }
+            LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
+            _victoryTile = new Tile(Team, victoryTileTransform, true, false);
+        }
+        public Grid(Grid<CellT> original, IEnumerable<Address> path, Team team, bool placeable, bool isRoot)
+        {
+            Address address = path.First();
+            Transform = original.Transform;
+            Cells = new CellT[3, 3];
+
+            int x = address.X;
+            int y = address.Y;
+            CellT targetCell = original.Cells[x, y];
+
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    CellT cell = original.Cells[i, j];
+                    CellT newCell;
+                    if (cell.Equals(targetCell))
                     {
-                        validPositions.Add(new Address(i, j));
+                        newCell = (CellT)cell.Place(path.Skip(1), team, placeable, false);
+                    }
+                    else
+                    {
+                        newCell = (CellT)cell.Clone(placeable);
+                    }
+                    Cells[i, j] = newCell;
+                }
+            }
+
+            LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
+            _victoryTile = new Tile(Team, victoryTileTransform, false, false);
+            if (path.Count() == 1 || Team != null)
+            {
+                foreach (CellT cell in Cells)
+                {
+                    cell.Clicked += HandleClickedTile;
+                }
+                return;
+            }
+
+            Address nextPlayableAddress = path.Skip(1).First();
+            int nextX = nextPlayableAddress.X;
+            int nextY = nextPlayableAddress.Y;
+
+            CellT nextCell = Cells[nextX, nextY];
+
+            if (nextCell.Placeable == true)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        CellT cell = original.Cells[i, j];
+                        CellT newCell;
+                        bool cellPlaceable = i == nextX && j == nextY;
+                        if (cell.Equals(targetCell))
+                        {
+                            newCell = (CellT)cell.Place(path.Skip(1), team, cellPlaceable, false);
+                        }
+                        else
+                        {
+                            newCell = (CellT)cell.Clone(cellPlaceable);
+                        }
+                        Cells[i, j] = newCell;
                     }
                 }
             }
-            return validPositions;
+
+            foreach (CellT cell in Cells)
+            {
+                cell.Clicked += HandleClickedTile;
+            }
+        }
+        public ICell Create(Team? team, LinearTransform transform, bool placeable, bool drawGray)
+        {
+            return new Grid<CellT>(team, transform, placeable, drawGray);
+        }
+        public ICell Place(IEnumerable<Address> path, Team team, bool placeable, bool isRoot)
+        {
+            return new Grid<CellT>(this, path, team, placeable, isRoot);
+        }
+        public ICell Clone(bool placeable)
+        {
+            return new Grid<CellT>(this, placeable);
         }
         public bool IsValidPlacement(Address address)
         {
@@ -50,7 +139,6 @@ namespace UltimateTicTacToe
             {
                 return false;
             }
-
             int x = address.X;
             int y = address.Y;
             if (Cells[x, y].Team != null)
@@ -59,50 +147,11 @@ namespace UltimateTicTacToe
             }
             return true;
         }
-        public Tile PlaceTile(Team team, Address address)
+        public void HandleClickedTile(ICell cell, IEnumerable<Address> from, bool placeable)
         {
-            if (IsValidPlacement(address) == false)
-            {
-                throw new Exception("Cannot place tile");
-            }
-            int x = address.X;
-            int y = address.Y;
-            LinearTransform transform = Cells[x, y].Transform;
-            Tile tile = new Tile(team, transform, true, false);
-            Cells[x, y] = tile;
-
-            if (this.Winner() != null)
-            {
-                transform = new LinearTransform(Transform.Position, 0, 4);
-                _victoryTile = new Tile(team, transform, true, false);
-            }
-            return tile;
-        }
-        public void HandleClickedTile(object? sender, EventArgs eventArgs)
-        {
-            if (sender == null)
-            {
-                return;
-            }
-            ClickedEventArgs args = new ClickedEventArgs((Tile)sender);
-            Clicked?.Invoke(this, args);
-        }
-        public void DrawPossibilities()
-        {
-            if (Team != null)
-            {
-                return;
-            }
-            foreach (Tile cell in Cells)
-            {
-                if (cell.Winner() != null)
-                {
-                    continue;
-                }
-                Vector2 position = cell.Transform.Position;
-                int width = 20;
-                DrawRectangle((int)position.X - width / 2, (int)position.Y - width / 2, width, width, Color.LIGHTGRAY);
-            }
+            Address address = this.FindAddress((CellT)cell);
+            var newFrom = from.Prepend(address);
+            Clicked?.Invoke(this, newFrom, placeable && IsValidPlacement(address));
         }
         public void Draw()
         {
@@ -111,33 +160,36 @@ namespace UltimateTicTacToe
                 _victoryTile?.Draw();
                 return;
             }
-
             this.DrawGrid();
 
-            foreach (Tile tile in Cells)
+            foreach (CellT cell in Cells)
             {
-                tile.Draw();
+                cell.Draw();
             }
         }
         public void Update()
         {
-            foreach (Tile tile in Cells)
+            foreach (CellT cell in Cells)
             {
-                tile.Update();
+                cell.Update();
             }
         }
         public Team? Team { get { return this.Winner(); } }
-        public LinearTransform Transform { get; }
-        public event EventHandler<ClickedEventArgs>? Clicked;
-        public class ClickedEventArgs : EventArgs
+        public bool Placeable
         {
-            public ClickedEventArgs(Tile tile)
+            get
             {
-                _tile = tile;
+                return Team == null && (
+                    from CellT cell in Cells
+                    where cell.Placeable == true
+                    select cell
+                    ).Any();
             }
-            public Tile _tile;
         }
-        public Tile[,] Cells { get; protected set; }
+        public LinearTransform Transform { get; }
+        public event ICell.ClickHandler? Clicked;
+        public CellT[,] Cells { get; }
+        public CellT? LastPlaced { get; }
         private Tile? _victoryTile;
     }
 }

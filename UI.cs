@@ -18,7 +18,7 @@ namespace UltimateTicTacToe
                 _font = GetFontDefault();
                 Position = position;
                 LinearTransform transform = new(Position + new Vector2(75, 75), 0, 3);
-                _tile = new Tile(team, transform, true, !active);
+                _tile = new Tile(team, transform, false, !active);
                 Active = active;
                 Score = score;
             }

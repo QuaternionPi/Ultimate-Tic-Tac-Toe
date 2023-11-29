@@ -21,13 +21,14 @@ namespace UltimateTicTacToe
         public int X { get; }
         public int Y { get; }
     }
-    public interface IBoard<CellT> : IDrawable, IUpdateable, ICell where CellT : ICell
+    public interface IBoard<CellT> : IDrawable, IUpdateable, ICell where CellT : ICell, new()
     {
         public CellT[,] Cells { get; }
+        public CellT? LastPlaced { get; }
     }
     public static class BoardExtensions
     {
-        public static Vector2 PixelPosition<CellT>(this IBoard<CellT> board, Address address) where CellT : ICell
+        public static Vector2 PixelPosition<CellT>(this IBoard<CellT> board, Address address) where CellT : ICell, new()
         {
             int i = address.X;
             int j = address.Y;
@@ -35,7 +36,7 @@ namespace UltimateTicTacToe
             int y = (int)(board.Transform.Position.Y + (j - 1) * 50 * board.Transform.Scale);
             return new Vector2(x, y);
         }
-        public static Address FindAddress<CellT>(this IBoard<CellT> board, CellT cell) where CellT : ICell
+        public static Address FindAddress<CellT>(this IBoard<CellT> board, CellT cell) where CellT : ICell, new()
         {
             for (int i = 0; i < 3; i++)
             {
@@ -49,7 +50,7 @@ namespace UltimateTicTacToe
             }
             throw new ArgumentException("Cell not found");
         }
-        public static void DrawGrid<CellT>(this IBoard<CellT> board) where CellT : ICell
+        public static void DrawGrid<CellT>(this IBoard<CellT> board) where CellT : ICell, new()
         {
             LinearTransform transform = board.Transform;
             int lineGap = (int)(50 * transform.Scale);
@@ -64,7 +65,7 @@ namespace UltimateTicTacToe
             DrawRectangle(x - lineLength / 2, y - lineWidth / 2 + lineGap / 2, lineLength, lineWidth, color);
             DrawRectangle(x - lineLength / 2, y - lineWidth / 2 - lineGap / 2, lineLength, lineWidth, color);
         }
-        public static Team? Winner<CellT>(this IBoard<CellT> board) where CellT : ICell
+        public static Team? Winner<CellT>(this IBoard<CellT> board) where CellT : ICell, new()
         {
             bool hasWinner;
             Team[,] cellWinners =
