@@ -41,7 +41,7 @@ namespace UltimateTicTacToe
                 for (int j = 0; j < 3; j++)
                 {
                     CellT cell = original.Cells[i, j];
-                    CellT newCell = (CellT)cell.Clone(placeable);
+                    CellT newCell = (CellT)cell.DeepCopyPlacable(placeable);
                     Cells[i, j] = newCell;
                     newCell.Clicked += HandleClickedTile;
                 }
@@ -71,7 +71,7 @@ namespace UltimateTicTacToe
                     }
                     else
                     {
-                        newCell = (CellT)cell.Clone(placeable);
+                        newCell = (CellT)cell.DeepCopyPlacable(placeable);
                     }
                     Cells[i, j] = newCell;
                 }
@@ -109,7 +109,7 @@ namespace UltimateTicTacToe
                         }
                         else
                         {
-                            newCell = (CellT)cell.Clone(cellPlaceable);
+                            newCell = (CellT)cell.DeepCopyPlacable(cellPlaceable);
                         }
                         Cells[i, j] = newCell;
                     }
@@ -150,7 +150,7 @@ namespace UltimateTicTacToe
         {
             return new Grid<CellT>(this, path, team, placeable, isRoot);
         }
-        public ICell Clone(bool placeable)
+        public ICell DeepCopyPlacable(bool placeable)
         {
             return new Grid<CellT>(this, placeable);
         }

@@ -65,7 +65,7 @@ namespace UltimateTicTacToe
         {
             return new Tile(team, Transform, placeable, false);
         }
-        public ICell Clone(bool placeable)
+        public ICell DeepCopyPlacable(bool placeable)
         {
             return new Tile(Team, Transform, placeable, DrawGray);
         }
