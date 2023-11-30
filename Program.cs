@@ -7,7 +7,7 @@ using static Raylib_cs.KeyboardKey;
 
 namespace UltimateTicTacToe
 {
-    class Program
+    static class Program
     {
         static void Main(string[] args)
         {
