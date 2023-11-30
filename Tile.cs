@@ -48,7 +48,7 @@ namespace UltimateTicTacToe
             {
                 drawColor = Team.Color;
             }
-            Team.Draw(Transform, drawColor);
+            Team.DrawSymbol(Transform, drawColor);
         }
         public void Update()
         {
