@@ -16,8 +16,8 @@ namespace UltimateTicTacToe
             _board = new Grid<Grid<Tile>>(null, transform, true, false);
             _board.Clicked += HandleClickedBoard;
             Teams = new Team[]{
-                new Team(Tile.TileShape.X, Color.RED),
-                new Team(Tile.TileShape.O, Color.BLUE)
+                new Team(Team.Symbol.X, Color.RED),
+                new Team(Team.Symbol.O, Color.BLUE)
             };
             ActiveTeam = Teams[0];
             UI = new UI(Teams);

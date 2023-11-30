@@ -9,7 +9,6 @@ namespace UltimateTicTacToe
 {
     public class Tile : ICell
     {
-        public enum TileShape { X, O };
         public Tile()
         {
             Team = null;

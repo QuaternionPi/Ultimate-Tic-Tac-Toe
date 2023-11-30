@@ -9,9 +9,10 @@ namespace UltimateTicTacToe
 {
     public class Team
     {
-        public Team(Tile.TileShape shape, Color color)
+        public enum Symbol { X, O };
+        public Team(Symbol symbol, Color color)
         {
-            Shape = shape;
+            Shape = symbol;
             Color = color;
         }
         public void Draw(LinearTransform transform, Color color)
@@ -19,7 +20,7 @@ namespace UltimateTicTacToe
 
             switch (Shape)
             {
-                case Tile.TileShape.X:
+                case Symbol.X:
                     {
                         int width = 5 * (int)transform.Scale;
                         int length = 40 * (int)transform.Scale;
@@ -28,7 +29,7 @@ namespace UltimateTicTacToe
                         DrawRectanglePro(rectangle, new Vector2(width / 2, length / 2), -45, color);
                         return;
                     }
-                case Tile.TileShape.O:
+                case Symbol.O:
                     {
                         int width = 4 * (int)transform.Scale;
                         int innerRadius = 13 * (int)transform.Scale;
@@ -39,7 +40,7 @@ namespace UltimateTicTacToe
                     }
             }
         }
-        public Tile.TileShape Shape { get; protected set; }
+        public Symbol Shape { get; protected set; }
         public Color Color { get; protected set; }
     }
 }
