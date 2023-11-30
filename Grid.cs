@@ -29,6 +29,14 @@ namespace UltimateTicTacToe
                     cell.Clicked += HandleClickedTile;
                 }
             }
+            if (team != null)
+            {
+                Team = team;
+            }
+            else
+            {
+                Team = Winner();
+            }
             LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
             WinningTeamTile = new Tile(Team, victoryTileTransform, true, false);
         }
@@ -45,6 +53,14 @@ namespace UltimateTicTacToe
                     Cells[i, j] = newCell;
                     newCell.Clicked += HandleClickedTile;
                 }
+            }
+            if (original.Team != null)
+            {
+                Team = original.Team;
+            }
+            else
+            {
+                Team = Winner();
             }
             LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
             WinningTeamTile = new Tile(Team, victoryTileTransform, true, false);
@@ -75,6 +91,14 @@ namespace UltimateTicTacToe
                     Cells[i, j] = newCell;
                     newCell.Clicked += HandleClickedTile;
                 }
+            }
+            if (original.Team != null)
+            {
+                Team = original.Team;
+            }
+            else
+            {
+                Team = Winner();
             }
 
             LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
@@ -176,7 +200,7 @@ namespace UltimateTicTacToe
         {
             LinearTransform transform = Transform;
             int lineGap = (int)(50 * transform.Scale);
-            int lineLength = (int)(150 * transform.Scale);
+            int lineLength = (int)(130 * transform.Scale);
             int lineWidth = (int)(2 * transform.Scale);
             int x = (int)transform.Position.X;
             int y = (int)transform.Position.Y;
@@ -247,7 +271,7 @@ namespace UltimateTicTacToe
             return null;
         }
         public LinearTransform Transform { get; }
-        public Team? Team { get { return Winner(); } }
+        public Team? Team { get; }
         public bool Placeable
         {
             get
