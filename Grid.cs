@@ -136,6 +136,22 @@ namespace UltimateTicTacToe
                 }
             }
         }
+        public LinearTransform Transform { get; }
+        public Team? Team { get; }
+        public bool Placeable
+        {
+            get
+            {
+                return Team == null && (
+                    from CellT cell in Cells
+                    where cell.Placeable == true
+                    select cell
+                    ).Any();
+            }
+        }
+        public event ICell.ClickHandler? Clicked;
+        public CellT[,] Cells { get; }
+        protected Tile? WinningTeamTile { get; }
         public void Draw()
         {
             if (Team != null)
@@ -270,21 +286,5 @@ namespace UltimateTicTacToe
 
             return null;
         }
-        public LinearTransform Transform { get; }
-        public Team? Team { get; }
-        public bool Placeable
-        {
-            get
-            {
-                return Team == null && (
-                    from CellT cell in Cells
-                    where cell.Placeable == true
-                    select cell
-                    ).Any();
-            }
-        }
-        public event ICell.ClickHandler? Clicked;
-        public CellT[,] Cells { get; }
-        protected Tile? WinningTeamTile;
     }
 }

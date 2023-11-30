@@ -23,6 +23,11 @@ namespace UltimateTicTacToe
             Placeable = placeable && Team == null;
             DrawGray = drawGray;
         }
+        public Team? Team { get; }
+        public bool Placeable { get; }
+        public LinearTransform Transform { get; }
+        public event ICell.ClickHandler? Clicked;
+        public bool DrawGray { get; }
         public void Draw()
         {
             if (Placeable)
@@ -68,10 +73,5 @@ namespace UltimateTicTacToe
         {
             return new Tile(Team, Transform, placeable, DrawGray);
         }
-        public Team? Team { get; }
-        public bool Placeable { get; }
-        public LinearTransform Transform { get; }
-        public event ICell.ClickHandler? Clicked;
-        public bool DrawGray { get; }
     }
 }

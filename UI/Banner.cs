@@ -19,6 +19,12 @@ namespace UltimateTicTacToe
             Font = GetFontDefault();
             Tile = new Tile(Team, Transform, false, !Active);
         }
+        public LinearTransform Transform { get; }
+        public Team Team { get; }
+        public bool Active { get; }
+        protected Tile Tile { get; }
+        public int Score { get; }
+        protected Font Font { get; }
         public void Draw()
         {
             string message = Score.ToString();
@@ -29,11 +35,5 @@ namespace UltimateTicTacToe
             DrawTextEx(Font, message, drawPosition, fontSize, spacing, Color.LIGHTGRAY);
             Tile.Draw();
         }
-        public LinearTransform Transform { get; protected set; }
-        public Team Team { get; }
-        public bool Active { get; }
-        protected Tile Tile;
-        public int Score { get; }
-        protected Font Font;
     }
 }

@@ -22,6 +22,23 @@ namespace UltimateTicTacToe
             ActiveTeam = Teams[0];
             UI = new UI(Teams);
         }
+        public Grid<Grid<Tile>> Board
+        {
+            get
+            {
+                return _board;
+            }
+            protected set
+            {
+                _board.Clicked -= HandleClickedBoard;
+                _board = value;
+                _board.Clicked += HandleClickedBoard;
+            }
+        }
+        private Grid<Grid<Tile>> _board;
+        protected Team ActiveTeam;
+        protected readonly Team[] Teams;
+        protected UI UI;
         protected void NextTeam()
         {
             if (ActiveTeam == Teams[0])
@@ -61,22 +78,5 @@ namespace UltimateTicTacToe
                 Board = new Grid<Grid<Tile>>(null, Board.Transform, true, false);
             }
         }
-        public Grid<Grid<Tile>> Board
-        {
-            get
-            {
-                return _board;
-            }
-            protected set
-            {
-                _board.Clicked -= HandleClickedBoard;
-                _board = value;
-                _board.Clicked += HandleClickedBoard;
-            }
-        }
-        private Grid<Grid<Tile>> _board;
-        protected Team ActiveTeam;
-        protected readonly Team[] Teams;
-        protected UI UI;
     }
 }

@@ -15,6 +15,8 @@ namespace UltimateTicTacToe
             Shape = symbol;
             Color = color;
         }
+        public Symbol Shape { get; protected set; }
+        public Color Color { get; protected set; }
         public void Draw(LinearTransform transform, Color color)
         {
 
@@ -40,7 +42,5 @@ namespace UltimateTicTacToe
                     }
             }
         }
-        public Symbol Shape { get; protected set; }
-        public Color Color { get; protected set; }
     }
 }

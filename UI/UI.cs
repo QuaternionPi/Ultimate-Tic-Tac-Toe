@@ -18,6 +18,9 @@ namespace UltimateTicTacToe
             LeftBanner = new Banner(teams[1], leftTransform, false, 0);
             RightBanner = new Banner(teams[0], rightTransform, true, 0);
         }
+        protected Banner LeftBanner;
+        protected Banner RightBanner;
+        protected readonly Font Font;
         public void Draw()
         {
             string message = "Ultimate Tic Tac Toe";
@@ -71,8 +74,5 @@ namespace UltimateTicTacToe
                 RightBanner = banner;
             }
         }
-        protected Banner LeftBanner;
-        protected Banner RightBanner;
-        protected readonly Font Font;
     }
 }
