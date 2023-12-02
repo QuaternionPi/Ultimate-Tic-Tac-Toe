@@ -11,6 +11,7 @@ namespace UltimateTicTacToe
     {
         static void Main(string[] args)
         {
+            SetConfigFlags(ConfigFlags.FLAG_MSAA_4X_HINT);
             InitWindow(900, 650, "Ultimate Tic Tac Toe");
             SetTargetFPS(30);
             Game game = new Game();
