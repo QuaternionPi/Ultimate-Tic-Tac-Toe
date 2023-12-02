@@ -8,9 +8,9 @@ using static Raylib_cs.KeyboardKey;
 
 namespace UltimateTicTacToe
 {
-    public class UI : IDrawable
+    public class BannerControler : IDrawable
     {
-        public UI(Team[] teams)
+        public BannerControler(Team[] teams)
         {
             Font = GetFontDefault();
             LinearTransform leftTransform = new(new Vector2(75, 75), 0, 3);

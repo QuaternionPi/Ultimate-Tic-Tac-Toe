@@ -20,7 +20,7 @@ namespace UltimateTicTacToe
                 new Team(Team.Symbol.O, Color.BLUE)
             };
             ActiveTeam = Teams[0];
-            UI = new UI(Teams);
+            BannerControler = new BannerControler(Teams);
         }
         public Grid<Grid<Tile>> Board
         {
@@ -38,7 +38,7 @@ namespace UltimateTicTacToe
         private Grid<Grid<Tile>> _board;
         protected Team ActiveTeam;
         protected readonly Team[] Teams;
-        protected UI UI;
+        protected BannerControler BannerControler;
         protected void NextTeam()
         {
             if (ActiveTeam == Teams[0])
@@ -62,19 +62,19 @@ namespace UltimateTicTacToe
             }
             Board = (Grid<Grid<Tile>>)Board.Place(from, ActiveTeam, placeable, true);
             NextTeam();
-            UI.Activate(ActiveTeam);
+            BannerControler.Activate(ActiveTeam);
         }
         public void Draw()
         {
             Board.Draw();
-            UI.Draw();
+            BannerControler.Draw();
         }
         public void Update()
         {
             Board.Update();
             if (_board.Team != null)
             {
-                UI.AddPoints(_board.Team, 1);
+                BannerControler.AddPoints(_board.Team, 1);
                 Board = new Grid<Grid<Tile>>(null, Board.Transform, true, false);
             }
         }
