@@ -11,19 +11,19 @@ namespace UltimateTicTacToe
     {
         public Tile()
         {
-            Team = null;
+            Player = null;
             Transform = new LinearTransform(Vector2.Zero, 0, 0);
             Placeable = false;
             DrawGray = true;
         }
-        public Tile(Team? team, LinearTransform transform, bool placeable, bool drawGray)
+        public Tile(Player? player, LinearTransform transform, bool placeable, bool drawGray)
         {
-            Team = team;
+            Player = player;
             Transform = transform;
-            Placeable = placeable && Team == null;
+            Placeable = placeable && Player == null;
             DrawGray = drawGray;
         }
-        public Team? Team { get; }
+        public Player? Player { get; }
         public bool Placeable { get; }
         public LinearTransform Transform { get; }
         public event ICell.ClickHandler? Clicked;
@@ -35,7 +35,7 @@ namespace UltimateTicTacToe
                 int width = 20;
                 DrawRectangle((int)Transform.Position.X - width / 2, (int)Transform.Position.Y - width / 2, width, width, Color.LIGHTGRAY);
             }
-            if (Team == null)
+            if (Player == null)
             {
                 return;
             }
@@ -46,9 +46,9 @@ namespace UltimateTicTacToe
             }
             else
             {
-                drawColor = Team.Color;
+                drawColor = Player.Color;
             }
-            Team.DrawSymbol(Transform, drawColor);
+            Player.DrawSymbol(Transform, drawColor);
         }
         public void Update()
         {
@@ -61,17 +61,17 @@ namespace UltimateTicTacToe
                 Clicked?.Invoke(this, new Address[0], Placeable);
             }
         }
-        public ICell Create(Team? team, LinearTransform transform, bool placeable, bool drawGray)
+        public ICell Create(Player? player, LinearTransform transform, bool placeable, bool drawGray)
         {
-            return new Tile(team, transform, placeable, drawGray);
+            return new Tile(player, transform, placeable, drawGray);
         }
-        public ICell Place(IEnumerable<Address> path, Team team, bool placeable, bool isRoot)
+        public ICell Place(IEnumerable<Address> path, Player player, bool placeable, bool isRoot)
         {
-            return new Tile(team, Transform, placeable, false);
+            return new Tile(player, Transform, placeable, false);
         }
         public ICell DeepCopyPlacable(bool placeable)
         {
-            return new Tile(Team, Transform, placeable, DrawGray);
+            return new Tile(Player, Transform, placeable, DrawGray);
         }
     }
 }

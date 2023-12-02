@@ -7,16 +7,22 @@ using static Raylib_cs.KeyboardKey;
 
 namespace UltimateTicTacToe
 {
-    public class Team
+    public abstract class Player : IUpdateable
     {
         public enum Symbol { X, O };
-        public Team(Symbol symbol, Color color)
+        public Player(Symbol symbol, Color color)
         {
             Shape = symbol;
             Color = color;
         }
         public Symbol Shape { get; protected set; }
         public Color Color { get; protected set; }
+        public delegate void Turn(Player player, IEnumerable<Address> path);
+        public event Turn? PlayTurn;
+        protected void InvokePlayTurn(Player player, IEnumerable<Address> path) => PlayTurn?.Invoke(player, path);
+        public abstract void BeginTurn(Grid<Grid<Tile>> board);
+        public abstract void EndTurn();
+        public abstract void Update();
         public void DrawSymbol(LinearTransform transform, Color color)
         {
 

@@ -12,13 +12,13 @@ namespace UltimateTicTacToe
     {
         public class BannerControler : IDrawable
         {
-            public BannerControler(Team[] teams)
+            public BannerControler(Player[] players)
             {
                 Font = GetFontDefault();
                 LinearTransform leftTransform = new(new Vector2(75, 75), 0, 3);
                 LinearTransform rightTransform = new(new Vector2(825, 75), 0, 3);
-                LeftBanner = new Banner(teams[1], leftTransform, false, 0);
-                RightBanner = new Banner(teams[0], rightTransform, true, 0);
+                LeftBanner = new Banner(players[1], leftTransform, false, 0);
+                RightBanner = new Banner(players[0], rightTransform, true, 0);
             }
             protected Banner LeftBanner;
             protected Banner RightBanner;
@@ -33,45 +33,45 @@ namespace UltimateTicTacToe
                 LeftBanner.Draw();
                 RightBanner.Draw();
             }
-            public void Activate(Team team)
+            public void Activate(Player player)
             {
                 LeftBanner = new Banner(
-                    LeftBanner.Team,
+                    LeftBanner.Player,
                     LeftBanner.Transform,
-                    LeftBanner.Team == team,
+                    LeftBanner.Player == player,
                     LeftBanner.Score
                 );
                 RightBanner = new Banner(
-                    RightBanner.Team,
+                    RightBanner.Player,
                     RightBanner.Transform,
-                    RightBanner.Team == team,
+                    RightBanner.Player == player,
                     RightBanner.Score
                 );
             }
-            public void AddPoints(Team team, int points)
+            public void AddPoints(Player player, int points)
             {
                 Banner banner;
-                if (LeftBanner.Team == team)
+                if (LeftBanner.Player == player)
                 {
                     banner = LeftBanner;
                 }
-                else if (RightBanner.Team == team)
+                else if (RightBanner.Player == player)
                 {
                     banner = RightBanner;
                 }
                 else
                 {
-                    throw new Exception("This team is not on either of the banners");
+                    throw new Exception("This player is not on either of the banners");
                 }
                 LinearTransform transform = banner.Transform;
                 bool active = banner.Active;
                 int score = banner.Score + points;
-                banner = new Banner(team, transform, active, score);
-                if (LeftBanner.Team == team)
+                banner = new Banner(player, transform, active, score);
+                if (LeftBanner.Player == player)
                 {
                     LeftBanner = banner;
                 }
-                else if (RightBanner.Team == team)
+                else if (RightBanner.Player == player)
                 {
                     RightBanner = banner;
                 }

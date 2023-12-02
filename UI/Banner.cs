@@ -12,17 +12,17 @@ namespace UltimateTicTacToe
     {
         public class Banner : IDrawable
         {
-            public Banner(Team team, LinearTransform transform, bool active, int score)
+            public Banner(Player player, LinearTransform transform, bool active, int score)
             {
-                Team = team;
+                Player = player;
                 Transform = transform;
                 Active = active;
                 Score = score;
                 Font = GetFontDefault();
-                Tile = new Tile(Team, Transform, false, !Active);
+                Tile = new Tile(Player, Transform, false, !Active);
             }
             public LinearTransform Transform { get; }
-            public Team Team { get; }
+            public Player Player { get; }
             public bool Active { get; }
             protected Tile Tile { get; }
             public int Score { get; }
