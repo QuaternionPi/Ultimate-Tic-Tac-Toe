@@ -20,7 +20,7 @@ namespace UltimateTicTacToe
                 new Team(Team.Symbol.O, Color.BLUE)
             };
             ActiveTeam = Teams[0];
-            BannerControler = new BannerControler(Teams);
+            BannerControler = new UI.BannerControler(Teams);
         }
         public Grid<Grid<Tile>> Board
         {
@@ -38,7 +38,7 @@ namespace UltimateTicTacToe
         private Grid<Grid<Tile>> _board;
         protected Team ActiveTeam;
         protected readonly Team[] Teams;
-        protected BannerControler BannerControler;
+        protected UI.BannerControler BannerControler;
         protected void NextTeam()
         {
             if (ActiveTeam == Teams[0])

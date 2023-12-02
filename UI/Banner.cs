@@ -8,32 +8,35 @@ using static Raylib_cs.KeyboardKey;
 
 namespace UltimateTicTacToe
 {
-    public class Banner : IDrawable
+    namespace UI
     {
-        public Banner(Team team, LinearTransform transform, bool active, int score)
+        public class Banner : IDrawable
         {
-            Team = team;
-            Transform = transform;
-            Active = active;
-            Score = score;
-            Font = GetFontDefault();
-            Tile = new Tile(Team, Transform, false, !Active);
-        }
-        public LinearTransform Transform { get; }
-        public Team Team { get; }
-        public bool Active { get; }
-        protected Tile Tile { get; }
-        public int Score { get; }
-        protected Font Font { get; }
-        public void Draw()
-        {
-            string message = Score.ToString();
-            float spacing = 3;
-            float fontSize = 80;
-            float messageWidth = MeasureTextEx(Font, message, fontSize, spacing).X;
-            Vector2 drawPosition = Transform.Position + new Vector2(-messageWidth / 2, 70);
-            DrawTextEx(Font, message, drawPosition, fontSize, spacing, Color.LIGHTGRAY);
-            Tile.Draw();
+            public Banner(Team team, LinearTransform transform, bool active, int score)
+            {
+                Team = team;
+                Transform = transform;
+                Active = active;
+                Score = score;
+                Font = GetFontDefault();
+                Tile = new Tile(Team, Transform, false, !Active);
+            }
+            public LinearTransform Transform { get; }
+            public Team Team { get; }
+            public bool Active { get; }
+            protected Tile Tile { get; }
+            public int Score { get; }
+            protected Font Font { get; }
+            public void Draw()
+            {
+                string message = Score.ToString();
+                float spacing = 3;
+                float fontSize = 80;
+                float messageWidth = MeasureTextEx(Font, message, fontSize, spacing).X;
+                Vector2 drawPosition = Transform.Position + new Vector2(-messageWidth / 2, 70);
+                DrawTextEx(Font, message, drawPosition, fontSize, spacing, Color.LIGHTGRAY);
+                Tile.Draw();
+            }
         }
     }
 }

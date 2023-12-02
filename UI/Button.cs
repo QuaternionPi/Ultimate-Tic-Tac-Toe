@@ -8,31 +8,34 @@ using static Raylib_cs.KeyboardKey;
 
 namespace UltimateTicTacToe
 {
-    class Button : IDrawable, IUpdateable
+    namespace UI
     {
-        public Button(LinearTransform transform, Vector2 dimensions, string message, Color color)
+        class Button : IDrawable, IUpdateable
         {
-            Transform = transform;
-            Dimensions = dimensions;
-            Message = message;
-            Color = color;
-        }
-        public LinearTransform Transform { get; }
-        public event EventHandler? Clicked;
-        private string Message { get; }
-        protected Color Color { get; }
-        protected Vector2 Dimensions { get; }
-        public void Update()
-        {
+            public Button(LinearTransform transform, Vector2 dimensions, string message, Color color)
+            {
+                Transform = transform;
+                Dimensions = dimensions;
+                Message = message;
+                Color = color;
+            }
+            public LinearTransform Transform { get; }
+            public event EventHandler? Clicked;
+            private string Message { get; }
+            protected Color Color { get; }
+            protected Vector2 Dimensions { get; }
+            public void Update()
+            {
 
-        }
-        public void Draw()
-        {
-            int width = (int)Dimensions.X;
-            int height = (int)Dimensions.Y;
-            int x = (int)Transform.Position.X - width / 2;
-            int y = (int)Transform.Position.Y - height / 2;
-            DrawRectangle(x, y, width, height, Color);
+            }
+            public void Draw()
+            {
+                int width = (int)Dimensions.X;
+                int height = (int)Dimensions.Y;
+                int x = (int)Transform.Position.X - width / 2;
+                int y = (int)Transform.Position.Y - height / 2;
+                DrawRectangle(x, y, width, height, Color);
+            }
         }
     }
 }
