@@ -15,13 +15,11 @@ namespace UltimateTicTacToe
         protected Grid<Grid<Tile>>? Board;
         public override void BeginTurn(Grid<Grid<Tile>> board)
         {
-            Console.WriteLine("Turn begins");
             Board = board;
             Board.Clicked += HandleClickedBoard;
         }
         public override void EndTurn()
         {
-            Console.WriteLine("Turn ends");
             if (Board == null)
             {
                 return;
