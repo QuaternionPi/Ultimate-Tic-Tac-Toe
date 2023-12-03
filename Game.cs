@@ -34,7 +34,9 @@ namespace UltimateTicTacToe
             }
             protected set
             {
+                ActivePlayer.EndTurn();
                 _board = value;
+                ActivePlayer.BeginTurn(Board);
             }
         }
         private Grid<Grid<Tile>> _board;
