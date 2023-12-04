@@ -54,31 +54,35 @@ namespace UltimateTicTacToe
         }
         public Grid(Grid<CellT> original, IEnumerable<ICell> cellTrace, Player player, bool placeable, bool isRoot)
         {
+            if (cellTrace.Last().Placeable == false)
+            {
+                throw new Exception("You Cannot place on that cell");
+            }
             Transform = original.Transform;
             Cells = new CellT[3, 3];
 
-            CellT targetCell = (CellT)cellTrace.First();
+            ICell cellToReplace = cellTrace.Last();
+            ICell targetCell = cellTrace.First();
 
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
                     CellT cell = original.Cells[i, j];
-                    CellT newCell;
                     if (cell.Equals(targetCell))
                     {
-                        newCell = (CellT)cell.Place(cellTrace.Skip(1), player, placeable, false);
+                        cell = (CellT)cell.Place(cellTrace.Skip(1), player, placeable, false);
                     }
                     else
                     {
-                        newCell = (CellT)cell.DeepCopyPlacable(placeable);
+                        cell = (CellT)cell.DeepCopyPlacable(placeable);
                     }
-                    Cells[i, j] = newCell;
-                    newCell.Clicked += HandleClickedTile;
+                    Cells[i, j] = cell;
+                    cell.Clicked += HandleClickedTile;
                 }
             }
-            Player = Winner();
 
+            Player = Winner();
             LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
             WinningPlayerTile = new Tile(Player, victoryTileTransform, false, false);
             if (Cells[0, 0] is Tile || Player != null)
@@ -86,14 +90,13 @@ namespace UltimateTicTacToe
                 return;
             }
 
-            var cellToReplace = cellTrace.Skip(1).First();
-
-            var nextPlayableAddress = original.PathTo(cellToReplace).Last();
+            Address nextPlayableAddress = original.PathTo(cellToReplace).Last();
             (int nextX, int nextY) = nextPlayableAddress.XY;
             CellT nextCell = Cells[nextX, nextY];
 
             if (nextCell.Placeable == false)
             {
+                Cells[nextX, nextY] = (CellT)nextCell.DeepCopyPlacable(false);
                 return;
             }
             for (int i = 0; i < 3; i++)
@@ -101,18 +104,17 @@ namespace UltimateTicTacToe
                 for (int j = 0; j < 3; j++)
                 {
                     CellT cell = original.Cells[i, j];
-                    CellT newCell;
                     bool cellPlaceable = i == nextX && j == nextY;
                     if (cell.Equals(targetCell))
                     {
-                        newCell = (CellT)cell.Place(cellTrace.Skip(1), player, cellPlaceable, false);
+                        cell = (CellT)cell.Place(cellTrace.Skip(1), player, cellPlaceable, false);
                     }
                     else
                     {
-                        newCell = (CellT)cell.DeepCopyPlacable(cellPlaceable);
+                        cell = (CellT)cell.DeepCopyPlacable(cellPlaceable);
                     }
-                    Cells[i, j] = newCell;
-                    newCell.Clicked += HandleClickedTile;
+                    Cells[i, j] = cell;
+                    cell.Clicked += HandleClickedTile;
                 }
             }
         }
