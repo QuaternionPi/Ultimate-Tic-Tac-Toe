@@ -30,14 +30,7 @@ namespace UltimateTicTacToe
                     cell.Clicked += HandleClickedTile;
                 }
             }
-            if (player != null)
-            {
-                Player = player;
-            }
-            else
-            {
-                Player = Winner();
-            }
+            Player = Winner();
             LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
             WinningPlayerTile = new Tile(Player, victoryTileTransform, true, false);
         }
@@ -55,14 +48,7 @@ namespace UltimateTicTacToe
                     newCell.Clicked += HandleClickedTile;
                 }
             }
-            if (original.Player != null)
-            {
-                Player = original.Player;
-            }
-            else
-            {
-                Player = Winner();
-            }
+            Player = Winner();
             LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
             WinningPlayerTile = new Tile(Player, victoryTileTransform, true, false);
         }
@@ -91,14 +77,7 @@ namespace UltimateTicTacToe
                     newCell.Clicked += HandleClickedTile;
                 }
             }
-            if (original.Player != null)
-            {
-                Player = original.Player;
-            }
-            else
-            {
-                Player = Winner();
-            }
+            Player = Winner();
 
             LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
             WinningPlayerTile = new Tile(Player, victoryTileTransform, false, false);
