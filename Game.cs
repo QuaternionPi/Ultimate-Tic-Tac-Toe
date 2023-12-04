@@ -16,7 +16,7 @@ namespace UltimateTicTacToe
             _board = new Grid<Grid<Tile>>(null, transform, true);
             Players = new Player[]{
                 new Human(Player.Symbol.X, Color.RED),
-                new Human(Player.Symbol.O, Color.BLUE)
+                new Bot(Player.Symbol.O, Color.BLUE)
             };
             ActivePlayer = Players[0];
             ActivePlayer.BeginTurn(Board);
@@ -34,9 +34,7 @@ namespace UltimateTicTacToe
             }
             protected set
             {
-                ActivePlayer.EndTurn();
                 _board = value;
-                ActivePlayer.BeginTurn(Board);
             }
         }
         private Grid<Grid<Tile>> _board;
@@ -64,7 +62,8 @@ namespace UltimateTicTacToe
                 return;
             }
             Board = (Grid<Grid<Tile>>)Board.Place(cells.Skip(1), ActivePlayer, true);
-            NextPlayer();
+            if (Board.Player == null)
+                NextPlayer();
             BannerControler.Activate(ActivePlayer);
         }
         public void Draw()
@@ -79,6 +78,7 @@ namespace UltimateTicTacToe
             {
                 BannerControler.AddPoints(_board.Player, 1);
                 Board = new Grid<Grid<Tile>>(null, Board.Transform, true);
+                NextPlayer();
             }
             ActivePlayer.Update();
         }
