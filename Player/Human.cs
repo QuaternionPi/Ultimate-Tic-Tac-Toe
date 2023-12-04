@@ -31,17 +31,17 @@ namespace UltimateTicTacToe
         {
 
         }
-        protected void HandleClickedBoard(ICell cell, IEnumerable<Address> from, bool placeable)
+        protected void HandleClickedBoard(IEnumerable<ICell> cells)
         {
-            if (placeable == false)
+            if (cells.Last().Placeable == false)
             {
                 return;
             }
-            if (!cell.Equals(Board))
+            if (!cells.First().Equals(Board))
             {
                 throw new Exception("Board click not from board");
             }
-            InvokePlayTurn(this, from);
+            InvokePlayTurn(this, cells);
         }
     }
 }

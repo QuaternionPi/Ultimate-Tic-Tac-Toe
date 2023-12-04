@@ -10,4 +10,14 @@ static class Extensions
                 result[i0, i1] = f(items[i0, i1]);
         return result;
     }
+    public static bool Contains<T>(this T[,] items, T element)
+    {
+        int d0 = items.GetLength(0);
+        int d1 = items.GetLength(1);
+        for (int i0 = 0; i0 < d0; i0 += 1)
+            for (int i1 = 0; i1 < d1; i1 += 1)
+                if (element != null && element.Equals(items[i0, i1]))
+                    return true;
+        return false;
+    }
 }

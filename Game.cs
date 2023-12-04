@@ -56,14 +56,14 @@ namespace UltimateTicTacToe
             }
             ActivePlayer.BeginTurn(Board);
         }
-        public void HandlePlayerTurn(Player player, IEnumerable<Address> path)
+        public void HandlePlayerTurn(Player player, IEnumerable<ICell> cells)
         {
             if (player != ActivePlayer)
             {
                 Console.WriteLine($"Not player {player}'s turn");
                 return;
             }
-            Board = (Grid<Grid<Tile>>)Board.Place(path, ActivePlayer, true, true);
+            Board = (Grid<Grid<Tile>>)Board.Place(cells.Skip(1), ActivePlayer, true, true);
             NextPlayer();
             BannerControler.Activate(ActivePlayer);
         }

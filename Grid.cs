@@ -4,6 +4,7 @@ using Raylib_cs;
 using static Raylib_cs.Raylib;
 using static Raylib_cs.Raymath;
 using static Raylib_cs.KeyboardKey;
+using System.Runtime.InteropServices.Marshalling;
 
 namespace UltimateTicTacToe
 {
@@ -65,14 +66,12 @@ namespace UltimateTicTacToe
             LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
             WinningPlayerTile = new Tile(Player, victoryTileTransform, true, false);
         }
-        public Grid(Grid<CellT> original, IEnumerable<Address> path, Player player, bool placeable, bool isRoot)
+        public Grid(Grid<CellT> original, IEnumerable<ICell> cellTrace, Player player, bool placeable, bool isRoot)
         {
             Transform = original.Transform;
             Cells = new CellT[3, 3];
 
-            Address address = path.First();
-            (int x, int y) = address.XY;
-            CellT targetCell = original.Cells[x, y];
+            CellT targetCell = (CellT)cellTrace.First();
 
             for (int i = 0; i < 3; i++)
             {
@@ -82,7 +81,7 @@ namespace UltimateTicTacToe
                     CellT newCell;
                     if (cell.Equals(targetCell))
                     {
-                        newCell = (CellT)cell.Place(path.Skip(1), player, placeable, false);
+                        newCell = (CellT)cell.Place(cellTrace.Skip(1), player, placeable, false);
                     }
                     else
                     {
@@ -103,12 +102,14 @@ namespace UltimateTicTacToe
 
             LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
             WinningPlayerTile = new Tile(Player, victoryTileTransform, false, false);
-            if (path.Count() == 1 || Player != null)
+            if (Cells[0, 0] is Tile || Player != null)
             {
                 return;
             }
 
-            Address nextPlayableAddress = path.Skip(1).First();
+            var cellToReplace = cellTrace.Skip(1).First();
+
+            var nextPlayableAddress = original.PathTo(cellToReplace).Last();
             (int nextX, int nextY) = nextPlayableAddress.XY;
             CellT nextCell = Cells[nextX, nextY];
 
@@ -125,7 +126,7 @@ namespace UltimateTicTacToe
                     bool cellPlaceable = i == nextX && j == nextY;
                     if (cell.Equals(targetCell))
                     {
-                        newCell = (CellT)cell.Place(path.Skip(1), player, cellPlaceable, false);
+                        newCell = (CellT)cell.Place(cellTrace.Skip(1), player, cellPlaceable, false);
                     }
                     else
                     {
@@ -177,19 +178,18 @@ namespace UltimateTicTacToe
         {
             return new Grid<CellT>(player, transform, placeable, drawGray);
         }
-        public ICell Place(IEnumerable<Address> path, Player player, bool placeable, bool isRoot)
+        public ICell Place(IEnumerable<ICell> cellTrace, Player player, bool placeable, bool isRoot)
         {
-            return new Grid<CellT>(this, path, player, placeable, isRoot);
+            return new Grid<CellT>(this, cellTrace, player, placeable, isRoot);
         }
         public ICell DeepCopyPlacable(bool placeable)
         {
             return new Grid<CellT>(this, placeable);
         }
-        public void HandleClickedTile(ICell cell, IEnumerable<Address> from, bool placeable)
+        public void HandleClickedTile(IEnumerable<ICell> cells)
         {
-            Address address = FindAddress((CellT)cell);
-            var newFrom = from.Prepend(address);
-            Clicked?.Invoke(this, newFrom, placeable);
+            IEnumerable<ICell> newCells = cells.Prepend(this).ToList();
+            Clicked?.Invoke(newCells);
         }
         public Vector2 PixelPosition(Address address)
         {
@@ -197,6 +197,43 @@ namespace UltimateTicTacToe
             int x = (int)(Transform.Position.X + (i - 1) * 50 * Transform.Scale);
             int y = (int)(Transform.Position.Y + (j - 1) * 50 * Transform.Scale);
             return new Vector2(x, y);
+        }
+        public IEnumerable<Address> PathTo(ICell cell)
+        {
+            if (Contains(cell) == false)
+            {
+                throw new Exception($"Cell: {cell} is not contained. There is no path to it");
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (Cells[i, j].Contains(cell))
+                    {
+                        Address address = new(i, j);
+                        return Cells[i, j].PathTo(cell).Prepend(address);
+                    }
+                }
+            }
+            throw new Exception($"Cell: {cell} was not found");
+        }
+        public bool Contains(ICell cell)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (Cells[i, j].Equals(cell))
+                    {
+                        return true;
+                    }
+                    else if (Cells[i, j].Contains(cell))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
         public Address FindAddress(CellT cell)
         {

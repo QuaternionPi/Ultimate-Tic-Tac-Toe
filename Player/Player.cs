@@ -17,9 +17,9 @@ namespace UltimateTicTacToe
         }
         public Symbol Shape { get; protected set; }
         public Color Color { get; protected set; }
-        public delegate void Turn(Player player, IEnumerable<Address> path);
+        public delegate void Turn(Player player, IEnumerable<ICell> cells);
         public event Turn? PlayTurn;
-        protected void InvokePlayTurn(Player player, IEnumerable<Address> path) => PlayTurn?.Invoke(player, path);
+        protected void InvokePlayTurn(Player player, IEnumerable<ICell> cells) => PlayTurn?.Invoke(player, cells);
         public abstract void BeginTurn(Grid<Grid<Tile>> board);
         public abstract void EndTurn();
         public abstract void Update();

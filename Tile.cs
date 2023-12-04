@@ -58,14 +58,15 @@ namespace UltimateTicTacToe
             bool collision = CheckCollisionPointRec(mousePosition, rectangle);
             if (leftMouse && collision)
             {
-                Clicked?.Invoke(this, new Address[0], Placeable);
+                var cells = new List<ICell>() { this };
+                Clicked?.Invoke(cells);
             }
         }
         public ICell Create(Player? player, LinearTransform transform, bool placeable, bool drawGray)
         {
             return new Tile(player, transform, placeable, drawGray);
         }
-        public ICell Place(IEnumerable<Address> path, Player player, bool placeable, bool isRoot)
+        public ICell Place(IEnumerable<ICell> cells, Player player, bool placeable, bool isRoot)
         {
             return new Tile(player, Transform, placeable, false);
         }
@@ -73,5 +74,7 @@ namespace UltimateTicTacToe
         {
             return new Tile(Player, Transform, placeable, DrawGray);
         }
+        public IEnumerable<Address> PathTo(ICell cell) => new List<Address>();
+        public bool Contains(ICell cell) => cell.Equals(this);
     }
 }
