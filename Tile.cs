@@ -66,7 +66,7 @@ namespace UltimateTicTacToe
         {
             return new Tile(player, transform, placeable, drawGray);
         }
-        public ICell Place(IEnumerable<ICell> cells, Player player, bool placeable, bool isRoot)
+        public ICell Place(IEnumerable<ICell> cells, Player player, bool placeable)
         {
             return new Tile(player, Transform, placeable, false);
         }

@@ -52,7 +52,7 @@ namespace UltimateTicTacToe
             LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
             WinningPlayerTile = new Tile(Player, victoryTileTransform, true, false);
         }
-        public Grid(Grid<CellT> original, IEnumerable<ICell> cellTrace, Player player, bool placeable, bool isRoot)
+        public Grid(Grid<CellT> original, IEnumerable<ICell> cellTrace, Player player, bool placeable)
         {
             if (cellTrace.Last().Placeable == false)
             {
@@ -71,7 +71,7 @@ namespace UltimateTicTacToe
                     CellT cell = original.Cells[i, j];
                     if (cell.Equals(targetCell))
                     {
-                        cell = (CellT)cell.Place(cellTrace.Skip(1), player, placeable, false);
+                        cell = (CellT)cell.Place(cellTrace.Skip(1), player, placeable);
                     }
                     else
                     {
@@ -107,7 +107,7 @@ namespace UltimateTicTacToe
                     bool cellPlaceable = i == nextX && j == nextY;
                     if (cell.Equals(targetCell))
                     {
-                        cell = (CellT)cell.Place(cellTrace.Skip(1), player, cellPlaceable, false);
+                        cell = (CellT)cell.Place(cellTrace.Skip(1), player, cellPlaceable);
                     }
                     else
                     {
@@ -159,9 +159,9 @@ namespace UltimateTicTacToe
         {
             return new Grid<CellT>(player, transform, placeable, drawGray);
         }
-        public ICell Place(IEnumerable<ICell> cellTrace, Player player, bool placeable, bool isRoot)
+        public ICell Place(IEnumerable<ICell> cellTrace, Player player, bool placeable)
         {
-            return new Grid<CellT>(this, cellTrace, player, placeable, isRoot);
+            return new Grid<CellT>(this, cellTrace, player, placeable);
         }
         public ICell DeepCopyPlacable(bool placeable)
         {

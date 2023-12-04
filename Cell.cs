@@ -13,7 +13,7 @@ namespace UltimateTicTacToe
         public Player? Player { get; }
         public bool Placeable { get; }
         public ICell Create(Player? player, LinearTransform transform, bool placeable, bool drawGray);
-        public ICell Place(IEnumerable<ICell> cells, Player player, bool placeable, bool isRoot);
+        public ICell Place(IEnumerable<ICell> cells, Player player, bool placeable);
         public ICell DeepCopyPlacable(bool placeable);
         public IEnumerable<Address> PathTo(ICell cell);
         public bool Contains(ICell cell);
