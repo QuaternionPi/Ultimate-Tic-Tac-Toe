@@ -16,18 +16,18 @@ namespace UltimateTicTacToe
             Placeable = false;
             DrawGray = true;
         }
-        public Tile(Player? player, LinearTransform transform, bool placeable, bool drawGray)
+        public Tile(Player? player, LinearTransform transform, bool placeable)
         {
             Player = player;
             Transform = transform;
             Placeable = placeable && Player == null;
-            DrawGray = drawGray;
+            DrawGray = false;
         }
         public Player? Player { get; }
         public bool Placeable { get; }
         public LinearTransform Transform { get; }
         public event ICell.ClickHandler? Clicked;
-        public bool DrawGray { get; }
+        public bool DrawGray { get; set; }
         public void Draw()
         {
             if (Placeable)
@@ -62,17 +62,17 @@ namespace UltimateTicTacToe
                 Clicked?.Invoke(cells);
             }
         }
-        public ICell Create(Player? player, LinearTransform transform, bool placeable, bool drawGray)
+        public ICell Create(Player? player, LinearTransform transform, bool placeable)
         {
-            return new Tile(player, transform, placeable, drawGray);
+            return new Tile(player, transform, placeable);
         }
         public ICell Place(IEnumerable<ICell> cells, Player player, bool placeable)
         {
-            return new Tile(player, Transform, placeable, false);
+            return new Tile(player, Transform, placeable);
         }
         public ICell DeepCopyPlacable(bool placeable)
         {
-            return new Tile(Player, Transform, placeable, DrawGray);
+            return new Tile(Player, Transform, placeable);
         }
         public IEnumerable<Address> PathTo(ICell cell) => new List<Address>();
         public bool Contains(ICell cell) => cell.Equals(this);

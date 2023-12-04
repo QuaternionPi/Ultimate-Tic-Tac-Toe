@@ -13,7 +13,7 @@ namespace UltimateTicTacToe
         {
             Vector2 position = new Vector2(450, 350);
             LinearTransform transform = new LinearTransform(position, 0, 4);
-            _board = new Grid<Grid<Tile>>(null, transform, true, false);
+            _board = new Grid<Grid<Tile>>(null, transform, true);
             Players = new Player[]{
                 new Human(Player.Symbol.X, Color.RED),
                 new Human(Player.Symbol.O, Color.BLUE)
@@ -78,7 +78,7 @@ namespace UltimateTicTacToe
             if (_board.Player != null)
             {
                 BannerControler.AddPoints(_board.Player, 1);
-                Board = new Grid<Grid<Tile>>(null, Board.Transform, true, false);
+                Board = new Grid<Grid<Tile>>(null, Board.Transform, true);
             }
             ActivePlayer.Update();
         }
