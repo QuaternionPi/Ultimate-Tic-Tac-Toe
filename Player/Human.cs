@@ -13,7 +13,7 @@ namespace UltimateTicTacToe
         {
         }
         protected Grid<Grid<Tile>>? Board;
-        public override void BeginTurn(Grid<Grid<Tile>> board)
+        public override void BeginTurn(Grid<Grid<Tile>> board, Player opponent)
         {
             Board = board;
             Board.Clicked += HandleClickedBoard;

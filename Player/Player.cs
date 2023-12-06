@@ -20,7 +20,7 @@ namespace UltimateTicTacToe
         public delegate void Turn(Player player, IEnumerable<ICell> cells);
         public event Turn? PlayTurn;
         protected void InvokePlayTurn(Player player, IEnumerable<ICell> cells) => PlayTurn?.Invoke(player, cells);
-        public abstract void BeginTurn(Grid<Grid<Tile>> board);
+        public abstract void BeginTurn(Grid<Grid<Tile>> board, Player opponent);
         public abstract void EndTurn();
         public abstract void Update();
         public void DrawSymbol(LinearTransform transform, Color color)

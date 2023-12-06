@@ -19,7 +19,8 @@ namespace UltimateTicTacToe
                 new Bot(Player.Symbol.O, Color.BLUE)
             };
             ActivePlayer = Players[0];
-            ActivePlayer.BeginTurn(Board);
+            InactivePlayer = Players[1];
+            ActivePlayer.BeginTurn(Board, InactivePlayer);
             BannerControler = new UI.BannerControler(Players);
             foreach (Player player in Players)
             {
@@ -39,6 +40,7 @@ namespace UltimateTicTacToe
         }
         private Grid<Grid<Tile>> _board;
         protected Player ActivePlayer;
+        protected Player InactivePlayer;
         protected readonly Player[] Players;
         protected UI.BannerControler BannerControler;
         protected void NextPlayer()
@@ -47,12 +49,14 @@ namespace UltimateTicTacToe
             if (ActivePlayer == Players[0])
             {
                 ActivePlayer = Players[1];
+                InactivePlayer = Players[0];
             }
             else if (ActivePlayer == Players[1])
             {
                 ActivePlayer = Players[0];
+                InactivePlayer = Players[1];
             }
-            ActivePlayer.BeginTurn(Board);
+            ActivePlayer.BeginTurn(Board, InactivePlayer);
         }
         public void HandlePlayerTurn(Player player, IEnumerable<ICell> cells)
         {
