@@ -74,10 +74,20 @@ namespace UltimateTicTacToe
                 return Evaluate(board, minimizer, maximizer);
             }
             var posibleMoves = PosibleMoves(board);
-            if (posibleMoves.Count() == 0)
+            // If the board is a winning position
+            if (posibleMoves.Count == 0)
             {
+                if (board.Player == maximizer)
+                {
+                    return 1000;
+                }
+                else if (board.Player == minimizer)
+                {
+                    return -1000;
+                }
                 return 0;
             }
+
             if (posibleMoves.Count() > 30)
             {
                 depth = Math.Max(depth - 1, 1);
