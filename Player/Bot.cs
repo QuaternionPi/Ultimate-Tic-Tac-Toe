@@ -45,19 +45,14 @@ namespace UltimateTicTacToe
             {
                 throw new Exception("Cannot choose best move from no moves");
             }
-
             var posibleMoves = PosibleMoves(board);
             (Grid<Tile>, Tile) bestMove = posibleMoves[0];
             int bestEvaluation = -10000;
             foreach (var move in posibleMoves)
             {
                 var cellTrace = new List<ICell>() { move.Item1, move.Item2 };
-                var futureBoard =
-                    (Grid<Grid<Tile>>)board.Place(
-                    cellTrace,
-                    maximizer,
-                    true);
-                int evaluation = Minimax(futureBoard, 2, maximizer, minimizer);
+                var futureBoard = (Grid<Grid<Tile>>)board.Place(cellTrace, maximizer, true);
+                int evaluation = Minimax(futureBoard, 3, minimizer, maximizer, true);
                 if (bestEvaluation < evaluation)
                 {
                     bestEvaluation = evaluation;
@@ -66,43 +61,86 @@ namespace UltimateTicTacToe
             }
             return bestMove;
         }
-        protected static int Minimax(Grid<Grid<Tile>> board, int depth, Player maximizer, Player minimizer)
+        protected static int Minimax(
+            Grid<Grid<Tile>> board,
+            int depth,
+            Player maximizer,
+            Player minimizer,
+            bool minimize)
         {
             // The base case of the recursion
             if (depth == 0)
             {
-                Console.WriteLine("Minimax Evaluate Called");
-                return Evaluate(board, maximizer);
+                return Evaluate(board, minimizer, maximizer);
             }
             var posibleMoves = PosibleMoves(board);
-            int bestEvaluation = -10000;
-            foreach (var move in posibleMoves)
-            {
-                var cellTrace = new List<ICell>() { move.Item1, move.Item2 };
-                var futureBoard =
-                    (Grid<Grid<Tile>>)board.Place(
-                    cellTrace,
-                    maximizer,
-                    true);
-                int evaluation = Minimax(futureBoard, depth - 1, minimizer, maximizer);
-                bestEvaluation = Math.Max(bestEvaluation, evaluation);
-            }
-            return bestEvaluation;
-        }
-        protected static int Evaluate(Grid<Grid<Tile>> board, Player player)
-        {
-            if (board.Player == null)
+            if (posibleMoves.Count() == 0)
             {
                 return 0;
             }
-            else if (board.Player == player)
+            if (posibleMoves.Count() > 30)
             {
-                return 100;
+                depth = Math.Max(depth - 1, 1);
+            }
+
+            int bestEvaluation;
+            if (minimize)
+            {
+                bestEvaluation = 10000;
+                foreach (var move in posibleMoves)
+                {
+                    var cellTrace = new List<ICell>() { move.Item1, move.Item2 };
+                    var futureBoard =
+                        (Grid<Grid<Tile>>)board.Place(
+                        cellTrace,
+                        maximizer,
+                        true);
+                    int evaluation = -Minimax(futureBoard, depth - 1, minimizer, maximizer, true);
+                    bestEvaluation = Math.Min(bestEvaluation, evaluation);
+                }
             }
             else
             {
+                bestEvaluation = -10000;
+                foreach (var move in posibleMoves)
+                {
+                    var cellTrace = new List<ICell>() { move.Item1, move.Item2 };
+                    var futureBoard =
+                        (Grid<Grid<Tile>>)board.Place(
+                        cellTrace,
+                        maximizer,
+                        true);
+                    int evaluation = -Minimax(futureBoard, depth - 1, minimizer, maximizer, false);
+                    bestEvaluation = Math.Max(bestEvaluation, evaluation);
+                }
+            }
+            return bestEvaluation;
+        }
+        protected static int Evaluate(Grid<Grid<Tile>> board, Player maximizer, Player minimizer)
+        {
+            if (board.Player == maximizer)
+            {
+                return 100;
+            }
+            else if (board.Player == minimizer)
+            {
                 return -100;
             }
+            int evaluation = 0;
+            foreach (Grid<Tile> grid in board.Cells)
+            {
+                if (grid.Player == maximizer)
+                {
+                    evaluation += 10;
+                    continue;
+                }
+                else if (grid.Player == minimizer)
+                {
+                    evaluation -= 10;
+                    continue;
+                }
+            }
+            return evaluation;
         }
         protected static List<(Grid<Tile>, Tile)> PosibleMoves(Grid<Grid<Tile>> board)
         {
