@@ -18,14 +18,19 @@ namespace UltimateTicTacToe
                 new Human(Player.Symbol.X, Color.RED),
                 new Bot(Player.Symbol.O, Color.BLUE)
             };
+
             ActivePlayer = Players[0];
             InactivePlayer = Players[1];
-            ActivePlayer.BeginTurn(Board, InactivePlayer);
             BannerControler = new UI.BannerControler(Players);
+
             foreach (Player player in Players)
             {
                 player.PlayTurn += HandlePlayerTurn;
             }
+
+            TimeSpan delay = new(0, 0, 1);
+            Thread thread = new(() => DelayedPlayerStart(delay));
+            thread.Start();
         }
         public Grid<Grid<Tile>> Board
         {
@@ -56,7 +61,7 @@ namespace UltimateTicTacToe
                 ActivePlayer = Players[0];
                 InactivePlayer = Players[1];
             }
-            TimeSpan delay = new(1);
+            TimeSpan delay = new(0, 0, 1);
             Thread thread = new(() => DelayedPlayerStart(delay));
             thread.Start();
         }

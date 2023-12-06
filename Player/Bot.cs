@@ -52,7 +52,7 @@ namespace UltimateTicTacToe
             {
                 var cellTrace = new List<ICell>() { move.Item1, move.Item2 };
                 var futureBoard = (Grid<Grid<Tile>>)board.Place(cellTrace, maximizer, true);
-                int evaluation = Minimax(futureBoard, 3, minimizer, maximizer, true);
+                int evaluation = Minimax(futureBoard, 4, minimizer, maximizer, true);
                 if (bestEvaluation < evaluation)
                 {
                     bestEvaluation = evaluation;
@@ -120,24 +120,33 @@ namespace UltimateTicTacToe
         {
             if (board.Player == maximizer)
             {
-                return 100;
+                return 1000;
             }
             else if (board.Player == minimizer)
             {
-                return -100;
+                return -1000;
             }
             int evaluation = 0;
+            evaluation -= PosibleMoves(board).Count();
             foreach (Grid<Tile> grid in board.Cells)
             {
                 if (grid.Player == maximizer)
                 {
-                    evaluation += 10;
+                    evaluation += 50;
                     continue;
                 }
                 else if (grid.Player == minimizer)
                 {
-                    evaluation -= 10;
+                    evaluation -= 50;
                     continue;
+                }
+                if (grid.Cells[1, 1].Player == maximizer)
+                {
+                    evaluation += 15;
+                }
+                else if (grid.Cells[1, 1].Player == minimizer)
+                {
+                    evaluation -= 15;
                 }
             }
             return evaluation;
