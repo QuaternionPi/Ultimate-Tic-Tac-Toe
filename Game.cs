@@ -56,9 +56,11 @@ namespace UltimateTicTacToe
                 ActivePlayer = Players[0];
                 InactivePlayer = Players[1];
             }
-            ActivePlayer.BeginTurn(Board, InactivePlayer);
+            TimeSpan delay = new(1);
+            Thread thread = new(() => DelayedPlayerStart(delay));
+            thread.Start();
         }
-        public void HandlePlayerTurn(Player player, IEnumerable<ICell> cells)
+        protected void HandlePlayerTurn(Player player, IEnumerable<ICell> cells)
         {
             if (player != ActivePlayer)
             {
@@ -66,9 +68,18 @@ namespace UltimateTicTacToe
                 return;
             }
             Board = (Grid<Grid<Tile>>)Board.Place(cells.Skip(1), ActivePlayer, true);
+            if (Board.Player == null && Board.Placeable == false)
+            {
+                Board = new Grid<Grid<Tile>>(null, Board.Transform, true);
+            }
             if (Board.Player == null)
                 NextPlayer();
             BannerControler.Activate(ActivePlayer);
+        }
+        protected void DelayedPlayerStart(TimeSpan delay)
+        {
+            Thread.Sleep(delay);
+            ActivePlayer.BeginTurn(Board, InactivePlayer);
         }
         public void Draw()
         {

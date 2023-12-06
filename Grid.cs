@@ -216,20 +216,6 @@ namespace UltimateTicTacToe
             }
             return false;
         }
-        public Address FindAddress(CellT cell)
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    if (Cells[i, j].Equals(cell))
-                    {
-                        return new Address(i, j);
-                    }
-                }
-            }
-            throw new ArgumentException("Cell not found");
-        }
         public void DrawGrid()
         {
             LinearTransform transform = Transform;

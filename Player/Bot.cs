@@ -149,7 +149,7 @@ namespace UltimateTicTacToe
             {
                 foreach (Tile tile in grid.Cells)
                 {
-                    if (tile.Placeable)
+                    if (tile.Placeable && grid.Placeable)
                     {
                         posibleMoves.Add((grid, tile));
                     }
