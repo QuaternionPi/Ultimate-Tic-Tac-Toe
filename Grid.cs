@@ -14,6 +14,9 @@ namespace UltimateTicTacToe
         {
             Transform = new LinearTransform(Vector2.Zero, 0, 1);
             Cells = new CellT[3, 3];
+            Player = null;
+            LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
+            WinningPlayerTile = new Tile(null, victoryTileTransform, true, 0);
         }
         public Grid(Player? player, LinearTransform transform, bool placeable)
         {
@@ -133,11 +136,15 @@ namespace UltimateTicTacToe
         }
         public event ICell.ClickHandler? Clicked;
         public CellT[,] Cells { get; }
-        protected Tile? WinningPlayerTile { get; }
+        protected Tile WinningPlayerTile { get; }
         public bool InTransition
         {
             get
             {
+                if (WinningPlayerTile.InTransition)
+                {
+                    return true;
+                }
                 foreach (CellT cell in Cells)
                 {
                     if (cell.InTransition)
@@ -158,14 +165,21 @@ namespace UltimateTicTacToe
                 {
                     max = Math.Max(value, max);
                 }
+                if (WinningPlayerTile != null)
+                    max = Math.Max(max, WinningPlayerTile.TransitionValue);
                 return max;
             }
         }
         public void Draw()
         {
-            if (Player != null)
+            bool gridCellInTransition = false;
+            foreach (CellT cell in Cells)
             {
-                WinningPlayerTile?.Draw();
+                gridCellInTransition |= cell.InTransition;
+            }
+            if (Player != null && gridCellInTransition == false)
+            {
+                WinningPlayerTile.Draw();
                 return;
             }
             DrawGrid();
@@ -181,7 +195,13 @@ namespace UltimateTicTacToe
             {
                 cell.Update();
             }
-            WinningPlayerTile?.Update();
+            bool gridCellInTransition = false;
+            foreach (CellT cell in Cells)
+            {
+                gridCellInTransition |= cell.InTransition;
+            }
+            if (gridCellInTransition == false)
+                WinningPlayerTile.Update();
         }
         public ICell Create(Player? player, LinearTransform transform, bool placeable)
         {

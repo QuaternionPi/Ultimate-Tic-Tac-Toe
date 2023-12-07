@@ -47,6 +47,7 @@ namespace UltimateTicTacToe
         protected Player ActivePlayer;
         protected Player InactivePlayer;
         protected readonly Player[] Players;
+        protected bool ChangePlayer;
         protected UI.BannerControler BannerControler;
         protected void NextPlayer()
         {
@@ -73,13 +74,7 @@ namespace UltimateTicTacToe
                 return;
             }
             Board = (Grid<Grid<Tile>>)Board.Place(cells.Skip(1), ActivePlayer, true);
-            if (Board.Player == null && Board.Placeable == false)
-            {
-                Board = new Grid<Grid<Tile>>(null, Board.Transform, true);
-            }
-            if (Board.Player == null)
-                NextPlayer();
-            BannerControler.Activate(ActivePlayer);
+            ChangePlayer = true;
         }
         protected void DelayedPlayerStart(TimeSpan delay)
         {
@@ -99,11 +94,26 @@ namespace UltimateTicTacToe
         public void Update()
         {
             Board.Update();
-            if (_board.Player != null)
+            if (Board.TransitionValue != 0)
             {
-                BannerControler.AddPoints(_board.Player, 1);
+                return;
+            }
+            if (Board.Player != null)
+            {
+                BannerControler.AddPoints(Board.Player, 1);
                 Board = new Grid<Grid<Tile>>(null, Board.Transform, true);
+            }
+
+            if (Board.Player == null && Board.Placeable == false)
+            {
+                Board = new Grid<Grid<Tile>>(null, Board.Transform, true);
+            }
+            BannerControler.Activate(ActivePlayer);
+
+            if (ChangePlayer)
+            {
                 NextPlayer();
+                ChangePlayer = false;
             }
             ActivePlayer.Update();
         }

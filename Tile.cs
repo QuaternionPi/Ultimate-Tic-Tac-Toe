@@ -23,6 +23,10 @@ namespace UltimateTicTacToe
             Placeable = placeable && Player == null;
             DrawGray = false;
             TransitionValue = transitionValue;
+            if (Player == null)
+            {
+                transitionValue = 0;
+            }
         }
         public Player? Player { get; }
         public bool Placeable { get; }
@@ -64,7 +68,7 @@ namespace UltimateTicTacToe
                 var cells = new List<ICell>() { this };
                 Clicked?.Invoke(cells);
             }
-            TransitionValue = Math.Max(0, TransitionValue - 0.07f);
+            TransitionValue = Math.Max(0, TransitionValue - 0.02f);
         }
         public ICell Create(Player? player, LinearTransform transform, bool placeable)
         {
