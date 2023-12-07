@@ -68,7 +68,7 @@ namespace UltimateTicTacToe
                 var cells = new List<ICell>() { this };
                 Clicked?.Invoke(cells);
             }
-            TransitionValue = Math.Max(0, TransitionValue - 0.02f);
+            TransitionValue = Math.Max(0, TransitionValue - 0.07f);
         }
         public ICell Create(Player? player, LinearTransform transform, bool placeable)
         {

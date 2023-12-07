@@ -91,6 +91,10 @@ namespace UltimateTicTacToe
             {
                 depth = Math.Max(depth - 1, 1);
             }
+            else if (posibleMoves.Count() > 60)
+            {
+                depth = Math.Max(depth - 2, 1);
+            }
 
             int bestEvaluation;
             if (minimize)
