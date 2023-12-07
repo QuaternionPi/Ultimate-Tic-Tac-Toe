@@ -32,7 +32,7 @@ namespace UltimateTicTacToe
             }
             Player = Winner();
             LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
-            WinningPlayerTile = new Tile(Player, victoryTileTransform, true, 0);
+            WinningPlayerTile = new Tile(Player, victoryTileTransform, true, TransitionValue);
         }
         public Grid(Grid<CellT> original, bool placeable)
         {
@@ -50,7 +50,7 @@ namespace UltimateTicTacToe
             }
             Player = Winner();
             LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
-            WinningPlayerTile = new Tile(Player, victoryTileTransform, true, 0);
+            WinningPlayerTile = new Tile(Player, victoryTileTransform, true, TransitionValue);
         }
         public Grid(Grid<CellT> original, IEnumerable<ICell> cellTrace, Player player, bool placeable)
         {
@@ -84,7 +84,7 @@ namespace UltimateTicTacToe
 
             Player = Winner();
             LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
-            WinningPlayerTile = new Tile(Player, victoryTileTransform, false, 0);
+            WinningPlayerTile = new Tile(Player, victoryTileTransform, true, TransitionValue);
             if (Cells[0, 0] is Tile || Player != null)
             {
                 return;
@@ -181,6 +181,7 @@ namespace UltimateTicTacToe
             {
                 cell.Update();
             }
+            WinningPlayerTile?.Update();
         }
         public ICell Create(Player? player, LinearTransform transform, bool placeable)
         {

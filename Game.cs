@@ -83,8 +83,13 @@ namespace UltimateTicTacToe
         }
         protected void DelayedPlayerStart(TimeSpan delay)
         {
-            Thread.Sleep(delay);
+            System.Diagnostics.Stopwatch stopwatch = new();
+            stopwatch.Start();
             ActivePlayer.BeginTurn(Board, InactivePlayer);
+            stopwatch.Stop();
+            TimeSpan timeRemaining = delay - stopwatch.Elapsed;
+            if (timeRemaining.CompareTo(new TimeSpan(0, 0, 0)) > 0)
+                Thread.Sleep(timeRemaining);
         }
         public void Draw()
         {
