@@ -18,7 +18,6 @@ namespace UltimateTicTacToe
         {
             Board = board;
             List<(Grid<Tile>, Tile)> posibleMoves = PosibleMoves(board);
-            Console.WriteLine($"There are {posibleMoves.Count} posible moves");
             var move = BestMove(board, posibleMoves, this, opponent);
             MakeMove(move.Item1, move.Item2);
         }
