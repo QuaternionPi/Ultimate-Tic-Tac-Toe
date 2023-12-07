@@ -30,13 +30,17 @@ namespace UltimateTicTacToe
             protected Font Font { get; }
             public void Draw()
             {
+                Tile.Draw();
+                DrawScore();
+            }
+            protected void DrawScore()
+            {
                 string message = Score.ToString();
                 float spacing = 3;
                 float fontSize = 80;
                 float messageWidth = MeasureTextEx(Font, message, fontSize, spacing).X;
                 Vector2 drawPosition = Transform.Position + new Vector2(-messageWidth / 2, 70);
                 DrawTextEx(Font, message, drawPosition, fontSize, spacing, Color.LIGHTGRAY);
-                Tile.Draw();
             }
         }
     }
