@@ -7,7 +7,7 @@ using static Raylib_cs.KeyboardKey;
 
 namespace UltimateTicTacToe
 {
-    public interface ICell : IDrawable, IUpdateable
+    public interface ICell : IDrawable, IUpdateable, ITransitionable
     {
         LinearTransform Transform { get; }
         public Player? Player { get; }

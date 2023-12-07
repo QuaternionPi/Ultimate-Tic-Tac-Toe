@@ -16,18 +16,21 @@ namespace UltimateTicTacToe
             Placeable = false;
             DrawGray = true;
         }
-        public Tile(Player? player, LinearTransform transform, bool placeable)
+        public Tile(Player? player, LinearTransform transform, bool placeable, float transitionValue)
         {
             Player = player;
             Transform = transform;
             Placeable = placeable && Player == null;
             DrawGray = false;
+            TransitionValue = transitionValue;
         }
         public Player? Player { get; }
         public bool Placeable { get; }
         public LinearTransform Transform { get; }
         public event ICell.ClickHandler? Clicked;
         public bool DrawGray { get; set; }
+        public bool InTransition { get { return TransitionValue != 0; } }
+        public float TransitionValue { get; protected set; }
         public void Draw()
         {
             if (Placeable)
@@ -48,7 +51,7 @@ namespace UltimateTicTacToe
             {
                 drawColor = Player.Color;
             }
-            Player.DrawSymbol(Transform, drawColor);
+            Player.DrawSymbol(Transform, TransitionValue, drawColor);
         }
         public void Update()
         {
@@ -61,18 +64,19 @@ namespace UltimateTicTacToe
                 var cells = new List<ICell>() { this };
                 Clicked?.Invoke(cells);
             }
+            TransitionValue = Math.Max(0, TransitionValue - 0.07f);
         }
         public ICell Create(Player? player, LinearTransform transform, bool placeable)
         {
-            return new Tile(player, transform, placeable);
+            return new Tile(player, transform, placeable, 0);
         }
         public ICell Place(IEnumerable<ICell> cells, Player player, bool placeable)
         {
-            return new Tile(player, Transform, placeable);
+            return new Tile(player, Transform, placeable, 1);
         }
         public ICell DeepCopyPlacable(bool placeable)
         {
-            return new Tile(Player, Transform, placeable);
+            return new Tile(Player, Transform, placeable, TransitionValue);
         }
         public IEnumerable<Address> PathTo(ICell cell) => new List<Address>();
         public bool Contains(ICell cell) => cell.Equals(this);

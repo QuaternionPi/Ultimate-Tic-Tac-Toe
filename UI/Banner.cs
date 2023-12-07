@@ -19,7 +19,7 @@ namespace UltimateTicTacToe
                 Active = active;
                 Score = score;
                 Font = GetFontDefault();
-                Tile = new Tile(Player, Transform, false);
+                Tile = new Tile(Player, Transform, false, 0);
                 Tile.DrawGray = !Active;
             }
             public LinearTransform Transform { get; }

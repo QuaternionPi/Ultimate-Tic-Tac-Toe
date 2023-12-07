@@ -32,7 +32,7 @@ namespace UltimateTicTacToe
             }
             Player = Winner();
             LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
-            WinningPlayerTile = new Tile(Player, victoryTileTransform, true);
+            WinningPlayerTile = new Tile(Player, victoryTileTransform, true, 0);
         }
         public Grid(Grid<CellT> original, bool placeable)
         {
@@ -50,7 +50,7 @@ namespace UltimateTicTacToe
             }
             Player = Winner();
             LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
-            WinningPlayerTile = new Tile(Player, victoryTileTransform, true);
+            WinningPlayerTile = new Tile(Player, victoryTileTransform, true, 0);
         }
         public Grid(Grid<CellT> original, IEnumerable<ICell> cellTrace, Player player, bool placeable)
         {
@@ -84,7 +84,7 @@ namespace UltimateTicTacToe
 
             Player = Winner();
             LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
-            WinningPlayerTile = new Tile(Player, victoryTileTransform, false);
+            WinningPlayerTile = new Tile(Player, victoryTileTransform, false, 0);
             if (Cells[0, 0] is Tile || Player != null)
             {
                 return;
@@ -134,6 +134,33 @@ namespace UltimateTicTacToe
         public event ICell.ClickHandler? Clicked;
         public CellT[,] Cells { get; }
         protected Tile? WinningPlayerTile { get; }
+        public bool InTransition
+        {
+            get
+            {
+                foreach (CellT cell in Cells)
+                {
+                    if (cell.InTransition)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+        public float TransitionValue
+        {
+            get
+            {
+                var values = from cell in Cells select cell.TransitionValue;
+                float max = values[0, 0];
+                foreach (var value in values)
+                {
+                    max = Math.Max(value, max);
+                }
+                return max;
+            }
+        }
         public void Draw()
         {
             if (Player != null)
