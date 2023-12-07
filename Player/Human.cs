@@ -12,8 +12,8 @@ namespace UltimateTicTacToe
         public Human(Symbol symbol, Color color) : base(symbol, color)
         {
         }
-        protected Grid<Grid<Tile>>? Board;
-        public override void BeginTurn(Grid<Grid<Tile>> board, Player opponent)
+        protected Game.Grid<Game.Grid<Game.Tile>>? Board;
+        public override void BeginTurn(Game.Grid<Game.Grid<Game.Tile>> board, Player opponent)
         {
             Board = board;
             Board.Clicked += HandleClickedBoard;
@@ -31,7 +31,7 @@ namespace UltimateTicTacToe
         {
 
         }
-        protected void HandleClickedBoard(IEnumerable<ICell> cells)
+        protected void HandleClickedBoard(IEnumerable<Game.ICell> cells)
         {
             if (cells.Last().Placeable == false)
             {

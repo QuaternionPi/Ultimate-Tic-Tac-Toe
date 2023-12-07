@@ -17,10 +17,10 @@ namespace UltimateTicTacToe
         }
         public Symbol Shape { get; protected set; }
         public Color Color { get; protected set; }
-        public delegate void Turn(Player player, IEnumerable<ICell> cells);
+        public delegate void Turn(Player player, IEnumerable<Game.ICell> cells);
         public event Turn? PlayTurn;
-        protected void InvokePlayTurn(Player player, IEnumerable<ICell> cells) => PlayTurn?.Invoke(player, cells);
-        public abstract void BeginTurn(Grid<Grid<Tile>> board, Player opponent);
+        protected void InvokePlayTurn(Player player, IEnumerable<Game.ICell> cells) => PlayTurn?.Invoke(player, cells);
+        public abstract void BeginTurn(Game.Grid<Game.Grid<Game.Tile>> board, Player opponent);
         public abstract void EndTurn();
         public abstract void Update();
         public void DrawSymbol(LinearTransform transform, float transitionValue, Color color)

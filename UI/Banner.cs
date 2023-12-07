@@ -19,13 +19,13 @@ namespace UltimateTicTacToe
                 Active = active;
                 Score = score;
                 Font = GetFontDefault();
-                Tile = new Tile(Player, Transform, false, 0);
+                Tile = new Game.Tile(Player, Transform, false, 0);
                 Tile.DrawGray = !Active;
             }
             public LinearTransform Transform { get; }
             public Player Player { get; }
             public bool Active { get; }
-            protected Tile Tile { get; }
+            protected Game.Tile Tile { get; }
             public int Score { get; }
             protected Font Font { get; }
             public void Draw()

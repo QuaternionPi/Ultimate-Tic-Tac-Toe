@@ -13,11 +13,11 @@ namespace UltimateTicTacToe
         public Bot(Symbol symbol, Color color) : base(symbol, color)
         {
         }
-        protected Grid<Grid<Tile>>? Board;
-        public override void BeginTurn(Grid<Grid<Tile>> board, Player opponent)
+        protected Game.Grid<Game.Grid<Game.Tile>>? Board;
+        public override void BeginTurn(Game.Grid<Game.Grid<Game.Tile>> board, Player opponent)
         {
             Board = board;
-            List<(Grid<Tile>, Tile)> posibleMoves = PosibleMoves(board);
+            List<(Game.Grid<Game.Tile>, Game.Tile)> posibleMoves = PosibleMoves(board);
             var move = BestMove(board, posibleMoves, this, opponent);
             MakeMove(move.Item1, move.Item2);
         }
@@ -33,9 +33,9 @@ namespace UltimateTicTacToe
         {
 
         }
-        protected static (Grid<Tile>, Tile) BestMove(
-            Grid<Grid<Tile>> board,
-            IEnumerable<(Grid<Tile>, Tile)> moves,
+        protected static (Game.Grid<Game.Tile>, Game.Tile) BestMove(
+            Game.Grid<Game.Grid<Game.Tile>> board,
+            IEnumerable<(Game.Grid<Game.Tile>, Game.Tile)> moves,
             Player maximizer,
             Player minimizer
             )
@@ -45,12 +45,12 @@ namespace UltimateTicTacToe
                 throw new Exception("Cannot choose best move from no moves");
             }
             var posibleMoves = PosibleMoves(board);
-            (Grid<Tile>, Tile) bestMove = posibleMoves[0];
+            (Game.Grid<Game.Tile>, Game.Tile) bestMove = posibleMoves[0];
             int bestEvaluation = -10000;
             foreach (var move in posibleMoves)
             {
-                var cellTrace = new List<ICell>() { move.Item1, move.Item2 };
-                var futureBoard = (Grid<Grid<Tile>>)board.Place(cellTrace, maximizer, true);
+                var cellTrace = new List<Game.ICell>() { move.Item1, move.Item2 };
+                var futureBoard = (Game.Grid<Game.Grid<Game.Tile>>)board.Place(cellTrace, maximizer, true);
                 int evaluation = Minimax(futureBoard, 4, minimizer, maximizer, true);
                 if (bestEvaluation < evaluation)
                 {
@@ -61,7 +61,7 @@ namespace UltimateTicTacToe
             return bestMove;
         }
         protected static int Minimax(
-            Grid<Grid<Tile>> board,
+            Game.Grid<Game.Grid<Game.Tile>> board,
             int depth,
             Player maximizer,
             Player minimizer,
@@ -102,9 +102,9 @@ namespace UltimateTicTacToe
                 bestEvaluation = 10000;
                 foreach (var move in posibleMoves)
                 {
-                    var cellTrace = new List<ICell>() { move.Item1, move.Item2 };
+                    var cellTrace = new List<Game.ICell>() { move.Item1, move.Item2 };
                     var futureBoard =
-                        (Grid<Grid<Tile>>)board.Place(
+                        (Game.Grid<Game.Grid<Game.Tile>>)board.Place(
                         cellTrace,
                         maximizer,
                         true);
@@ -117,9 +117,9 @@ namespace UltimateTicTacToe
                 bestEvaluation = -10000;
                 foreach (var move in posibleMoves)
                 {
-                    var cellTrace = new List<ICell>() { move.Item1, move.Item2 };
+                    var cellTrace = new List<Game.ICell>() { move.Item1, move.Item2 };
                     var futureBoard =
-                        (Grid<Grid<Tile>>)board.Place(
+                        (Game.Grid<Game.Grid<Game.Tile>>)board.Place(
                         cellTrace,
                         maximizer,
                         true);
@@ -129,7 +129,7 @@ namespace UltimateTicTacToe
             }
             return bestEvaluation;
         }
-        protected static int Evaluate(Grid<Grid<Tile>> board, Player maximizer, Player minimizer)
+        protected static int Evaluate(Game.Grid<Game.Grid<Game.Tile>> board, Player maximizer, Player minimizer)
         {
             if (board.Player == maximizer)
             {
@@ -141,7 +141,7 @@ namespace UltimateTicTacToe
             }
             int evaluation = 0;
             evaluation -= PosibleMoves(board).Count();
-            foreach (Grid<Tile> grid in board.Cells)
+            foreach (Game.Grid<Game.Tile> grid in board.Cells)
             {
                 if (grid.Player == maximizer)
                 {
@@ -164,12 +164,12 @@ namespace UltimateTicTacToe
             }
             return evaluation;
         }
-        protected static List<(Grid<Tile>, Tile)> PosibleMoves(Grid<Grid<Tile>> board)
+        protected static List<(Game.Grid<Game.Tile>, Game.Tile)> PosibleMoves(Game.Grid<Game.Grid<Game.Tile>> board)
         {
-            List<(Grid<Tile>, Tile)> posibleMoves = new();
-            foreach (Grid<Tile> grid in board.Cells)
+            List<(Game.Grid<Game.Tile>, Game.Tile)> posibleMoves = new();
+            foreach (Game.Grid<Game.Tile> grid in board.Cells)
             {
-                foreach (Tile tile in grid.Cells)
+                foreach (Game.Tile tile in grid.Cells)
                 {
                     if (tile.Placeable && grid.Placeable)
                     {
@@ -179,13 +179,13 @@ namespace UltimateTicTacToe
             }
             return posibleMoves;
         }
-        protected void MakeMove(Grid<Tile> grid, Tile tile)
+        protected void MakeMove(Game.Grid<Game.Tile> grid, Game.Tile tile)
         {
             if (Board == null)
             {
                 throw new Exception("Board can't be null when youre playing a move");
             }
-            InvokePlayTurn(this, new List<ICell>() { Board, grid, tile });
+            InvokePlayTurn(this, new List<Game.ICell>() { Board, grid, tile });
         }
     }
 }
