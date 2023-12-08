@@ -5,6 +5,8 @@ using static Raylib_cs.Raylib;
 using static Raylib_cs.Raymath;
 using static Raylib_cs.KeyboardKey;
 using UltimateTicTacToe.UI;
+using Microsoft.VisualBasic;
+using System.Net;
 
 namespace UltimateTicTacToe
 {
@@ -58,11 +60,40 @@ namespace UltimateTicTacToe
             RightColorPicker.Clicked += SetPlayer1Color;
             LeftColorPicker.Clicked += SetPlayer2Color;
 
-            var transform = new LinearTransform(new Vector2(450, 300));
-            Button = new Button(transform, new Vector2(400, 100), "Play", Color.LIGHTGRAY);
-            Button.Clicked += SetupGame;
+            Player1Type = "Human";
+            Player2Type = "Bot";
+
+            var playButtonTransform = new LinearTransform(new Vector2(450, 300));
+            var rightHumanButtonTransform = new LinearTransform(new Vector2(900 - 85, 400));
+            var leftHumanButtonTransform = new LinearTransform(new Vector2(85, 400));
+            var rightBotButtonTransform = new LinearTransform(new Vector2(900 - 85, 500));
+            var leftBotButtonTransform = new LinearTransform(new Vector2(85, 500));
+
+            var textColor = Color.GRAY;
+            var backgroundColor = Color.LIGHTGRAY;
+            var borderColor = backgroundColor;
+
+            var playButton = new Button(playButtonTransform, new Vector2(400, 70), "Play", textColor, backgroundColor, borderColor);
+            var rightHumanButton = new Button(rightHumanButtonTransform, new Vector2(150, 70), "Human", textColor, backgroundColor, borderColor);
+            var leftHumanButton = new Button(leftHumanButtonTransform, new Vector2(150, 70), "Human", textColor, backgroundColor, borderColor);
+            var rightBotButton = new Button(rightBotButtonTransform, new Vector2(150, 70), "Bot", textColor, backgroundColor, borderColor);
+            var leftBotButton = new Button(leftBotButtonTransform, new Vector2(150, 70), "Bot", textColor, backgroundColor, borderColor);
+
+            playButton.Clicked += SetupGame;
+            rightHumanButton.Clicked += SetPlayer1Human;
+            leftHumanButton.Clicked += SetPlayer2Human;
+            rightBotButton.Clicked += SetPlayer1Bot;
+            leftBotButton.Clicked += SetPlayer2Bot;
+
+            Buttons = new List<Button>(){
+                playButton,
+                rightHumanButton,
+                leftHumanButton,
+                rightBotButton,
+                leftBotButton,
+            };
         }
-        protected UI.Button Button;
+        protected List<UI.Button> Buttons;
         public bool InTransition { get; }
         public float TransitionValue { get; }
         public event IProgramMode.SwitchToDel? SwitchTo;
@@ -72,31 +103,61 @@ namespace UltimateTicTacToe
         protected ColorPicker LeftColorPicker { get; }
         protected Player Player1;
         protected Player Player2;
+        protected string Player1Type;
+        protected string Player2Type;
         public void Draw()
         {
-            Button.Draw();
+            Buttons.ForEach(button => button.Draw());
             RightColorPicker.Draw();
             LeftColorPicker.Draw();
             UI.Draw();
         }
         public void Update()
         {
-            Button.Update();
+            Buttons.ForEach(button => button.Update());
             RightColorPicker.Update();
             LeftColorPicker.Update();
         }
         protected void SetupGame()
         {
-            IProgramMode mode = new PlayGame(Player1, Player2);
+            Player player1;
+            Player player2;
+            if (Player1Type == "Human")
+                player1 = new Human(Player1.Shape, Player1.Color);
+            else
+                player1 = new Bot(Player1.Shape, Player1.Color);
+            if (Player2Type == "Human")
+                player2 = new Human(Player2.Shape, Player2.Color);
+            else
+                player2 = new Bot(Player2.Shape, Player2.Color);
+            IProgramMode mode = new PlayGame(player1, player2);
             SwitchTo?.Invoke(this, mode);
         }
-        protected void SetPlayer1Color(Color color)
+        protected void SetPlayer1Color(Color color) => Player1.Color = color;
+        protected void SetPlayer2Color(Color color) => Player2.Color = color;
+        protected void SetPlayer1Human()
         {
-            Player1.Color = color;
+            Player1Type = "Human";
+            Buttons[1].BackgroundColor = Color.RAYWHITE;
+            Buttons[3].BackgroundColor = Color.LIGHTGRAY;
         }
-        protected void SetPlayer2Color(Color color)
+        protected void SetPlayer2Human()
         {
-            Player2.Color = color;
+            Player2Type = "Human";
+            Buttons[2].BackgroundColor = Color.RAYWHITE;
+            Buttons[4].BackgroundColor = Color.LIGHTGRAY;
+        }
+        protected void SetPlayer1Bot()
+        {
+            Player1Type = "Bot";
+            Buttons[3].BackgroundColor = Color.RAYWHITE;
+            Buttons[1].BackgroundColor = Color.LIGHTGRAY;
+        }
+        protected void SetPlayer2Bot()
+        {
+            Player2Type = "Bot";
+            Buttons[4].BackgroundColor = Color.RAYWHITE;
+            Buttons[2].BackgroundColor = Color.LIGHTGRAY;
         }
     }
     public class Save

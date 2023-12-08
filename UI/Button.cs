@@ -12,19 +12,29 @@ namespace UltimateTicTacToe
     {
         public class Button : IDrawable, IUpdateable
         {
-            public Button(LinearTransform transform, Vector2 dimensions, string message, Color color)
+            public Button(
+                LinearTransform transform,
+                Vector2 dimensions,
+                string message,
+                Color textColor,
+                Color backgroundColor,
+                Color borderColor)
             {
                 Transform = transform;
                 Dimensions = dimensions;
                 Message = message;
-                Color = color;
+                TextColor = textColor;
+                BackgroundColor = backgroundColor;
+                BorderColor = borderColor;
             }
             public LinearTransform Transform { get; }
+            protected Vector2 Dimensions { get; }
+            public string Message { get; set; }
+            public Color TextColor { get; set; }
+            public Color BackgroundColor { get; set; }
+            public Color BorderColor { get; set; }
             public delegate void Click();
             public event Click? Clicked;
-            public string Message { get; }
-            public Color Color { get; }
-            protected Vector2 Dimensions { get; }
             public void Update()
             {
                 bool leftMouse = IsMouseButtonReleased(0);
@@ -52,7 +62,9 @@ namespace UltimateTicTacToe
                 int height = (int)Dimensions.Y;
                 int x = (int)Transform.Position.X - width / 2;
                 int y = (int)Transform.Position.Y - height / 2;
-                DrawRectangle(x, y, width, height, Color);
+                Rectangle rectangle = new Rectangle(x, y, width, height);
+                DrawRectangleRec(rectangle, BackgroundColor);
+                DrawRectangleLinesEx(rectangle, 5, BorderColor);
             }
             protected void DrawMessage()
             {
@@ -60,7 +72,7 @@ namespace UltimateTicTacToe
                 float fontSize = 40;
                 Vector2 messageDimensions = MeasureTextEx(GetFontDefault(), Message, fontSize, spacing);
                 Vector2 drawPosition = Transform.Position - messageDimensions / 2;
-                DrawTextEx(GetFontDefault(), Message, drawPosition, fontSize, spacing, Color.DARKGRAY);
+                DrawTextEx(GetFontDefault(), Message, drawPosition, fontSize, spacing, TextColor);
             }
         }
     }
