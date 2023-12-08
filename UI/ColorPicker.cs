@@ -1,9 +1,5 @@
-using System;
 using System.Numerics;
 using Raylib_cs;
-using static Raylib_cs.Raylib;
-using static Raylib_cs.Raymath;
-using static Raylib_cs.KeyboardKey;
 
 namespace UltimateTicTacToe
 {
@@ -73,17 +69,17 @@ namespace UltimateTicTacToe
                 public event Click? Clicked;
                 public void Draw()
                 {
-                    DrawCircleV(Transform.Position, Radius + 5, Color.LIGHTGRAY);
-                    DrawCircleV(Transform.Position, Radius + 2, Color.RAYWHITE);
-                    DrawCircleV(Transform.Position, Radius, Color);
-                    DrawCircleV(Transform.Position + new Vector2(0, -1), Radius - 1, Color);
-                    DrawCircleV(Transform.Position + new Vector2(0, 1), Radius - 1, Color);
+                    Graphics.Draw.CircleV(Transform.Position, Radius + 5, Color.LIGHTGRAY);
+                    Graphics.Draw.CircleV(Transform.Position, Radius + 2, Color.RAYWHITE);
+                    Graphics.Draw.CircleV(Transform.Position, Radius, Color);
+                    Graphics.Draw.CircleV(Transform.Position + new Vector2(0, -1), Radius - 1, Color);
+                    Graphics.Draw.CircleV(Transform.Position + new Vector2(0, 1), Radius - 1, Color);
                 }
                 public void Update()
                 {
-                    bool leftMouse = IsMouseButtonReleased(0);
-                    Vector2 mousePosition = GetMousePosition();
-                    bool collision = CheckCollisionPointCircle(mousePosition, Transform.Position, Radius);
+                    bool leftMouse = Mouse.IsMouseButtonReleased(0);
+                    Vector2 mousePosition = Mouse.GetMousePosition();
+                    bool collision = CheckCollision.PointCircle(mousePosition, Transform.Position, Radius);
                     if (leftMouse && collision)
                     {
                         Clicked?.Invoke(Color);

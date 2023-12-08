@@ -1,9 +1,5 @@
-using System;
 using System.Numerics;
 using Raylib_cs;
-using static Raylib_cs.Raylib;
-using static Raylib_cs.Raymath;
-using static Raylib_cs.KeyboardKey;
 
 namespace UltimateTicTacToe
 {
@@ -17,7 +13,7 @@ namespace UltimateTicTacToe
                 Transform = transform;
                 Active = active;
                 Score = score;
-                Font = GetFontDefault();
+                Font = Graphics.Text.GetFontDefault();
                 Tile = new Game.Tile(Player, Transform, false, 0);
                 Tile.DrawGray = !Active;
             }
@@ -37,9 +33,9 @@ namespace UltimateTicTacToe
                 string message = Score.ToString();
                 float spacing = 3;
                 float fontSize = 80;
-                float messageWidth = MeasureTextEx(Font, message, fontSize, spacing).X;
+                float messageWidth = Graphics.Text.MeasureTextEx(Font, message, fontSize, spacing).X;
                 Vector2 drawPosition = Transform.Position + new Vector2(-messageWidth / 2, 70);
-                DrawTextEx(Font, message, drawPosition, fontSize, spacing, Color.LIGHTGRAY);
+                Graphics.Text.DrawTextEx(Font, message, drawPosition, fontSize, spacing, Color.LIGHTGRAY);
             }
         }
     }

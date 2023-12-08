@@ -1,9 +1,5 @@
-using System;
 using System.Numerics;
 using Raylib_cs;
-using static Raylib_cs.Raylib;
-using static Raylib_cs.Raymath;
-using static Raylib_cs.KeyboardKey;
 
 namespace UltimateTicTacToe
 {
@@ -52,8 +48,8 @@ namespace UltimateTicTacToe
                             rightLength,
                             maxDimensions.Y);
 
-                        DrawRectanglePro(leftRectangle, maxDimensions / 2, 45, color);
-                        DrawRectanglePro(rightRectangle, maxDimensions / 2, -45, color);
+                        Graphics.Draw.RectanglePro(leftRectangle, maxDimensions / 2, 45, color);
+                        Graphics.Draw.RectanglePro(rightRectangle, maxDimensions / 2, -45, color);
                         return;
                     }
                 case Symbol.O:
@@ -63,7 +59,7 @@ namespace UltimateTicTacToe
                         int outerRadius = innerRadius + width;
                         float angle = 360f * (1 - transitionValue) + 180;
 
-                        DrawRing(transform.Position, innerRadius, outerRadius, 180, angle, 50, color);
+                        Graphics.Draw.Ring(transform.Position, innerRadius, outerRadius, 180, angle, 50, color);
                         return;
                     }
             }

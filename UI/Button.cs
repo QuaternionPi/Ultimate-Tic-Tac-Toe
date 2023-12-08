@@ -1,9 +1,5 @@
-using System;
 using System.Numerics;
 using Raylib_cs;
-using static Raylib_cs.Raylib;
-using static Raylib_cs.Raymath;
-using static Raylib_cs.KeyboardKey;
 
 namespace UltimateTicTacToe
 {
@@ -36,15 +32,15 @@ namespace UltimateTicTacToe
             public event Click? Clicked;
             public void Update()
             {
-                bool leftMouse = IsMouseButtonReleased(0);
-                Vector2 mousePosition = GetMousePosition();
+                bool leftMouse = Mouse.IsMouseButtonReleased(0);
+                Vector2 mousePosition = Mouse.GetMousePosition();
                 Rectangle rectangle = new Rectangle(
                     Transform.Position.X - Dimensions.X / 2,
                     Transform.Position.Y - Dimensions.Y / 2,
                     Dimensions.X,
                     Dimensions.Y
                 );
-                bool collision = CheckCollisionPointRec(mousePosition, rectangle);
+                bool collision = CheckCollision.PointRec(mousePosition, rectangle);
                 if (leftMouse && collision)
                 {
                     Clicked?.Invoke();
@@ -62,16 +58,16 @@ namespace UltimateTicTacToe
                 int x = (int)Transform.Position.X - width / 2;
                 int y = (int)Transform.Position.Y - height / 2;
                 Rectangle rectangle = new Rectangle(x, y, width, height);
-                DrawRectangleRec(rectangle, BackgroundColor);
-                DrawRectangleLinesEx(rectangle, 5, BorderColor);
+                Graphics.Draw.RectangleRec(rectangle, BackgroundColor);
+                Graphics.Draw.RectangleLinesEx(rectangle, 5, BorderColor);
             }
             protected void DrawMessage()
             {
                 float spacing = 3;
                 float fontSize = 40;
-                Vector2 messageDimensions = MeasureTextEx(GetFontDefault(), Message, fontSize, spacing);
+                Vector2 messageDimensions = Graphics.Text.MeasureTextEx(Graphics.Text.GetFontDefault(), Message, fontSize, spacing);
                 Vector2 drawPosition = Transform.Position - messageDimensions / 2;
-                DrawTextEx(GetFontDefault(), Message, drawPosition, fontSize, spacing, TextColor);
+                Graphics.Text.DrawTextEx(Graphics.Text.GetFontDefault(), Message, drawPosition, fontSize, spacing, TextColor);
             }
         }
     }

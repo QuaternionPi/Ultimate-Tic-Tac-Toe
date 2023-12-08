@@ -1,9 +1,5 @@
-using System;
 using System.Numerics;
 using Raylib_cs;
-using static Raylib_cs.Raylib;
-using static Raylib_cs.Raymath;
-using static Raylib_cs.KeyboardKey;
 
 namespace UltimateTicTacToe
 {
@@ -43,7 +39,7 @@ namespace UltimateTicTacToe
                 if (Placeable)
                 {
                     int width = 20;
-                    DrawRectangle((int)Transform.Position.X - width / 2, (int)Transform.Position.Y - width / 2, width, width, Color.LIGHTGRAY);
+                    Graphics.Draw.Rectangle((int)Transform.Position.X - width / 2, (int)Transform.Position.Y - width / 2, width, width, Color.LIGHTGRAY);
                 }
                 if (Player == null)
                 {
@@ -62,10 +58,10 @@ namespace UltimateTicTacToe
             }
             public void Update()
             {
-                bool leftMouse = IsMouseButtonReleased(0);
-                Vector2 mousePosition = GetMousePosition();
+                bool leftMouse = Mouse.IsMouseButtonReleased(0);
+                Vector2 mousePosition = Mouse.GetMousePosition();
                 Rectangle rectangle = new Rectangle(Transform.Position.X - 25, Transform.Position.Y - 25, 50, 50);
-                bool collision = CheckCollisionPointRec(mousePosition, rectangle);
+                bool collision = CheckCollision.PointRec(mousePosition, rectangle);
                 if (leftMouse && collision)
                 {
                     var cells = new List<ICell>() { this };

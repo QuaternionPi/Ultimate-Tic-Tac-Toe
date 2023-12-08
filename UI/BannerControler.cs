@@ -1,9 +1,5 @@
-using System;
 using System.Numerics;
 using Raylib_cs;
-using static Raylib_cs.Raylib;
-using static Raylib_cs.Raymath;
-using static Raylib_cs.KeyboardKey;
 
 namespace UltimateTicTacToe
 {
@@ -13,7 +9,7 @@ namespace UltimateTicTacToe
         {
             public BannerControler(Player[] players)
             {
-                Font = GetFontDefault();
+                Font = Graphics.Text.GetFontDefault();
                 LinearTransform leftTransform = new(new Vector2(85, 85), 0, 3);
                 LinearTransform rightTransform = new(new Vector2(815, 85), 0, 3);
                 LeftBanner = new Banner(players[1], leftTransform, false, 0);
@@ -27,8 +23,8 @@ namespace UltimateTicTacToe
                 string message = "Ultimate Tic Tac Toe";
                 float spacing = 3;
                 float fontSize = 30;
-                float messageWidth = MeasureTextEx(Font, message, fontSize, spacing).X;
-                DrawTextEx(Font, message, new Vector2(450 - messageWidth / 2, 20), fontSize, spacing, Color.GRAY);
+                float messageWidth = Graphics.Text.MeasureTextEx(Font, message, fontSize, spacing).X;
+                Graphics.Text.DrawTextEx(Font, message, new Vector2(450 - messageWidth / 2, 20), fontSize, spacing, Color.GRAY);
                 LeftBanner.Draw();
                 RightBanner.Draw();
             }
