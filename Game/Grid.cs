@@ -109,7 +109,7 @@ namespace UltimateTicTacToe
                     for (int j = 0; j < 3; j++)
                     {
                         CellT cell = original.Cells[i, j];
-                        bool cellPlaceable = i == nextX && j == nextY;
+                        bool cellPlaceable = (i == nextX) && (j == nextY) && (Player == null);
                         if (cell.Equals(targetCell))
                         {
                             cell = (CellT)cell.Place(cellTrace.Skip(1), player, cellPlaceable);

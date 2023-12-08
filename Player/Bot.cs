@@ -44,10 +44,9 @@ namespace UltimateTicTacToe
             {
                 throw new Exception("Cannot choose best move from no moves");
             }
-            var posibleMoves = PosibleMoves(board);
-            (Game.Grid<Game.Tile>, Game.Tile) bestMove = posibleMoves[0];
+            (Game.Grid<Game.Tile>, Game.Tile) bestMove = moves.First();
             int bestEvaluation = -10000;
-            foreach (var move in posibleMoves)
+            foreach (var move in moves)
             {
                 var cellTrace = new List<Game.ICell>() { move.Item1, move.Item2 };
                 var futureBoard = (Game.Grid<Game.Grid<Game.Tile>>)board.Place(cellTrace, maximizer, true);
@@ -78,11 +77,11 @@ namespace UltimateTicTacToe
             {
                 if (board.Player == maximizer)
                 {
-                    return 1000;
+                    return -1500;
                 }
                 else if (board.Player == minimizer)
                 {
-                    return -1000;
+                    return 1500;
                 }
                 return 0;
             }
@@ -91,41 +90,26 @@ namespace UltimateTicTacToe
             {
                 depth = Math.Max(depth - 1, 1);
             }
-            else if (posibleMoves.Count() > 60)
-            {
-                depth = Math.Max(depth - 2, 1);
-            }
 
             int bestEvaluation;
             if (minimize)
             {
                 bestEvaluation = 10000;
-                foreach (var move in posibleMoves)
-                {
-                    var cellTrace = new List<Game.ICell>() { move.Item1, move.Item2 };
-                    var futureBoard =
-                        (Game.Grid<Game.Grid<Game.Tile>>)board.Place(
-                        cellTrace,
-                        maximizer,
-                        true);
-                    int evaluation = -Minimax(futureBoard, depth - 1, minimizer, maximizer, true);
-                    bestEvaluation = Math.Min(bestEvaluation, evaluation);
-                }
             }
             else
             {
                 bestEvaluation = -10000;
-                foreach (var move in posibleMoves)
-                {
-                    var cellTrace = new List<Game.ICell>() { move.Item1, move.Item2 };
-                    var futureBoard =
-                        (Game.Grid<Game.Grid<Game.Tile>>)board.Place(
-                        cellTrace,
-                        maximizer,
-                        true);
-                    int evaluation = -Minimax(futureBoard, depth - 1, minimizer, maximizer, false);
+            }
+            foreach (var move in posibleMoves)
+            {
+                var cellTrace = new List<Game.ICell>() { move.Item1, move.Item2 };
+                var futureBoard = (Game.Grid<Game.Grid<Game.Tile>>)board.Place(cellTrace, maximizer, true);
+                int evaluation = -Minimax(futureBoard, depth - 1, minimizer, maximizer, !minimize);
+
+                if (minimize)
+                    bestEvaluation = Math.Min(bestEvaluation, evaluation);
+                else
                     bestEvaluation = Math.Max(bestEvaluation, evaluation);
-                }
             }
             return bestEvaluation;
         }
@@ -145,12 +129,12 @@ namespace UltimateTicTacToe
             {
                 if (grid.Player == maximizer)
                 {
-                    evaluation += 50;
+                    evaluation += 100;
                     continue;
                 }
                 else if (grid.Player == minimizer)
                 {
-                    evaluation -= 50;
+                    evaluation -= 100;
                     continue;
                 }
                 if (grid.Cells[1, 1].Player == maximizer)
@@ -161,6 +145,14 @@ namespace UltimateTicTacToe
                 {
                     evaluation -= 15;
                 }
+            }
+            if (board.Cells[1, 1].Player == maximizer)
+            {
+                evaluation += 150;
+            }
+            if (board.Cells[1, 1].Player == minimizer)
+            {
+                evaluation -= 150;
             }
             return evaluation;
         }

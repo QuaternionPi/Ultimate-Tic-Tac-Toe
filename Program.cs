@@ -16,9 +16,7 @@ namespace UltimateTicTacToe
             InitWindow(900, 650, "Ultimate Tic Tac Toe");
             SetTargetFPS(30);
 
-            Mode = new Setup();
             Mode.SwitchTo += ChangeMode;
-
             while (!WindowShouldClose())
             {
                 Mode.Update();
@@ -29,7 +27,7 @@ namespace UltimateTicTacToe
                 EndDrawing();
             }
         }
-        private static IProgramMode Mode;
+        private static IProgramMode Mode = new Setup();
         private static void ChangeMode(IProgramMode from, IProgramMode to)
         {
             from.SwitchTo -= ChangeMode;
@@ -47,7 +45,7 @@ namespace UltimateTicTacToe
     {
         public Setup()
         {
-            Player1 = new Human(Player.Symbol.X, Color.RED);
+            Player1 = new Bot(Player.Symbol.X, Color.RED);
             Player2 = new Bot(Player.Symbol.O, Color.BLUE);
             UI = new UI.BannerControler(new Player[] { Player1, Player2 });
             UI.Activate(Player1);
@@ -76,9 +74,7 @@ namespace UltimateTicTacToe
         }
         protected void SetupGame()
         {
-            Player player1 = new Human(Player.Symbol.X, Color.RED);
-            Player player2 = new Bot(Player.Symbol.O, Color.BLUE);
-            IProgramMode mode = new PlayGame(player1, player2);
+            IProgramMode mode = new PlayGame(Player1, Player2);
             SwitchTo?.Invoke(this, mode);
         }
     }
