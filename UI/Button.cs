@@ -5,7 +5,6 @@ using static Raylib_cs.Raylib;
 using static Raylib_cs.Raymath;
 using static Raylib_cs.KeyboardKey;
 
-
 namespace UltimateTicTacToe
 {
     namespace UI

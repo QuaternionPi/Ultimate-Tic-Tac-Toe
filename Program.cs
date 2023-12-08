@@ -4,9 +4,6 @@ using Raylib_cs;
 using static Raylib_cs.Raylib;
 using static Raylib_cs.Raymath;
 using static Raylib_cs.KeyboardKey;
-using UltimateTicTacToe.UI;
-using Microsoft.VisualBasic;
-using System.Net;
 
 namespace UltimateTicTacToe
 {
@@ -54,8 +51,8 @@ namespace UltimateTicTacToe
             UI.Activate(Player2);
 
             var colors = Player.AllowedColors;
-            RightColorPicker = new ColorPicker(new LinearTransform(new Vector2(900 - 135, 270)), colors, 3);
-            LeftColorPicker = new ColorPicker(new LinearTransform(new Vector2(35, 270)), colors, 3);
+            RightColorPicker = new UI.ColorPicker(new LinearTransform(new Vector2(900 - 135, 270)), colors, 3);
+            LeftColorPicker = new UI.ColorPicker(new LinearTransform(new Vector2(35, 270)), colors, 3);
 
             RightColorPicker.Clicked += SetPlayer1Color;
             LeftColorPicker.Clicked += SetPlayer2Color;
@@ -73,11 +70,11 @@ namespace UltimateTicTacToe
             var backgroundColor = Color.LIGHTGRAY;
             var borderColor = backgroundColor;
 
-            var playButton = new Button(playButtonTransform, new Vector2(400, 70), "Play", textColor, backgroundColor, borderColor);
-            var rightHumanButton = new Button(rightHumanButtonTransform, new Vector2(150, 70), "Human", textColor, backgroundColor, borderColor);
-            var leftHumanButton = new Button(leftHumanButtonTransform, new Vector2(150, 70), "Human", textColor, backgroundColor, borderColor);
-            var rightBotButton = new Button(rightBotButtonTransform, new Vector2(150, 70), "Bot", textColor, backgroundColor, borderColor);
-            var leftBotButton = new Button(leftBotButtonTransform, new Vector2(150, 70), "Bot", textColor, backgroundColor, borderColor);
+            var playButton = new UI.Button(playButtonTransform, new Vector2(400, 70), "Play", textColor, backgroundColor, borderColor);
+            var rightHumanButton = new UI.Button(rightHumanButtonTransform, new Vector2(150, 70), "Human", textColor, backgroundColor, borderColor);
+            var leftHumanButton = new UI.Button(leftHumanButtonTransform, new Vector2(150, 70), "Human", textColor, backgroundColor, borderColor);
+            var rightBotButton = new UI.Button(rightBotButtonTransform, new Vector2(150, 70), "Bot", textColor, backgroundColor, borderColor);
+            var leftBotButton = new UI.Button(leftBotButtonTransform, new Vector2(150, 70), "Bot", textColor, backgroundColor, borderColor);
 
             playButton.Clicked += SetupGame;
             rightHumanButton.Clicked += SetPlayer1Human;
@@ -85,7 +82,7 @@ namespace UltimateTicTacToe
             rightBotButton.Clicked += SetPlayer1Bot;
             leftBotButton.Clicked += SetPlayer2Bot;
 
-            Buttons = new List<Button>(){
+            Buttons = new List<UI.Button>(){
                 playButton,
                 rightHumanButton,
                 leftHumanButton,
@@ -99,8 +96,8 @@ namespace UltimateTicTacToe
         public event IProgramMode.SwitchToDel? SwitchTo;
         public IProgramMode? Previous { get; }
         protected UI.BannerControler UI { get; }
-        protected ColorPicker RightColorPicker { get; }
-        protected ColorPicker LeftColorPicker { get; }
+        protected UI.ColorPicker RightColorPicker { get; }
+        protected UI.ColorPicker LeftColorPicker { get; }
         protected Player Player1;
         protected Player Player2;
         protected string Player1Type;
