@@ -26,7 +26,7 @@ namespace UltimateTicTacToe
             public Player Player { get; }
             public bool Active { get; }
             protected Game.Tile Tile { get; }
-            public int Score { get; }
+            public int Score { get; set; }
             protected Font Font { get; }
             public void Draw()
             {

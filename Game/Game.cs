@@ -11,15 +11,12 @@ namespace UltimateTicTacToe
     {
         public class Game : IDrawable, IUpdateable
         {
-            public Game()
+            public Game(Player player1, Player player2, Vector2 position)
             {
-                Vector2 position = new Vector2(450, 350);
+                Players = new Player[] { player1, player2 };
+
                 LinearTransform transform = new LinearTransform(position, 0, 4);
                 _board = new Grid<Grid<Tile>>(null, transform, true);
-                Players = new Player[]{
-                new Human(Player.Symbol.X, Color.RED),
-                new Bot(Player.Symbol.O, Color.BLUE)
-            };
 
                 ActivePlayer = Players[0];
                 InactivePlayer = Players[1];
@@ -106,6 +103,7 @@ namespace UltimateTicTacToe
                     Board = new Grid<Grid<Tile>>(null, Board.Transform, true);
                 }
                 BannerControler.Activate(ActivePlayer);
+                BannerControler.Deactivate(InactivePlayer);
 
                 if (ChangePlayer)
                 {

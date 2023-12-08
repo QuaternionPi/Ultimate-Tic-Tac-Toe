@@ -52,7 +52,7 @@ namespace UltimateTicTacToe
                 Color drawColor;
                 if (DrawGray)
                 {
-                    drawColor = Color.GRAY;
+                    drawColor = Color.LIGHTGRAY;
                 }
                 else
                 {

@@ -35,45 +35,51 @@ namespace UltimateTicTacToe
             }
             public void Activate(Player player)
             {
-                LeftBanner = new Banner(
-                    LeftBanner.Player,
-                    LeftBanner.Transform,
-                    LeftBanner.Player == player,
-                    LeftBanner.Score
-                );
-                RightBanner = new Banner(
-                    RightBanner.Player,
-                    RightBanner.Transform,
-                    RightBanner.Player == player,
-                    RightBanner.Score
-                );
+                if (player == LeftBanner.Player)
+                    LeftBanner = new Banner(
+                        LeftBanner.Player,
+                        LeftBanner.Transform,
+                        true,
+                        LeftBanner.Score
+                    );
+                else
+                    RightBanner = new Banner(
+                        RightBanner.Player,
+                        RightBanner.Transform,
+                        true,
+                        RightBanner.Score
+                    );
+            }
+            public void Deactivate(Player player)
+            {
+                if (player == LeftBanner.Player)
+                    LeftBanner = new Banner(
+                        LeftBanner.Player,
+                        LeftBanner.Transform,
+                        false,
+                        LeftBanner.Score
+                    );
+                else
+                    RightBanner = new Banner(
+                        RightBanner.Player,
+                        RightBanner.Transform,
+                        false,
+                        RightBanner.Score
+                    );
             }
             public void AddPoints(Player player, int points)
             {
-                Banner banner;
                 if (LeftBanner.Player == player)
                 {
-                    banner = LeftBanner;
+                    LeftBanner.Score += points;
                 }
                 else if (RightBanner.Player == player)
                 {
-                    banner = RightBanner;
+                    RightBanner.Score += points;
                 }
                 else
                 {
                     throw new Exception("This player is not on either of the banners");
-                }
-                LinearTransform transform = banner.Transform;
-                bool active = banner.Active;
-                int score = banner.Score + points;
-                banner = new Banner(player, transform, active, score);
-                if (LeftBanner.Player == player)
-                {
-                    LeftBanner = banner;
-                }
-                else if (RightBanner.Player == player)
-                {
-                    RightBanner = banner;
                 }
             }
         }
