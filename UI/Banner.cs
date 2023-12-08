@@ -15,7 +15,6 @@ namespace UltimateTicTacToe
                 Score = score;
                 Font = Graphics.Text.GetFontDefault();
                 Tile = new Game.Tile(Player, Transform, false, 0);
-                Tile.DrawGray = !Active;
             }
             public LinearTransform Transform { get; }
             public Player Player { get; }
@@ -25,7 +24,13 @@ namespace UltimateTicTacToe
             protected Font Font { get; }
             public void Draw()
             {
+                if (Active == false)
+                {
+                    Graphics.Draw.OverrideDrawColor = true;
+                    Graphics.Draw.OverrideColor = Color.LIGHTGRAY;
+                }
                 Tile.Draw();
+                Graphics.Draw.OverrideDrawColor = false;
                 DrawScore();
             }
             protected void DrawScore()

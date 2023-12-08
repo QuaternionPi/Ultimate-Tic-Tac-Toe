@@ -27,7 +27,7 @@ namespace UltimateTicTacToe
         public abstract void BeginTurn(Game.Grid<Game.Grid<Game.Tile>> board, Player opponent);
         public abstract void EndTurn();
         public abstract void Update();
-        public void DrawSymbol(LinearTransform transform, float transitionValue, Color color)
+        public void DrawSymbol(LinearTransform transform, float transitionValue)
         {
             transitionValue = Math.Clamp(transitionValue, 0, 1);
             switch (Shape)
@@ -48,8 +48,8 @@ namespace UltimateTicTacToe
                             rightLength,
                             maxDimensions.Y);
 
-                        Graphics.Draw.RectanglePro(leftRectangle, maxDimensions / 2, 45, color);
-                        Graphics.Draw.RectanglePro(rightRectangle, maxDimensions / 2, -45, color);
+                        Graphics.Draw.RectanglePro(leftRectangle, maxDimensions / 2, 45, Color);
+                        Graphics.Draw.RectanglePro(rightRectangle, maxDimensions / 2, -45, Color);
                         return;
                     }
                 case Symbol.O:
@@ -59,7 +59,7 @@ namespace UltimateTicTacToe
                         int outerRadius = innerRadius + width;
                         float angle = 360f * (1 - transitionValue) + 180;
 
-                        Graphics.Draw.Ring(transform.Position, innerRadius, outerRadius, 180, angle, 50, color);
+                        Graphics.Draw.Ring(transform.Position, innerRadius, outerRadius, 180, angle, 50, Color);
                         return;
                     }
             }
