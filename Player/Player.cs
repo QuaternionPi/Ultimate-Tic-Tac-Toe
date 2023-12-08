@@ -10,16 +10,12 @@ namespace UltimateTicTacToe
     public abstract class Player : IUpdateable
     {
         public static readonly Color[] AllowedColors = {
-            Color.PINK,
-            Color.VIOLET,
             Color.RED,
-            Color.MAROON,
             Color.BLUE,
-            Color.DARKBLUE,
             Color.GREEN,
+            Color.MAROON,
+            Color.DARKBLUE,
             Color.DARKGREEN,
-            Color.GOLD,
-            Color.ORANGE,
         };
         public enum Symbol { X, O };
         public Player(Symbol symbol, Color color)
