@@ -9,14 +9,26 @@ namespace UltimateTicTacToe
 {
     public abstract class Player : IUpdateable
     {
+        public static readonly Color[] AllowedColors = {
+            Color.PINK,
+            Color.VIOLET,
+            Color.RED,
+            Color.MAROON,
+            Color.BLUE,
+            Color.DARKBLUE,
+            Color.GREEN,
+            Color.DARKGREEN,
+            Color.GOLD,
+            Color.ORANGE,
+        };
         public enum Symbol { X, O };
         public Player(Symbol symbol, Color color)
         {
             Shape = symbol;
             Color = color;
         }
-        public Symbol Shape { get; protected set; }
-        public Color Color { get; protected set; }
+        public Symbol Shape { get; set; }
+        public Color Color { get; set; }
         public delegate void Turn(Player player, IEnumerable<Game.ICell> cells);
         public event Turn? PlayTurn;
         protected void InvokePlayTurn(Player player, IEnumerable<Game.ICell> cells) => PlayTurn?.Invoke(player, cells);

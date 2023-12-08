@@ -8,7 +8,7 @@ using UltimateTicTacToe.UI;
 
 namespace UltimateTicTacToe
 {
-    static class Program
+    public static class Program
     {
         static void Main(string[] args)
         {
@@ -45,13 +45,20 @@ namespace UltimateTicTacToe
     {
         public Setup()
         {
-            Player1 = new Bot(Player.Symbol.X, Color.RED);
-            Player2 = new Bot(Player.Symbol.O, Color.BLUE);
+            Player1 = new Human(Player.Symbol.X, Color.RED);
+            Player2 = new Human(Player.Symbol.O, Color.BLUE);
             UI = new UI.BannerControler(new Player[] { Player1, Player2 });
             UI.Activate(Player1);
             UI.Activate(Player2);
 
-            LinearTransform transform = new(new Vector2(450, 300));
+            var colors = Player.AllowedColors;
+            RightColorPicker = new ColorPicker(new LinearTransform(new Vector2(900 - 135, 270)), colors, 3);
+            LeftColorPicker = new ColorPicker(new LinearTransform(new Vector2(35, 270)), colors, 3);
+
+            RightColorPicker.Clicked += SetPlayer1Color;
+            LeftColorPicker.Clicked += SetPlayer2Color;
+
+            var transform = new LinearTransform(new Vector2(450, 300));
             Button = new Button(transform, new Vector2(400, 100), "Play", Color.LIGHTGRAY);
             Button.Clicked += SetupGame;
         }
@@ -60,22 +67,36 @@ namespace UltimateTicTacToe
         public float TransitionValue { get; }
         public event IProgramMode.SwitchToDel? SwitchTo;
         public IProgramMode? Previous { get; }
-        protected UI.BannerControler UI;
+        protected UI.BannerControler UI { get; }
+        protected ColorPicker RightColorPicker { get; }
+        protected ColorPicker LeftColorPicker { get; }
         protected Player Player1;
         protected Player Player2;
         public void Draw()
         {
             Button.Draw();
+            RightColorPicker.Draw();
+            LeftColorPicker.Draw();
             UI.Draw();
         }
         public void Update()
         {
             Button.Update();
+            RightColorPicker.Update();
+            LeftColorPicker.Update();
         }
         protected void SetupGame()
         {
             IProgramMode mode = new PlayGame(Player1, Player2);
             SwitchTo?.Invoke(this, mode);
+        }
+        protected void SetPlayer1Color(Color color)
+        {
+            Player1.Color = color;
+        }
+        protected void SetPlayer2Color(Color color)
+        {
+            Player2.Color = color;
         }
     }
     public class Save
