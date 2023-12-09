@@ -1,5 +1,4 @@
 using System.Numerics;
-using System.Security.Cryptography.X509Certificates;
 using Raylib_cs;
 
 namespace UltimateTicTacToe
@@ -62,11 +61,13 @@ namespace UltimateTicTacToe
             Player opponent
             )
         {
-            if (moves.Count() == 0)
+            if (moves.Any() == false)
             {
                 throw new Exception("Cannot choose best move from no moves");
             }
-            int depth = 3;
+            int alpha = -100000;
+            int beta = 100000;
+            int depth = moves.Count() > 30 ? 4 : 6;
             var evaluatedMoves =
                 from move in moves.AsParallel()
                 select (move,
@@ -76,6 +77,8 @@ namespace UltimateTicTacToe
                             player,
                             true)),
                         depth,
+                        -beta,
+                        -alpha,
                         opponent,
                         player));
 
@@ -95,38 +98,28 @@ namespace UltimateTicTacToe
         protected static int Minimax(
             Grid<Grid<Tile>> board,
             int depth,
+            int alpha,
+            int beta,
             Player player,
             Player opponent)
         {
-            // The base case of the recursion
-            if (depth == 0)
+            // The base case of the recursion or board is winning position
+            if (depth == 0 || board.Player != null)
             {
                 return Evaluate(board, opponent, player);
             }
+
             var posibleMoves = PosibleMoves(board);
-            // If the board is a winning position
-            if (board.Player == player)
-            {
-                return -1500;
-            }
-            else if (board.Player == opponent)
-            {
-                return 1500;
-            }
-
-            if (posibleMoves.Count() > 30)
-            {
-                depth = Math.Max(depth - 1, 1);
-            }
-
             int bestEvaluation = 10000;
             foreach (var move in posibleMoves)
             {
                 var cellTrace = new List<ICell>() { move.Item1, move.Item2 };
-                var futureBoard = (Grid<Grid<Tile>>)board.Place(cellTrace, player, true);
-                int evaluation = -Minimax(futureBoard, depth - 1, opponent, player);
-
+                var placedBoard = (Grid<Grid<Tile>>)board.Place(cellTrace, player, true);
+                var evaluation = -Minimax(placedBoard, depth - 1, -beta, -alpha, opponent, player);
                 bestEvaluation = Math.Min(bestEvaluation, evaluation);
+                beta = Math.Min(beta, evaluation);
+                if (beta < alpha)
+                    break;
             }
             return bestEvaluation;
         }
@@ -149,27 +142,39 @@ namespace UltimateTicTacToe
                 return -1000;
             }
             int evaluation = 0;
-            evaluation -= PosibleMoves(board).Count;
+            evaluation -= NumPosibleMoves(board);
             foreach (Grid<Tile> grid in board.Cells)
             {
                 evaluation += Award(100, grid.Player, player, opponent);
                 evaluation += Award(15, grid.Cells[1, 1].Player, player, opponent);
             }
-            evaluation += Award(100, board.Cells[1, 1].Player, player, opponent);
+            evaluation += Award(50, board.Cells[1, 1].Player, player, opponent);
             return evaluation;
+        }
+        protected static int NumPosibleMoves(Grid<Grid<Tile>> board)
+        {
+            int count = 0;
+            foreach (Grid<Tile> grid in board.Cells)
+            {
+                if (grid.Placeable)
+                    foreach (Tile tile in grid.Cells)
+                    {
+                        count++;
+                    }
+            }
+            return count;
         }
         protected static List<(Grid<Tile>, Tile)> PosibleMoves(Grid<Grid<Tile>> board)
         {
             List<(Grid<Tile>, Tile)> posibleMoves = new();
             foreach (Grid<Tile> grid in board.Cells)
             {
-                foreach (Tile tile in grid.Cells)
-                {
-                    if (tile.Placeable && grid.Placeable)
+                if (grid.Placeable)
+                    foreach (Tile tile in grid.Cells)
                     {
-                        posibleMoves.Add((grid, tile));
+                        if (tile.Placeable)
+                            posibleMoves.Add((grid, tile));
                     }
-                }
             }
             return posibleMoves;
         }
@@ -178,13 +183,12 @@ namespace UltimateTicTacToe
             List<(Game.Grid<Game.Tile>, Game.Tile)> posibleMoves = new();
             foreach (Game.Grid<Game.Tile> grid in board.Cells)
             {
-                foreach (Game.Tile tile in grid.Cells)
-                {
-                    if (tile.Placeable && grid.Placeable)
+                if (grid.Placeable)
+                    foreach (Game.Tile tile in grid.Cells)
                     {
-                        posibleMoves.Add((grid, tile));
+                        if (tile.Placeable)
+                            posibleMoves.Add((grid, tile));
                     }
-                }
             }
             return posibleMoves;
         }

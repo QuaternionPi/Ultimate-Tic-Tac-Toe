@@ -5,7 +5,7 @@ namespace UltimateTicTacToe
 {
     public partial class Bot
     {
-        public struct Grid<TCell> : IBoard<TCell>, ICell
+        public class Grid<TCell> : IBoard<TCell>, ICell
             where TCell : ICell, new()
         {
             public Grid()
@@ -15,13 +15,14 @@ namespace UltimateTicTacToe
             }
             public Grid(Player? player, LinearTransform transform, bool placeable)
             {
+                TCell baseCell = new TCell();
+                LinearTransform baseTransform = new(Vector2.Zero, 0, 0);
                 Cells = new TCell[3, 3];
                 for (int i = 0; i < 3; i++)
                 {
                     for (int j = 0; j < 3; j++)
                     {
-                        LinearTransform cellTransform = new(Vector2.Zero, 0, 0);
-                        TCell cell = (TCell)new TCell().Create(null, cellTransform, placeable);
+                        TCell cell = (TCell)baseCell.Create(null, baseTransform, placeable);
                         Cells[i, j] = cell;
                     }
                 }
@@ -93,16 +94,9 @@ namespace UltimateTicTacToe
                 {
                     for (int j = 0; j < 3; j++)
                     {
-                        TCell cell = original.Cells[i, j];
                         bool cellPlaceable = (i == nextX) && (j == nextY) && (Player == null);
-                        if (cell.Equals(targetCell))
-                        {
-                            cell = (TCell)cell.Place(TCellrace.Skip(1), player, cellPlaceable);
-                        }
-                        else
-                        {
-                            cell = (TCell)cell.DeepCopyPlacable(cellPlaceable);
-                        }
+                        TCell cell = (TCell)Cells[i, j].DeepCopyPlacable(cellPlaceable);//(TCell)cell.Place(TCellrace.Skip(1), player, cellPlaceable);
+
                         Cells[i, j] = cell;
                     }
                 }
