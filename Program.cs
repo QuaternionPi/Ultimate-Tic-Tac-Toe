@@ -11,6 +11,10 @@ namespace UltimateTicTacToe
             Window.Init(900, 650, "Ultimate Tic Tac Toe");
             Window.SetTargetFPS(30);
 
+            Image windowIcon = Raylib_cs.Raylib.LoadImage("./Program Icon.png");
+            Window.SetWindowIcon(windowIcon);
+            Raylib_cs.Raylib.UnloadImage(windowIcon);
+
             Mode.SwitchTo += ChangeMode;
             while (!Window.ShouldClose())
             {
