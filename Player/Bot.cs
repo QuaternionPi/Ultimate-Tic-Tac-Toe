@@ -3,7 +3,7 @@ using Raylib_cs;
 
 namespace UltimateTicTacToe
 {
-    public class Bot : Player
+    public partial class Bot : Player
     {
         public Bot(Symbol symbol, Color color) : base(symbol, color)
         {
@@ -43,7 +43,7 @@ namespace UltimateTicTacToe
             int bestEvaluation = 10000;
             foreach (var move in moves)
             {
-                var cellTrace = new List<Game.ICell>() { move.Item1, move.Item2 };
+                var cellTrace = new List<ICell>() { move.Item1, move.Item2 };
                 var futureBoard = (Game.Grid<Game.Grid<Game.Tile>>)board.Place(cellTrace, player, true);
                 int evaluation = -Minimax(futureBoard, 4, opponent, player);
                 if (bestEvaluation > evaluation)
@@ -84,7 +84,7 @@ namespace UltimateTicTacToe
             int bestEvaluation = 10000;
             foreach (var move in posibleMoves)
             {
-                var cellTrace = new List<Game.ICell>() { move.Item1, move.Item2 };
+                var cellTrace = new List<ICell>() { move.Item1, move.Item2 };
                 var futureBoard = (Game.Grid<Game.Grid<Game.Tile>>)board.Place(cellTrace, player, true);
                 int evaluation = -Minimax(futureBoard, depth - 1, opponent, player);
 
@@ -141,7 +141,7 @@ namespace UltimateTicTacToe
             {
                 throw new Exception("Board can't be null when youre playing a move");
             }
-            InvokePlayTurn(this, new List<Game.ICell>() { Board, grid, tile });
+            InvokePlayTurn(this, new List<ICell>() { Board, grid, tile });
         }
     }
 }

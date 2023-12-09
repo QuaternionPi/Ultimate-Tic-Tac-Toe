@@ -3,7 +3,7 @@ using Raylib_cs;
 
 namespace UltimateTicTacToe
 {
-    namespace Game
+    public partial class Bot
     {
         public class Tile : IDrawable, IUpdateable, ITransitionable, IClickableCell
         {

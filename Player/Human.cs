@@ -27,7 +27,7 @@ namespace UltimateTicTacToe
         {
 
         }
-        protected void HandleClickedBoard(IEnumerable<Game.ICell> cells)
+        protected void HandleClickedBoard(IEnumerable<ICell> cells)
         {
             if (cells.Last().Placeable == false)
             {
