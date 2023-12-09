@@ -21,7 +21,7 @@ namespace UltimateTicTacToe
                 TransitionValue = transitionValue;
                 if (Player == null)
                 {
-                    transitionValue = 0;
+                    TransitionValue = 0;
                 }
             }
             public Player? Player { get; }
