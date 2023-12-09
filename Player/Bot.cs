@@ -66,14 +66,23 @@ namespace UltimateTicTacToe
             {
                 throw new Exception("Cannot choose best move from no moves");
             }
+            int depth = 4;
             (Game.Grid<Game.Tile>, Game.Tile) bestMove = moves.First();
+            var evaluations =
+                from move in moves.AsParallel()
+                select -Minimax(
+                    Convert((Game.Grid<Game.Grid<Game.Tile>>)board.Place(
+                        new List<ICell>() { move.Item1, move.Item2 },
+                        player,
+                        true)),
+                    depth,
+                    opponent,
+                    player);
+
             int bestEvaluation = 10000;
-            foreach (var move in moves)
+
+            foreach (var (move, evaluation) in moves.Zip(evaluations))
             {
-                var cellTrace = new List<ICell>() { move.Item1, move.Item2 };
-                var futureBoard = (Game.Grid<Game.Grid<Game.Tile>>)board.Place(cellTrace, player, true);
-                var convertedBoard = Convert(futureBoard);
-                int evaluation = -Minimax(convertedBoard, 4, opponent, player);
                 if (bestEvaluation > evaluation)
                 {
                     bestEvaluation = evaluation;
