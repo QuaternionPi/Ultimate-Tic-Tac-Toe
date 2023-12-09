@@ -5,12 +5,12 @@ namespace UltimateTicTacToe
 {
     namespace Game
     {
-        public class Grid<CellT> : ICell where CellT : ICell, new()
+        public class Grid<TCell> : ICell where TCell : ICell, new()
         {
             public Grid()
             {
                 Transform = new LinearTransform(Vector2.Zero, 0, 1);
-                Cells = new CellT[3, 3];
+                Cells = new TCell[3, 3];
                 Player = null;
                 LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
                 WinningPlayerTile = new Tile(null, victoryTileTransform, true, 0);
@@ -18,67 +18,67 @@ namespace UltimateTicTacToe
             public Grid(Player? player, LinearTransform transform, bool placeable)
             {
                 Transform = transform;
-                Cells = new CellT[3, 3];
+                Cells = new TCell[3, 3];
                 for (int i = 0; i < 3; i++)
                 {
                     for (int j = 0; j < 3; j++)
                     {
-                        Vector2 tilePosition = PixelPosition(new Address(i, j));
-                        LinearTransform tileTransform = new LinearTransform(tilePosition, 0, 1);
-                        CellT cell = (CellT)new CellT().Create(null, tileTransform, placeable);
+                        Vector2 cellPosition = PixelPosition(new Address(i, j));
+                        LinearTransform cellTransform = new LinearTransform(cellPosition, 0, 1);
+                        TCell cell = (TCell)new TCell().Create(null, cellTransform, placeable);
                         Cells[i, j] = cell;
-                        cell.Clicked += HandleClickedTile;
+                        cell.Clicked += HandleClickedCell;
                     }
                 }
                 Player = Winner();
                 LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
                 WinningPlayerTile = new Tile(Player, victoryTileTransform, true, TransitionValue);
             }
-            public Grid(Grid<CellT> original, bool placeable)
+            public Grid(Grid<TCell> original, bool placeable)
             {
                 Transform = original.Transform;
-                Cells = new CellT[3, 3];
+                Cells = new TCell[3, 3];
                 for (int i = 0; i < 3; i++)
                 {
                     for (int j = 0; j < 3; j++)
                     {
-                        CellT cell = original.Cells[i, j];
-                        CellT newCell = (CellT)cell.DeepCopyPlacable(placeable);
+                        TCell cell = original.Cells[i, j];
+                        TCell newCell = (TCell)cell.DeepCopyPlacable(placeable);
                         Cells[i, j] = newCell;
-                        newCell.Clicked += HandleClickedTile;
+                        newCell.Clicked += HandleClickedCell;
                     }
                 }
                 Player = Winner();
                 LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
                 WinningPlayerTile = new Tile(Player, victoryTileTransform, true, TransitionValue);
             }
-            public Grid(Grid<CellT> original, IEnumerable<ICell> cellTrace, Player player, bool placeable)
+            public Grid(Grid<TCell> original, IEnumerable<ICell> TCellrace, Player player, bool placeable)
             {
-                if (cellTrace.Last().Placeable == false)
+                if (TCellrace.Last().Placeable == false)
                 {
                     throw new Exception("You Cannot place on that cell");
                 }
                 Transform = original.Transform;
-                Cells = new CellT[3, 3];
+                Cells = new TCell[3, 3];
 
-                ICell cellToReplace = cellTrace.Last();
-                ICell targetCell = cellTrace.First();
+                ICell TCelloReplace = TCellrace.Last();
+                ICell targetCell = TCellrace.First();
 
                 for (int i = 0; i < 3; i++)
                 {
                     for (int j = 0; j < 3; j++)
                     {
-                        CellT cell = original.Cells[i, j];
+                        TCell cell = original.Cells[i, j];
                         if (cell.Equals(targetCell))
                         {
-                            cell = (CellT)cell.Place(cellTrace.Skip(1), player, placeable);
+                            cell = (TCell)cell.Place(TCellrace.Skip(1), player, placeable);
                         }
                         else
                         {
-                            cell = (CellT)cell.DeepCopyPlacable(placeable);
+                            cell = (TCell)cell.DeepCopyPlacable(placeable);
                         }
                         Cells[i, j] = cell;
-                        cell.Clicked += HandleClickedTile;
+                        cell.Clicked += HandleClickedCell;
                     }
                 }
 
@@ -90,31 +90,31 @@ namespace UltimateTicTacToe
                     return;
                 }
 
-                Address nextPlayableAddress = original.PathTo(cellToReplace).Last();
+                Address nextPlayableAddress = original.PathTo(TCelloReplace).Last();
                 (int nextX, int nextY) = nextPlayableAddress.XY;
-                CellT nextCell = Cells[nextX, nextY];
+                TCell nextCell = Cells[nextX, nextY];
 
                 if (nextCell.Placeable == false)
                 {
-                    Cells[nextX, nextY] = (CellT)nextCell.DeepCopyPlacable(false);
+                    Cells[nextX, nextY] = (TCell)nextCell.DeepCopyPlacable(false);
                     return;
                 }
                 for (int i = 0; i < 3; i++)
                 {
                     for (int j = 0; j < 3; j++)
                     {
-                        CellT cell = original.Cells[i, j];
+                        TCell cell = original.Cells[i, j];
                         bool cellPlaceable = (i == nextX) && (j == nextY) && (Player == null);
                         if (cell.Equals(targetCell))
                         {
-                            cell = (CellT)cell.Place(cellTrace.Skip(1), player, cellPlaceable);
+                            cell = (TCell)cell.Place(TCellrace.Skip(1), player, cellPlaceable);
                         }
                         else
                         {
-                            cell = (CellT)cell.DeepCopyPlacable(cellPlaceable);
+                            cell = (TCell)cell.DeepCopyPlacable(cellPlaceable);
                         }
                         Cells[i, j] = cell;
-                        cell.Clicked += HandleClickedTile;
+                        cell.Clicked += HandleClickedCell;
                     }
                 }
             }
@@ -125,14 +125,14 @@ namespace UltimateTicTacToe
                 get
                 {
                     return Player == null && (
-                        from CellT cell in Cells
+                        from TCell cell in Cells
                         where cell.Placeable == true
                         select cell
                         ).Any();
                 }
             }
             public event ICell.ClickHandler? Clicked;
-            public CellT[,] Cells { get; }
+            public TCell[,] Cells { get; }
             protected Tile WinningPlayerTile { get; }
             public bool InTransition
             {
@@ -142,7 +142,7 @@ namespace UltimateTicTacToe
                     {
                         return true;
                     }
-                    foreach (CellT cell in Cells)
+                    foreach (TCell cell in Cells)
                     {
                         if (cell.InTransition)
                         {
@@ -170,7 +170,7 @@ namespace UltimateTicTacToe
             public void Draw()
             {
                 bool gridCellInTransition = false;
-                foreach (CellT cell in Cells)
+                foreach (TCell cell in Cells)
                 {
                     gridCellInTransition |= cell.InTransition;
                 }
@@ -181,19 +181,19 @@ namespace UltimateTicTacToe
                 }
                 DrawGrid();
 
-                foreach (CellT cell in Cells)
+                foreach (TCell cell in Cells)
                 {
                     cell.Draw();
                 }
             }
             public void Update()
             {
-                foreach (CellT cell in Cells)
+                foreach (TCell cell in Cells)
                 {
                     cell.Update();
                 }
                 bool gridCellInTransition = false;
-                foreach (CellT cell in Cells)
+                foreach (TCell cell in Cells)
                 {
                     gridCellInTransition |= cell.InTransition;
                 }
@@ -202,17 +202,17 @@ namespace UltimateTicTacToe
             }
             public ICell Create(Player? player, LinearTransform transform, bool placeable)
             {
-                return new Grid<CellT>(player, transform, placeable);
+                return new Grid<TCell>(player, transform, placeable);
             }
-            public ICell Place(IEnumerable<ICell> cellTrace, Player player, bool placeable)
+            public ICell Place(IEnumerable<ICell> TCellrace, Player player, bool placeable)
             {
-                return new Grid<CellT>(this, cellTrace, player, placeable);
+                return new Grid<TCell>(this, TCellrace, player, placeable);
             }
             public ICell DeepCopyPlacable(bool placeable)
             {
-                return new Grid<CellT>(this, placeable);
+                return new Grid<TCell>(this, placeable);
             }
-            public void HandleClickedTile(IEnumerable<ICell> cells)
+            public void HandleClickedCell(IEnumerable<ICell> cells)
             {
                 IEnumerable<ICell> newCells = cells.Prepend(this).ToList();
                 Clicked?.Invoke(newCells);
