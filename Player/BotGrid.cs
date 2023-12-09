@@ -41,6 +41,11 @@ namespace UltimateTicTacToe
                 }
                 Player = this.Winner();
             }
+            public Grid(TCell[,] cells)
+            {
+                Cells = cells;
+                Player = this.Winner();
+            }
             public Grid(Grid<TCell> original, IEnumerable<ICell> TCellrace, Player player, bool placeable)
             {
                 if (TCellrace.Last().Placeable == false)

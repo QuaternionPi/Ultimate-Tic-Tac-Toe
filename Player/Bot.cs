@@ -1,4 +1,5 @@
 using System.Numerics;
+using System.Security.Cryptography.X509Certificates;
 using Raylib_cs;
 
 namespace UltimateTicTacToe
@@ -28,6 +29,32 @@ namespace UltimateTicTacToe
         {
 
         }
+        protected static Grid<Grid<Tile>> Convert(Game.Grid<Game.Grid<Game.Tile>> board)
+        {
+            Grid<Tile>[,] newGrids = new Grid<Tile>[3, 3];
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    Game.Grid<Game.Tile> grid = board.Cells[i, j];
+                    Tile[,] newTiles = new Tile[3, 3];
+                    for (int k = 0; k < 3; k++)
+                    {
+                        for (int l = 0; l < 3; l++)
+                        {
+                            Game.Tile tile = grid.Cells[k, l];
+                            Player? player = tile.Player;
+                            bool placeable = tile.Placeable;
+                            Tile newTile = new(player, placeable);
+                            newTiles[k, l] = newTile;
+                        }
+                    }
+                    Grid<Tile> newGrid = new(newTiles);
+                    newGrids[i, j] = newGrid;
+                }
+            }
+            return new(newGrids);
+        }
         protected static (Game.Grid<Game.Tile>, Game.Tile) BestMove(
             Game.Grid<Game.Grid<Game.Tile>> board,
             IEnumerable<(Game.Grid<Game.Tile>, Game.Tile)> moves,
@@ -45,7 +72,8 @@ namespace UltimateTicTacToe
             {
                 var cellTrace = new List<ICell>() { move.Item1, move.Item2 };
                 var futureBoard = (Game.Grid<Game.Grid<Game.Tile>>)board.Place(cellTrace, player, true);
-                int evaluation = -Minimax(futureBoard, 4, opponent, player);
+                var convertedBoard = Convert(futureBoard);
+                int evaluation = -Minimax(convertedBoard, 4, opponent, player);
                 if (bestEvaluation > evaluation)
                 {
                     bestEvaluation = evaluation;
@@ -55,7 +83,7 @@ namespace UltimateTicTacToe
             return bestMove;
         }
         protected static int Minimax(
-            Game.Grid<Game.Grid<Game.Tile>> board,
+            Grid<Grid<Tile>> board,
             int depth,
             Player player,
             Player opponent)
@@ -85,7 +113,7 @@ namespace UltimateTicTacToe
             foreach (var move in posibleMoves)
             {
                 var cellTrace = new List<ICell>() { move.Item1, move.Item2 };
-                var futureBoard = (Game.Grid<Game.Grid<Game.Tile>>)board.Place(cellTrace, player, true);
+                var futureBoard = (Grid<Grid<Tile>>)board.Place(cellTrace, player, true);
                 int evaluation = -Minimax(futureBoard, depth - 1, opponent, player);
 
                 bestEvaluation = Math.Min(bestEvaluation, evaluation);
@@ -100,7 +128,7 @@ namespace UltimateTicTacToe
                 return -amount;
             return 0;
         }
-        protected static int Evaluate(Game.Grid<Game.Grid<Game.Tile>> board, Player player, Player opponent)
+        protected static int Evaluate(Grid<Grid<Tile>> board, Player player, Player opponent)
         {
             if (board.Player == player)
             {
@@ -112,13 +140,28 @@ namespace UltimateTicTacToe
             }
             int evaluation = 0;
             evaluation -= PosibleMoves(board).Count;
-            foreach (Game.Grid<Game.Tile> grid in board.Cells)
+            foreach (Grid<Tile> grid in board.Cells)
             {
                 evaluation += Award(100, grid.Player, player, opponent);
                 evaluation += Award(15, grid.Cells[1, 1].Player, player, opponent);
             }
             evaluation += Award(100, board.Cells[1, 1].Player, player, opponent);
             return evaluation;
+        }
+        protected static List<(Grid<Tile>, Tile)> PosibleMoves(Grid<Grid<Tile>> board)
+        {
+            List<(Grid<Tile>, Tile)> posibleMoves = new();
+            foreach (Grid<Tile> grid in board.Cells)
+            {
+                foreach (Tile tile in grid.Cells)
+                {
+                    if (tile.Placeable && grid.Placeable)
+                    {
+                        posibleMoves.Add((grid, tile));
+                    }
+                }
+            }
+            return posibleMoves;
         }
         protected static List<(Game.Grid<Game.Tile>, Game.Tile)> PosibleMoves(Game.Grid<Game.Grid<Game.Tile>> board)
         {
