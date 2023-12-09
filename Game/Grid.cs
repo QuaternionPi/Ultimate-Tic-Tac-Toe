@@ -294,7 +294,7 @@ namespace UltimateTicTacToe
                 hasWinner |= trueCenter != null
                     && topLeft == trueCenter
                     && trueCenter == bottomRight;
-                hasWinner = trueCenter != null
+                hasWinner |= trueCenter != null
                     && topRight == trueCenter
                     && trueCenter == bottomLeft;
 

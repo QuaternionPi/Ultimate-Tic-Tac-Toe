@@ -31,8 +31,8 @@ namespace UltimateTicTacToe
         protected static (Game.Grid<Game.Tile>, Game.Tile) BestMove(
             Game.Grid<Game.Grid<Game.Tile>> board,
             IEnumerable<(Game.Grid<Game.Tile>, Game.Tile)> moves,
-            Player maximizer,
-            Player minimizer
+            Player player,
+            Player opponent
             )
         {
             if (moves.Count() == 0)
@@ -40,13 +40,13 @@ namespace UltimateTicTacToe
                 throw new Exception("Cannot choose best move from no moves");
             }
             (Game.Grid<Game.Tile>, Game.Tile) bestMove = moves.First();
-            int bestEvaluation = -10000;
+            int bestEvaluation = 10000;
             foreach (var move in moves)
             {
                 var cellTrace = new List<Game.ICell>() { move.Item1, move.Item2 };
-                var futureBoard = (Game.Grid<Game.Grid<Game.Tile>>)board.Place(cellTrace, maximizer, true);
-                int evaluation = Minimax(futureBoard, 4, minimizer, maximizer, true);
-                if (bestEvaluation < evaluation)
+                var futureBoard = (Game.Grid<Game.Grid<Game.Tile>>)board.Place(cellTrace, player, true);
+                int evaluation = -Minimax(futureBoard, 4, opponent, player);
+                if (bestEvaluation > evaluation)
                 {
                     bestEvaluation = evaluation;
                     bestMove = move;
@@ -57,28 +57,23 @@ namespace UltimateTicTacToe
         protected static int Minimax(
             Game.Grid<Game.Grid<Game.Tile>> board,
             int depth,
-            Player maximizer,
-            Player minimizer,
-            bool minimize)
+            Player player,
+            Player opponent)
         {
             // The base case of the recursion
             if (depth == 0)
             {
-                return Evaluate(board, minimizer, maximizer);
+                return Evaluate(board, opponent, player);
             }
             var posibleMoves = PosibleMoves(board);
             // If the board is a winning position
-            if (posibleMoves.Count == 0)
+            if (board.Player == player)
             {
-                if (board.Player == maximizer)
-                {
-                    return -1500;
-                }
-                else if (board.Player == minimizer)
-                {
-                    return 1500;
-                }
-                return 0;
+                return -1500;
+            }
+            else if (board.Player == opponent)
+            {
+                return 1500;
             }
 
             if (posibleMoves.Count() > 30)
@@ -86,69 +81,43 @@ namespace UltimateTicTacToe
                 depth = Math.Max(depth - 1, 1);
             }
 
-            int bestEvaluation;
-            if (minimize)
-            {
-                bestEvaluation = 10000;
-            }
-            else
-            {
-                bestEvaluation = -10000;
-            }
+            int bestEvaluation = 10000;
             foreach (var move in posibleMoves)
             {
                 var cellTrace = new List<Game.ICell>() { move.Item1, move.Item2 };
-                var futureBoard = (Game.Grid<Game.Grid<Game.Tile>>)board.Place(cellTrace, maximizer, true);
-                int evaluation = -Minimax(futureBoard, depth - 1, minimizer, maximizer, !minimize);
+                var futureBoard = (Game.Grid<Game.Grid<Game.Tile>>)board.Place(cellTrace, player, true);
+                int evaluation = -Minimax(futureBoard, depth - 1, opponent, player);
 
-                if (minimize)
-                    bestEvaluation = Math.Min(bestEvaluation, evaluation);
-                else
-                    bestEvaluation = Math.Max(bestEvaluation, evaluation);
+                bestEvaluation = Math.Min(bestEvaluation, evaluation);
             }
             return bestEvaluation;
         }
-        protected static int Evaluate(Game.Grid<Game.Grid<Game.Tile>> board, Player maximizer, Player minimizer)
+        protected static int Award<T>(int amount, T? compair, T positive, T negative) where T : class
         {
-            if (board.Player == maximizer)
+            if (positive.Equals(compair))
+                return amount;
+            if (negative.Equals(compair))
+                return -amount;
+            return 0;
+        }
+        protected static int Evaluate(Game.Grid<Game.Grid<Game.Tile>> board, Player player, Player opponent)
+        {
+            if (board.Player == player)
             {
                 return 1000;
             }
-            else if (board.Player == minimizer)
+            else if (board.Player == opponent)
             {
                 return -1000;
             }
             int evaluation = 0;
-            evaluation -= PosibleMoves(board).Count();
+            evaluation -= PosibleMoves(board).Count;
             foreach (Game.Grid<Game.Tile> grid in board.Cells)
             {
-                if (grid.Player == maximizer)
-                {
-                    evaluation += 100;
-                    continue;
-                }
-                else if (grid.Player == minimizer)
-                {
-                    evaluation -= 100;
-                    continue;
-                }
-                if (grid.Cells[1, 1].Player == maximizer)
-                {
-                    evaluation += 15;
-                }
-                else if (grid.Cells[1, 1].Player == minimizer)
-                {
-                    evaluation -= 15;
-                }
+                evaluation += Award(100, grid.Player, player, opponent);
+                evaluation += Award(15, grid.Cells[1, 1].Player, player, opponent);
             }
-            if (board.Cells[1, 1].Player == maximizer)
-            {
-                evaluation += 150;
-            }
-            if (board.Cells[1, 1].Player == minimizer)
-            {
-                evaluation -= 150;
-            }
+            evaluation += Award(100, board.Cells[1, 1].Player, player, opponent);
             return evaluation;
         }
         protected static List<(Game.Grid<Game.Tile>, Game.Tile)> PosibleMoves(Game.Grid<Game.Grid<Game.Tile>> board)
