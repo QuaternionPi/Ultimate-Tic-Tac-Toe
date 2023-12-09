@@ -119,7 +119,6 @@ namespace UltimateTicTacToe
                         ).Any();
                 }
             }
-            public event IClickableCell.ClickHandler? Clicked;
             public TCell[,] Cells { get; }
             public List<Address> PathTo(ICell cell) => this.PathToCell(cell);
             public bool Contains(ICell cell) => this.ContainsCell(cell);
