@@ -6,7 +6,7 @@ namespace UltimateTicTacToe
 
     namespace Game
     {
-        public class Tile : ICell
+        public class Tile : IDrawable, IUpdateable, ITransitionable, ICell
         {
             public Tile()
             {
@@ -69,7 +69,7 @@ namespace UltimateTicTacToe
             {
                 return new Tile(Player, Transform, placeable, TransitionValue);
             }
-            public IEnumerable<Address> PathTo(ICell cell) => new List<Address>();
+            public List<Address> PathTo(ICell cell) => new List<Address>();
             public bool Contains(ICell cell) => cell.Equals(this);
         }
     }

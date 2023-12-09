@@ -5,7 +5,7 @@ namespace UltimateTicTacToe
 {
     namespace Game
     {
-        public class Grid<TCell> : ICell where TCell : ICell, new()
+        public class Grid<TCell> : IDrawable, IUpdateable, ITransitionable, IBoard<TCell>, ICell where TCell : IDrawable, IUpdateable, ITransitionable, ICell, new()
         {
             public Grid()
             {
@@ -30,7 +30,7 @@ namespace UltimateTicTacToe
                         cell.Clicked += HandleClickedCell;
                     }
                 }
-                Player = Winner();
+                Player = this.Winner();
                 LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
                 WinningPlayerTile = new Tile(Player, victoryTileTransform, true, TransitionValue);
             }
@@ -48,7 +48,7 @@ namespace UltimateTicTacToe
                         newCell.Clicked += HandleClickedCell;
                     }
                 }
-                Player = Winner();
+                Player = this.Winner();
                 LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
                 WinningPlayerTile = new Tile(Player, victoryTileTransform, true, TransitionValue);
             }
@@ -82,7 +82,7 @@ namespace UltimateTicTacToe
                     }
                 }
 
-                Player = Winner();
+                Player = this.Winner();
                 LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
                 WinningPlayerTile = new Tile(Player, victoryTileTransform, true, TransitionValue);
                 if (Cells[0, 0] is Tile || Player != null)
@@ -167,6 +167,8 @@ namespace UltimateTicTacToe
                     return max;
                 }
             }
+            public List<Address> PathTo(ICell cell) => this.PathToCell(cell);
+            public bool Contains(ICell cell) => this.ContainsCell(cell);
             public void Draw()
             {
                 bool gridCellInTransition = false;
@@ -224,38 +226,6 @@ namespace UltimateTicTacToe
                 int y = (int)(Transform.Position.Y + (j - 1) * 50 * Transform.Scale);
                 return new Vector2(x, y);
             }
-            public IEnumerable<Address> PathTo(ICell cell)
-            {
-                if (Contains(cell) == false)
-                {
-                    throw new Exception($"Cell: {cell} is not contained. There is no path to it");
-                }
-                for (int i = 0; i < 3; i++)
-                {
-                    for (int j = 0; j < 3; j++)
-                    {
-                        if (Cells[i, j].Contains(cell))
-                        {
-                            Address address = new(i, j);
-                            return Cells[i, j].PathTo(cell).Prepend(address);
-                        }
-                    }
-                }
-                throw new Exception($"Cell: {cell} was not found");
-            }
-            public bool Contains(ICell cell)
-            {
-                bool contains = false;
-                for (int i = 0; i < 3; i++)
-                {
-                    for (int j = 0; j < 3; j++)
-                    {
-                        contains |= Cells[i, j].Equals(cell);
-                        contains |= Cells[i, j].Contains(cell);
-                    }
-                }
-                return contains;
-            }
             public void DrawGrid()
             {
                 LinearTransform transform = Transform;
@@ -270,121 +240,6 @@ namespace UltimateTicTacToe
                 Graphics.Draw.Rectangle(x - lineWidth / 2 - lineGap / 2, y - lineLength / 2, lineWidth, lineLength, color);
                 Graphics.Draw.Rectangle(x - lineLength / 2, y - lineWidth / 2 + lineGap / 2, lineLength, lineWidth, color);
                 Graphics.Draw.Rectangle(x - lineLength / 2, y - lineWidth / 2 - lineGap / 2, lineLength, lineWidth, color);
-            }
-            public bool HasWinner()
-            {
-                bool hasWinner = false;
-                Player[,] cellWinners =
-                    from cell in Cells
-                    select cell.Player;
-
-                Player topLeft = cellWinners[0, 0];
-                Player topCenter = cellWinners[0, 1];
-                Player topRight = cellWinners[0, 2];
-
-                Player leftCenter = cellWinners[1, 0];
-                Player trueCenter = cellWinners[1, 1];
-                Player rightCenter = cellWinners[1, 2];
-
-                Player bottomLeft = cellWinners[2, 0];
-                Player bottomCenter = cellWinners[2, 1];
-                Player bottomRight = cellWinners[2, 2];
-
-                // Diagonals
-                hasWinner |= trueCenter != null
-                    && topLeft == trueCenter
-                    && trueCenter == bottomRight;
-                hasWinner |= trueCenter != null
-                    && topRight == trueCenter
-                    && trueCenter == bottomLeft;
-
-                // Column 0
-                hasWinner |= topLeft != null
-                    && topLeft == topCenter
-                    && topCenter == topRight;
-                // Column 1
-                hasWinner |= leftCenter != null
-                    && leftCenter == trueCenter
-                    && trueCenter == rightCenter;
-                // Column 2
-                hasWinner |= bottomLeft != null
-                    && bottomLeft == bottomCenter
-                    && bottomCenter == bottomRight;
-
-                // Row 0
-                hasWinner |= topLeft != null
-                    && topLeft == leftCenter
-                    && leftCenter == bottomLeft;
-                // Row 1
-                hasWinner |= topCenter != null
-                    && topCenter == trueCenter
-                    && trueCenter == bottomCenter;
-                // Row 2
-                hasWinner |= topRight != null
-                    && topRight == rightCenter
-                    && rightCenter == bottomRight;
-                return hasWinner;
-            }
-            public Player? Winner()
-            {
-                if (HasWinner() == false)
-                {
-                    return null;
-                }
-
-                Player[,] cellWinners =
-                    from cell in Cells
-                    select cell.Player;
-
-                Player topLeft = cellWinners[0, 0];
-                Player topCenter = cellWinners[0, 1];
-                Player topRight = cellWinners[0, 2];
-
-                Player leftCenter = cellWinners[1, 0];
-                Player trueCenter = cellWinners[1, 1];
-                Player rightCenter = cellWinners[1, 2];
-
-                Player bottomLeft = cellWinners[2, 0];
-                Player bottomCenter = cellWinners[2, 1];
-                Player bottomRight = cellWinners[2, 2];
-
-                if (trueCenter != null)
-                {
-                    bool winnerFound = false;
-                    // Column 1
-                    winnerFound |= leftCenter == trueCenter && trueCenter == rightCenter;
-                    // Row 1
-                    winnerFound |= topCenter == trueCenter && trueCenter == bottomCenter;
-
-                    // Diagonals
-                    winnerFound |= topLeft == trueCenter && trueCenter == bottomRight;
-                    winnerFound |= topRight == trueCenter && trueCenter == bottomLeft;
-
-                    if (winnerFound)
-                        return trueCenter;
-                }
-                if (topLeft != null)
-                {
-                    bool winnerFound = false;
-                    // Column 0
-                    winnerFound |= topLeft == topCenter && topCenter == topRight;
-
-                    // Row 0
-                    winnerFound |= topLeft == leftCenter && leftCenter == bottomLeft;
-                    if (winnerFound)
-                        return topLeft;
-                }
-                if (bottomRight != null)
-                {
-                    // Column 2
-                    bool winnerFound = false;
-                    winnerFound |= bottomLeft == bottomCenter && bottomCenter == bottomRight;
-                    // Row 2
-                    winnerFound |= topRight == rightCenter && rightCenter == bottomRight;
-                    if (winnerFound)
-                        return bottomRight;
-                }
-                return null;
             }
         }
     }
