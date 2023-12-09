@@ -12,6 +12,9 @@ namespace UltimateTicTacToe
             public ICell DeepCopyPlacable(bool placeable);
             public List<Address> PathTo(ICell cell);
             public bool Contains(ICell cell);
+        }
+        public interface IClickableCell : ICell
+        {
             public delegate void ClickHandler(IEnumerable<ICell> cells);
             public event ClickHandler? Clicked;
         }

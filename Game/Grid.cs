@@ -5,7 +5,8 @@ namespace UltimateTicTacToe
 {
     namespace Game
     {
-        public class Grid<TCell> : IDrawable, IUpdateable, ITransitionable, IBoard<TCell>, ICell where TCell : IDrawable, IUpdateable, ITransitionable, ICell, new()
+        public class Grid<TCell> : IDrawable, IUpdateable, ITransitionable, IBoard<TCell>, IClickableCell
+            where TCell : IDrawable, IUpdateable, ITransitionable, IClickableCell, new()
         {
             public Grid()
             {
@@ -131,7 +132,7 @@ namespace UltimateTicTacToe
                         ).Any();
                 }
             }
-            public event ICell.ClickHandler? Clicked;
+            public event IClickableCell.ClickHandler? Clicked;
             public TCell[,] Cells { get; }
             protected Tile WinningPlayerTile { get; }
             public bool InTransition

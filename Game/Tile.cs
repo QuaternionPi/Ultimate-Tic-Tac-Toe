@@ -6,7 +6,7 @@ namespace UltimateTicTacToe
 
     namespace Game
     {
-        public class Tile : IDrawable, IUpdateable, ITransitionable, ICell
+        public class Tile : IDrawable, IUpdateable, ITransitionable, IClickableCell
         {
             public Tile()
             {
@@ -28,7 +28,7 @@ namespace UltimateTicTacToe
             public Player? Player { get; }
             public bool Placeable { get; }
             public LinearTransform Transform { get; }
-            public event ICell.ClickHandler? Clicked;
+            public event IClickableCell.ClickHandler? Clicked;
             public bool InTransition { get { return TransitionValue != 0; } }
             public float TransitionValue { get; protected set; }
             public void Draw()
