@@ -245,21 +245,16 @@ namespace UltimateTicTacToe
             }
             public bool Contains(ICell cell)
             {
+                bool contains = false;
                 for (int i = 0; i < 3; i++)
                 {
                     for (int j = 0; j < 3; j++)
                     {
-                        if (Cells[i, j].Equals(cell))
-                        {
-                            return true;
-                        }
-                        else if (Cells[i, j].Contains(cell))
-                        {
-                            return true;
-                        }
+                        contains |= Cells[i, j].Equals(cell);
+                        contains |= Cells[i, j].Contains(cell);
                     }
                 }
-                return false;
+                return contains;
             }
             public void DrawGrid()
             {
@@ -276,63 +271,119 @@ namespace UltimateTicTacToe
                 Graphics.Draw.Rectangle(x - lineLength / 2, y - lineWidth / 2 + lineGap / 2, lineLength, lineWidth, color);
                 Graphics.Draw.Rectangle(x - lineLength / 2, y - lineWidth / 2 - lineGap / 2, lineLength, lineWidth, color);
             }
-            public Player? Winner()
+            public bool HasWinner()
             {
-                bool hasWinner;
+                bool hasWinner = false;
                 Player[,] cellWinners =
                     from cell in Cells
                     select cell.Player;
 
-                // Column 0
-                hasWinner = cellWinners[0, 0] != null
-                    && cellWinners[0, 0] == cellWinners[0, 1]
-                    && cellWinners[0, 1] == cellWinners[0, 2];
-                if (hasWinner)
-                    return cellWinners[0, 0];
-                // Column 1
-                hasWinner = cellWinners[1, 0] != null
-                    && cellWinners[1, 0] == cellWinners[1, 1]
-                    && cellWinners[1, 1] == cellWinners[1, 2];
-                if (hasWinner)
-                    return cellWinners[1, 0];
-                // Column 2
-                hasWinner = cellWinners[2, 0] != null
-                    && cellWinners[2, 0] == cellWinners[2, 1]
-                    && cellWinners[2, 1] == cellWinners[2, 2];
-                if (hasWinner)
-                    return cellWinners[2, 0];
+                Player topLeft = cellWinners[0, 0];
+                Player topCenter = cellWinners[0, 1];
+                Player topRight = cellWinners[0, 2];
 
-                // Row 0
-                hasWinner = cellWinners[0, 0] != null
-                    && cellWinners[0, 0] == cellWinners[1, 0]
-                    && cellWinners[1, 0] == cellWinners[2, 0];
-                if (hasWinner)
-                    return cellWinners[0, 0];
-                // Row 1
-                hasWinner = cellWinners[0, 1] != null
-                    && cellWinners[0, 1] == cellWinners[1, 1]
-                    && cellWinners[1, 1] == cellWinners[2, 1];
-                if (hasWinner)
-                    return cellWinners[0, 1];
-                // Row 2
-                hasWinner = cellWinners[0, 2] != null
-                    && cellWinners[0, 2] == cellWinners[1, 2]
-                    && cellWinners[1, 2] == cellWinners[2, 2];
-                if (hasWinner)
-                    return cellWinners[0, 2];
+                Player leftCenter = cellWinners[1, 0];
+                Player trueCenter = cellWinners[1, 1];
+                Player rightCenter = cellWinners[1, 2];
+
+                Player bottomLeft = cellWinners[2, 0];
+                Player bottomCenter = cellWinners[2, 1];
+                Player bottomRight = cellWinners[2, 2];
 
                 // Diagonals
-                hasWinner = cellWinners[1, 1] != null
-                    && cellWinners[0, 0] == cellWinners[1, 1]
-                    && cellWinners[1, 1] == cellWinners[2, 2];
-                if (hasWinner)
-                    return cellWinners[1, 1];
-                hasWinner = cellWinners[1, 1] != null
-                    && cellWinners[0, 2] == cellWinners[1, 1]
-                    && cellWinners[1, 1] == cellWinners[2, 0];
-                if (hasWinner)
-                    return cellWinners[1, 1];
+                hasWinner |= trueCenter != null
+                    && topLeft == trueCenter
+                    && trueCenter == bottomRight;
+                hasWinner = trueCenter != null
+                    && topRight == trueCenter
+                    && trueCenter == bottomLeft;
 
+                // Column 0
+                hasWinner |= topLeft != null
+                    && topLeft == topCenter
+                    && topCenter == topRight;
+                // Column 1
+                hasWinner |= leftCenter != null
+                    && leftCenter == trueCenter
+                    && trueCenter == rightCenter;
+                // Column 2
+                hasWinner |= bottomLeft != null
+                    && bottomLeft == bottomCenter
+                    && bottomCenter == bottomRight;
+
+                // Row 0
+                hasWinner |= topLeft != null
+                    && topLeft == leftCenter
+                    && leftCenter == bottomLeft;
+                // Row 1
+                hasWinner |= topCenter != null
+                    && topCenter == trueCenter
+                    && trueCenter == bottomCenter;
+                // Row 2
+                hasWinner |= topRight != null
+                    && topRight == rightCenter
+                    && rightCenter == bottomRight;
+                return hasWinner;
+            }
+            public Player? Winner()
+            {
+                if (HasWinner() == false)
+                {
+                    return null;
+                }
+
+                Player[,] cellWinners =
+                    from cell in Cells
+                    select cell.Player;
+
+                Player topLeft = cellWinners[0, 0];
+                Player topCenter = cellWinners[0, 1];
+                Player topRight = cellWinners[0, 2];
+
+                Player leftCenter = cellWinners[1, 0];
+                Player trueCenter = cellWinners[1, 1];
+                Player rightCenter = cellWinners[1, 2];
+
+                Player bottomLeft = cellWinners[2, 0];
+                Player bottomCenter = cellWinners[2, 1];
+                Player bottomRight = cellWinners[2, 2];
+
+                if (trueCenter != null)
+                {
+                    bool winnerFound = false;
+                    // Column 1
+                    winnerFound |= leftCenter == trueCenter && trueCenter == rightCenter;
+                    // Row 1
+                    winnerFound |= topCenter == trueCenter && trueCenter == bottomCenter;
+
+                    // Diagonals
+                    winnerFound |= topLeft == trueCenter && trueCenter == bottomRight;
+                    winnerFound |= topRight == trueCenter && trueCenter == bottomLeft;
+
+                    if (winnerFound)
+                        return trueCenter;
+                }
+                if (topLeft != null)
+                {
+                    bool winnerFound = false;
+                    // Column 0
+                    winnerFound |= topLeft == topCenter && topCenter == topRight;
+
+                    // Row 0
+                    winnerFound |= topLeft == leftCenter && leftCenter == bottomLeft;
+                    if (winnerFound)
+                        return topLeft;
+                }
+                if (bottomRight != null)
+                {
+                    // Column 2
+                    bool winnerFound = false;
+                    winnerFound |= bottomLeft == bottomCenter && bottomCenter == bottomRight;
+                    // Row 2
+                    winnerFound |= topRight == rightCenter && rightCenter == bottomRight;
+                    if (winnerFound)
+                        return bottomRight;
+                }
                 return null;
             }
         }
