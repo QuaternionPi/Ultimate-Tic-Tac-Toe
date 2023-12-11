@@ -7,12 +7,11 @@ namespace UltimateTicTacToe
     {
         public class Banner : IDrawable
         {
-            public Banner(Player player, LinearTransform transform, bool active, int score)
+            public Banner(Player player, LinearTransform transform, bool active)
             {
                 Player = player;
                 Transform = transform;
                 Active = active;
-                Score = score;
                 Font = Graphics.Text.GetFontDefault();
                 Tile = new Game.Tile(Player, Transform, false, 0);
             }
@@ -20,7 +19,6 @@ namespace UltimateTicTacToe
             public Player Player { get; }
             public bool Active { get; }
             protected Game.Tile Tile { get; }
-            public int Score { get; set; }
             protected Font Font { get; }
             public void Draw()
             {
@@ -35,7 +33,7 @@ namespace UltimateTicTacToe
             }
             protected void DrawScore()
             {
-                string message = Score.ToString();
+                string message = Player.Score.ToString();
                 float spacing = 3;
                 float fontSize = 80;
                 float messageWidth = Graphics.Text.MeasureTextEx(Font, message, fontSize, spacing).X;

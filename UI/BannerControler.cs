@@ -12,8 +12,8 @@ namespace UltimateTicTacToe
                 Font = Graphics.Text.GetFontDefault();
                 LinearTransform leftTransform = new(new Vector2(85, 85), 0, 3);
                 LinearTransform rightTransform = new(new Vector2(815, 85), 0, 3);
-                LeftBanner = new Banner(players[1], leftTransform, false, 0);
-                RightBanner = new Banner(players[0], rightTransform, true, 0);
+                LeftBanner = new Banner(players[1], leftTransform, false);
+                RightBanner = new Banner(players[0], rightTransform, true);
             }
             protected Banner LeftBanner;
             protected Banner RightBanner;
@@ -34,15 +34,13 @@ namespace UltimateTicTacToe
                     LeftBanner = new Banner(
                         LeftBanner.Player,
                         LeftBanner.Transform,
-                        true,
-                        LeftBanner.Score
+                        true
                     );
                 else
                     RightBanner = new Banner(
                         RightBanner.Player,
                         RightBanner.Transform,
-                        true,
-                        RightBanner.Score
+                        true
                     );
             }
             public void Deactivate(Player player)
@@ -51,31 +49,14 @@ namespace UltimateTicTacToe
                     LeftBanner = new Banner(
                         LeftBanner.Player,
                         LeftBanner.Transform,
-                        false,
-                        LeftBanner.Score
+                        false
                     );
                 else
                     RightBanner = new Banner(
                         RightBanner.Player,
                         RightBanner.Transform,
-                        false,
-                        RightBanner.Score
+                        false
                     );
-            }
-            public void AddPoints(Player player, int points)
-            {
-                if (LeftBanner.Player == player)
-                {
-                    LeftBanner.Score += points;
-                }
-                else if (RightBanner.Player == player)
-                {
-                    RightBanner.Score += points;
-                }
-                else
-                {
-                    throw new Exception("This player is not on either of the banners");
-                }
             }
         }
     }

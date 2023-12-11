@@ -5,7 +5,7 @@ namespace UltimateTicTacToe
 {
     public partial class Bot : Player
     {
-        public Bot(Symbol symbol, Color color) : base(symbol, color)
+        public Bot(Symbol symbol, Color color, int score) : base(symbol, color, score)
         {
         }
         protected Game.Grid<Game.Grid<Game.Tile>>? Board;
@@ -67,7 +67,20 @@ namespace UltimateTicTacToe
             }
             int alpha = -100000;
             int beta = 100000;
-            int depth = moves.Count() > 30 ? 4 : 6;
+            int depth;
+            if (moves.Count() < 7)
+            {
+                depth = 6;
+            }
+            else if (moves.Count() < 30)
+            {
+                depth = 5;
+            }
+            else
+            {
+                depth = 4;
+            }
+
             var evaluatedMoves =
                 from move in moves.AsParallel()
                 select (move,
@@ -82,14 +95,14 @@ namespace UltimateTicTacToe
                         opponent,
                         player));
 
-            int bestEvaluation = 10000;
+            int minEvaluation = 10000;
             (Game.Grid<Game.Tile>, Game.Tile) bestMove = moves.First();
 
             foreach (var (move, evaluation) in evaluatedMoves)
             {
-                if (bestEvaluation > evaluation)
+                if (minEvaluation > evaluation)
                 {
-                    bestEvaluation = evaluation;
+                    minEvaluation = evaluation;
                     bestMove = move;
                 }
             }
@@ -110,18 +123,18 @@ namespace UltimateTicTacToe
             }
 
             var posibleMoves = PosibleMoves(board);
-            int bestEvaluation = 10000;
+            int minEvaluation = 10000;
             foreach (var move in posibleMoves)
             {
                 var cellTrace = new List<ICell>() { move.Item1, move.Item2 };
                 var placedBoard = (Grid<Grid<Tile>>)board.Place(cellTrace, player, true);
                 var evaluation = -Minimax(placedBoard, depth - 1, -beta, -alpha, opponent, player);
-                bestEvaluation = Math.Min(bestEvaluation, evaluation);
+                minEvaluation = Math.Min(minEvaluation, evaluation);
                 beta = Math.Min(beta, evaluation);
-                if (beta < alpha)
+                if (beta <= alpha)
                     break;
             }
-            return bestEvaluation;
+            return minEvaluation;
         }
         protected static int Award<T>(int amount, T? compair, T positive, T negative) where T : class
         {
@@ -146,9 +159,17 @@ namespace UltimateTicTacToe
             foreach (Grid<Tile> grid in board.Cells)
             {
                 evaluation += Award(100, grid.Player, player, opponent);
-                evaluation += Award(15, grid.Cells[1, 1].Player, player, opponent);
+                evaluation += Award(10, grid.Cells[1, 1].Player, player, opponent);
+                evaluation += Award(5, grid.Cells[0, 0].Player, player, opponent);
+                evaluation += Award(5, grid.Cells[0, 2].Player, player, opponent);
+                evaluation += Award(5, grid.Cells[2, 0].Player, player, opponent);
+                evaluation += Award(5, grid.Cells[2, 2].Player, player, opponent);
             }
             evaluation += Award(50, board.Cells[1, 1].Player, player, opponent);
+            evaluation += Award(25, board.Cells[0, 0].Player, player, opponent);
+            evaluation += Award(25, board.Cells[0, 2].Player, player, opponent);
+            evaluation += Award(25, board.Cells[2, 0].Player, player, opponent);
+            evaluation += Award(25, board.Cells[2, 2].Player, player, opponent);
             return evaluation;
         }
         protected static int NumPosibleMoves(Grid<Grid<Tile>> board)

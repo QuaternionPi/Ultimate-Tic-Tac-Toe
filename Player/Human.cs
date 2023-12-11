@@ -5,7 +5,7 @@ namespace UltimateTicTacToe
 {
     public class Human : Player
     {
-        public Human(Symbol symbol, Color color) : base(symbol, color)
+        public Human(Symbol symbol, Color color, int score) : base(symbol, color, score)
         {
         }
         protected Game.Grid<Game.Grid<Game.Tile>>? Board;

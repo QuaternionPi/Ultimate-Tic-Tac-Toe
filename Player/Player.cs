@@ -14,11 +14,13 @@ namespace UltimateTicTacToe
             Color.DARKGREEN,
         };
         public enum Symbol { X, O };
-        public Player(Symbol symbol, Color color)
+        public Player(Symbol symbol, Color color, int score)
         {
             Shape = symbol;
             Color = color;
+            Score = score;
         }
+        public int Score;
         public Symbol Shape { get; set; }
         public Color Color { get; set; }
         public delegate void Turn(Player player, IEnumerable<ICell> cells);

@@ -44,8 +44,8 @@ namespace UltimateTicTacToe
     {
         public Setup()
         {
-            Player1 = new Human(Player.Symbol.X, Color.RED);
-            Player2 = new Human(Player.Symbol.O, Color.BLUE);
+            Player1 = new Human(Player.Symbol.X, Color.RED, 0);
+            Player2 = new Human(Player.Symbol.O, Color.BLUE, 0);
             UI = new UI.BannerControler(new Player[] { Player1, Player2 });
             UI.Activate(Player1);
             UI.Activate(Player2);
@@ -120,13 +120,13 @@ namespace UltimateTicTacToe
             Player player1;
             Player player2;
             if (Player1Type == "Human")
-                player1 = new Human(Player1.Shape, Player1.Color);
+                player1 = new Human(Player1.Shape, Player1.Color, 0);
             else
-                player1 = new Bot(Player1.Shape, Player1.Color);
+                player1 = new Bot(Player1.Shape, Player1.Color, 0);
             if (Player2Type == "Human")
-                player2 = new Human(Player2.Shape, Player2.Color);
+                player2 = new Human(Player2.Shape, Player2.Color, 0);
             else
-                player2 = new Bot(Player2.Shape, Player2.Color);
+                player2 = new Bot(Player2.Shape, Player2.Color, 0);
             IProgramMode mode = new PlayGame(player1, player2);
             SwitchTo?.Invoke(this, mode);
         }

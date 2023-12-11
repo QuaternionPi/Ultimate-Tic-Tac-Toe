@@ -84,29 +84,31 @@ namespace UltimateTicTacToe
             public void Update()
             {
                 Board.Update();
-                if (Board.TransitionValue != 0)
-                {
-                    return;
-                }
-                if (Board.Player != null)
-                {
-                    BannerControler.AddPoints(Board.Player, 1);
-                    Board = new Grid<Grid<Tile>>(null, Board.Transform, true);
-                }
-
-                if (Board.Player == null && Board.Placeable == false)
-                {
-                    Board = new Grid<Grid<Tile>>(null, Board.Transform, true);
-                }
-                BannerControler.Activate(ActivePlayer);
-                BannerControler.Deactivate(InactivePlayer);
-
-                if (ChangePlayer)
+                if (ChangePlayer && Board.Placeable)
                 {
                     NextPlayer();
                     ChangePlayer = false;
                 }
                 ActivePlayer.Update();
+                // Board currently in a transition
+                if (Board.TransitionValue != 0)
+                {
+                    return;
+                }
+                // Board won by a player
+                if (Board.Player != null)
+                {
+                    Board.Player.Score += 1;
+                    Board = new Grid<Grid<Tile>>(null, Board.Transform, true);
+                }
+                // Board is tied
+                if (Board.Player == null && Board.Placeable == false)
+                {
+                    Board = new Grid<Grid<Tile>>(null, Board.Transform, true);
+                }
+                // Toggle players
+                BannerControler.Activate(ActivePlayer);
+                BannerControler.Deactivate(InactivePlayer);
             }
         }
     }
