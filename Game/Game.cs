@@ -11,7 +11,7 @@ namespace UltimateTicTacToe
             {
                 Players = new Player[] { player1, player2 };
 
-                LinearTransform transform = new LinearTransform(position, 0, 4);
+                Transform2D transform = new Transform2D(position, 0, 4);
                 _board = new Grid<Grid<Tile>>(null, transform, true);
 
                 ActivePlayer = Players[0];

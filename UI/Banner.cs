@@ -7,7 +7,7 @@ namespace UltimateTicTacToe
     {
         public class Banner : IDrawable
         {
-            public Banner(Player player, LinearTransform transform, bool active)
+            public Banner(Player player, Transform2D transform, bool active)
             {
                 Player = player;
                 Transform = transform;
@@ -15,7 +15,7 @@ namespace UltimateTicTacToe
                 Font = Graphics.Text.GetFontDefault();
                 Tile = new Game.Tile(Player, Transform, false, 0);
             }
-            public LinearTransform Transform { get; }
+            public Transform2D Transform { get; }
             public Player Player { get; }
             public bool Active { get; }
             protected Game.Tile Tile { get; }

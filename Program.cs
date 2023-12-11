@@ -51,8 +51,8 @@ namespace UltimateTicTacToe
             UI.Activate(Player2);
 
             var colors = Player.AllowedColors;
-            RightColorPicker = new UI.ColorPicker(new LinearTransform(new Vector2(900 - 135, 270)), colors, 3);
-            LeftColorPicker = new UI.ColorPicker(new LinearTransform(new Vector2(35, 270)), colors, 3);
+            RightColorPicker = new UI.ColorPicker(new Transform2D(new Vector2(900 - 135, 270)), colors, 3);
+            LeftColorPicker = new UI.ColorPicker(new Transform2D(new Vector2(35, 270)), colors, 3);
 
             RightColorPicker.Clicked += SetPlayer1Color;
             LeftColorPicker.Clicked += SetPlayer2Color;
@@ -60,11 +60,11 @@ namespace UltimateTicTacToe
             Player1Type = "Human";
             Player2Type = "Bot";
 
-            var playButtonTransform = new LinearTransform(new Vector2(450, 300));
-            var rightHumanButtonTransform = new LinearTransform(new Vector2(900 - 85, 400));
-            var leftHumanButtonTransform = new LinearTransform(new Vector2(85, 400));
-            var rightBotButtonTransform = new LinearTransform(new Vector2(900 - 85, 500));
-            var leftBotButtonTransform = new LinearTransform(new Vector2(85, 500));
+            var playButtonTransform = new Transform2D(new Vector2(450, 300));
+            var rightHumanButtonTransform = new Transform2D(new Vector2(900 - 85, 400));
+            var leftHumanButtonTransform = new Transform2D(new Vector2(85, 400));
+            var rightBotButtonTransform = new Transform2D(new Vector2(900 - 85, 500));
+            var leftBotButtonTransform = new Transform2D(new Vector2(85, 500));
 
             var textColor = Color.GRAY;
             var backgroundColor = Color.LIGHTGRAY;

@@ -8,7 +8,7 @@ namespace UltimateTicTacToe
         public class Button : IDrawable, IUpdateable
         {
             public Button(
-                LinearTransform transform,
+                Transform2D transform,
                 Vector2 dimensions,
                 string message,
                 Color textColor,
@@ -22,7 +22,7 @@ namespace UltimateTicTacToe
                 BackgroundColor = backgroundColor;
                 BorderColor = borderColor;
             }
-            public LinearTransform Transform { get; }
+            public Transform2D Transform { get; }
             protected Vector2 Dimensions { get; }
             public string Message { get; set; }
             public Color TextColor { get; set; }

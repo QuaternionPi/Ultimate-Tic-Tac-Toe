@@ -29,7 +29,7 @@ namespace UltimateTicTacToe
         public abstract void BeginTurn(Game.Grid<Game.Grid<Game.Tile>> board, Player opponent);
         public abstract void EndTurn();
         public abstract void Update();
-        public void DrawSymbol(LinearTransform transform, float transitionValue)
+        public void DrawSymbol(Transform2D transform, float transitionValue)
         {
             transitionValue = Math.Clamp(transitionValue, 0, 1);
             switch (Shape)

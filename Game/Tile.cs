@@ -10,10 +10,10 @@ namespace UltimateTicTacToe
             public Tile()
             {
                 Player = null;
-                Transform = new LinearTransform(Vector2.Zero, 0, 0);
+                Transform = new Transform2D(Vector2.Zero, 0, 0);
                 Placeable = false;
             }
-            public Tile(Player? player, LinearTransform transform, bool placeable, float transitionValue)
+            public Tile(Player? player, Transform2D transform, bool placeable, float transitionValue)
             {
                 Player = player;
                 Transform = transform;
@@ -26,7 +26,7 @@ namespace UltimateTicTacToe
             }
             public Player? Player { get; }
             public bool Placeable { get; }
-            public LinearTransform Transform { get; }
+            public Transform2D Transform { get; }
             public event IClickableCell.ClickHandler? Clicked;
             public bool InTransition { get { return TransitionValue != 0; } }
             public float TransitionValue { get; protected set; }
@@ -56,7 +56,7 @@ namespace UltimateTicTacToe
                 }
                 TransitionValue = Math.Max(0, TransitionValue - 0.07f / MathF.Sqrt(Transform.Scale));
             }
-            public ICell Create(Player? player, LinearTransform transform, bool placeable)
+            public ICell Create(Player? player, Transform2D transform, bool placeable)
             {
                 return new Tile(player, transform, placeable, 0);
             }

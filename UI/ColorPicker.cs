@@ -7,13 +7,13 @@ namespace UltimateTicTacToe
     {
         public class ColorPicker : IDrawable, IUpdateable
         {
-            public ColorPicker(ITransform transform, Color[] colors, int buttonsPerRow)
+            public ColorPicker(Transform2D transform, Color[] colors, int buttonsPerRow)
             {
                 Transform = transform;
                 List<ColorSelectionButton> colorButtons = new();
                 int buttonSpacing = 50;
                 int buttonsInRow = 0;
-                var buttonTransform = new LinearTransform(transform.Position, 0, 1);
+                var buttonTransform = new Transform2D(transform.Position, 0, 1);
                 foreach (Color color in colors)
                 {
                     var button = new ColorSelectionButton(buttonTransform, color);
@@ -24,17 +24,17 @@ namespace UltimateTicTacToe
                     {
                         buttonsInRow = 0;
                         Vector2 newButtonPosition = new Vector2(Transform.Position.X, buttonTransform.Position.Y + buttonSpacing);
-                        buttonTransform = new LinearTransform(newButtonPosition, 0, Transform.Scale);
+                        buttonTransform = new Transform2D(newButtonPosition, 0, Transform.Scale);
                     }
                     else
                     {
                         Vector2 newButtonPosition = new Vector2(buttonTransform.Position.X + buttonSpacing, buttonTransform.Position.Y);
-                        buttonTransform = new LinearTransform(newButtonPosition, 0, Transform.Scale);
+                        buttonTransform = new Transform2D(newButtonPosition, 0, Transform.Scale);
                     }
                 }
                 Buttons = colorButtons.ToArray();
             }
-            public ITransform Transform { get; }
+            public Transform2D Transform { get; }
             private ColorSelectionButton[] Buttons { get; }
             private void ColorButtonClicked(Color color) => Clicked?.Invoke(color);
             public delegate void Click(Color color);
@@ -56,13 +56,13 @@ namespace UltimateTicTacToe
             }
             private class ColorSelectionButton : IDrawable, IUpdateable
             {
-                public ColorSelectionButton(ITransform transform, Color color)
+                public ColorSelectionButton(Transform2D transform, Color color)
                 {
                     Transform = transform;
                     Color = color;
                     Radius = 14;
                 }
-                public ITransform Transform { get; protected set; }
+                public Transform2D Transform { get; protected set; }
                 public Color Color { get; protected set; }
                 protected float Radius;
                 public delegate void Click(Color color);

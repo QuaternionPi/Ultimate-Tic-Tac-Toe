@@ -3,24 +3,9 @@ using Raylib_cs;
 
 namespace UltimateTicTacToe
 {
-    public interface ITransform
+    public readonly struct Transform2D
     {
-        Vector2 Position
-        {
-            get;
-        }
-        float Rotation
-        {
-            get;
-        }
-        float Scale
-        {
-            get;
-        }
-    }
-    public readonly struct LinearTransform : ITransform
-    {
-        public LinearTransform(Vector2 position, float rotation = 0, float scale = 1)
+        public Transform2D(Vector2 position, float rotation = 0, float scale = 1)
         {
             Position = position;
             Rotation = rotation;
@@ -38,9 +23,9 @@ namespace UltimateTicTacToe
         {
             get;
         }
-        public LinearTransform Translate(Vector2 delta)
+        public Transform2D Translate(Vector2 delta)
         {
-            return new LinearTransform(Position + delta, Rotation, Scale);
+            return new Transform2D(Position + delta, Rotation, Scale);
         }
     }
 }

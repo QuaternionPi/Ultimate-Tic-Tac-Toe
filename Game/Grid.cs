@@ -10,13 +10,13 @@ namespace UltimateTicTacToe
         {
             public Grid()
             {
-                Transform = new LinearTransform(Vector2.Zero, 0, 1);
+                Transform = new Transform2D(Vector2.Zero, 0, 1);
                 Cells = new TCell[3, 3];
                 Player = null;
-                LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
+                Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
                 WinningPlayerTile = new Tile(null, victoryTileTransform, true, 0);
             }
-            public Grid(Player? player, LinearTransform transform, bool placeable)
+            public Grid(Player? player, Transform2D transform, bool placeable)
             {
                 Transform = transform;
                 Cells = new TCell[3, 3];
@@ -25,14 +25,14 @@ namespace UltimateTicTacToe
                     for (int j = 0; j < 3; j++)
                     {
                         Vector2 cellPosition = PixelPosition(new Address(i, j));
-                        LinearTransform cellTransform = new LinearTransform(cellPosition, 0, 1);
+                        Transform2D cellTransform = new Transform2D(cellPosition, 0, 1);
                         TCell cell = (TCell)new TCell().Create(null, cellTransform, placeable);
                         Cells[i, j] = cell;
                         cell.Clicked += HandleClickedCell;
                     }
                 }
                 Player = this.Winner();
-                LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
+                Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
                 WinningPlayerTile = new Tile(Player, victoryTileTransform, true, TransitionValue);
             }
             public Grid(Grid<TCell> original, bool placeable)
@@ -50,7 +50,7 @@ namespace UltimateTicTacToe
                     }
                 }
                 Player = this.Winner();
-                LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
+                Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
                 WinningPlayerTile = new Tile(Player, victoryTileTransform, true, TransitionValue);
             }
             public Grid(Grid<TCell> original, IEnumerable<ICell> TCellrace, Player player, bool placeable)
@@ -84,7 +84,7 @@ namespace UltimateTicTacToe
                 }
 
                 Player = this.Winner();
-                LinearTransform victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
+                Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
                 WinningPlayerTile = new Tile(Player, victoryTileTransform, true, TransitionValue);
                 if (Cells[0, 0] is Tile || Player != null)
                 {
@@ -119,7 +119,7 @@ namespace UltimateTicTacToe
                     }
                 }
             }
-            public LinearTransform Transform { get; }
+            public Transform2D Transform { get; }
             public Player? Player { get; }
             public bool Placeable
             {
@@ -203,7 +203,7 @@ namespace UltimateTicTacToe
                 if (gridCellInTransition == false)
                     WinningPlayerTile.Update();
             }
-            public ICell Create(Player? player, LinearTransform transform, bool placeable)
+            public ICell Create(Player? player, Transform2D transform, bool placeable)
             {
                 return new Grid<TCell>(player, transform, placeable);
             }
@@ -229,7 +229,7 @@ namespace UltimateTicTacToe
             }
             public void DrawGrid()
             {
-                LinearTransform transform = Transform;
+                Transform2D transform = Transform;
                 int lineGap = (int)(50 * transform.Scale);
                 int lineLength = (int)(130 * transform.Scale);
                 int lineWidth = (int)(2 * transform.Scale);

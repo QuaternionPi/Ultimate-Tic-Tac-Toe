@@ -10,8 +10,8 @@ namespace UltimateTicTacToe
             public BannerControler(Player[] players)
             {
                 Font = Graphics.Text.GetFontDefault();
-                LinearTransform leftTransform = new(new Vector2(85, 85), 0, 3);
-                LinearTransform rightTransform = new(new Vector2(815, 85), 0, 3);
+                Transform2D leftTransform = new(new Vector2(85, 85), 0, 3);
+                Transform2D rightTransform = new(new Vector2(815, 85), 0, 3);
                 LeftBanner = new Banner(players[1], leftTransform, false);
                 RightBanner = new Banner(players[0], rightTransform, true);
             }

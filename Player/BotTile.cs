@@ -19,7 +19,7 @@ namespace UltimateTicTacToe
             }
             public Player? Player { get; }
             public bool Placeable { get; }
-            public ICell Create(Player? player, LinearTransform transform, bool placeable)
+            public ICell Create(Player? player, Transform2D transform, bool placeable)
             {
                 return new Tile(player, placeable);
             }

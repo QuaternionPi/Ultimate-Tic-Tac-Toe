@@ -4,7 +4,7 @@ namespace UltimateTicTacToe
     {
         public Player? Player { get; }
         public bool Placeable { get; }
-        public ICell Create(Player? player, LinearTransform transform, bool placeable);
+        public ICell Create(Player? player, Transform2D transform, bool placeable);
         public ICell Place(IEnumerable<ICell> cells, Player player, bool placeable);
         public ICell DeepCopyPlacable(bool placeable);
         public List<Address> PathTo(ICell cell);
@@ -12,7 +12,7 @@ namespace UltimateTicTacToe
     }
     public interface IClickableCell : ICell
     {
-        LinearTransform Transform { get; }
+        Transform2D Transform { get; }
         public delegate void ClickHandler(IEnumerable<ICell> cells);
         public event ClickHandler? Clicked;
     }

@@ -13,10 +13,10 @@ namespace UltimateTicTacToe
                 Cells = new TCell[3, 3];
                 Player = null;
             }
-            public Grid(Player? player, LinearTransform transform, bool placeable)
+            public Grid(Player? player, Transform2D transform, bool placeable)
             {
                 TCell baseCell = new TCell();
-                LinearTransform baseTransform = new(Vector2.Zero, 0, 0);
+                Transform2D baseTransform = new(Vector2.Zero, 0, 0);
                 Cells = new TCell[3, 3];
                 for (int i = 0; i < 3; i++)
                 {
@@ -116,7 +116,7 @@ namespace UltimateTicTacToe
             public TCell[,] Cells { get; }
             public List<Address> PathTo(ICell cell) => this.PathToCell(cell);
             public bool Contains(ICell cell) => this.ContainsCell(cell);
-            public ICell Create(Player? player, LinearTransform transform, bool placeable)
+            public ICell Create(Player? player, Transform2D transform, bool placeable)
             {
                 return new Grid<TCell>(player, transform, placeable);
             }
