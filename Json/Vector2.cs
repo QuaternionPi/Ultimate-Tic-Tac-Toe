@@ -7,34 +7,44 @@ namespace UltimateTicTacToe
 {
     namespace Json
     {
-        public class ColorConverter : System.Text.Json.Serialization.JsonConverter<Color>
+        public class Vector2Converter : System.Text.Json.Serialization.JsonConverter<Vector2>
         {
-            public override Color Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            public override Vector2 Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
-                if (reader.TokenType != JsonTokenType.String)
-                    throw new JsonException("Expected to decode a string");
-                string text = reader.GetString() ?? throw new JsonException("String cannot be null");
-                if (text.Length != 7 && text.Length != 9) throw new JsonException($"Colors must be 7 or 9, not: {text}");
+                if (reader.TokenType != JsonTokenType.StartObject)
+                    throw new JsonException("Expected the start of an object");
+                reader.Read();
+                if (reader.TokenType != JsonTokenType.PropertyName)
+                    throw new JsonException("Expected property name");
 
-                string rText = text[1..3];
-                string gText = text[3..5];
-                string bText = text[5..7];
-                int r = int.Parse(rText, System.Globalization.NumberStyles.HexNumber);
-                int g = int.Parse(gText, System.Globalization.NumberStyles.HexNumber);
-                int b = int.Parse(bText, System.Globalization.NumberStyles.HexNumber);
-                int a = 255;
-                if (text.Length == 9)
+                float x = 0;
+                float y = 0;
+                while (reader.TokenType != JsonTokenType.EndObject)
                 {
-                    string aText = text[7..9];
-                    a = int.Parse(aText, System.Globalization.NumberStyles.HexNumber);
+                    String propertyName = reader.GetString() ?? throw new JsonException("Property name cannot be null");
+                    reader.Read();
+                    switch (propertyName)
+                    {
+                        case "X":
+                            x = reader.GetSingle();
+                            break;
+                        case "Y":
+                            y = reader.GetSingle();
+                            break;
+                        default:
+                            throw new JsonException($"Unkown property: {propertyName}");
+                    }
+                    reader.Read();
                 }
-                Color color = new(r, g, b, a);
-                return color;
+                Vector2 vector2 = new(x, y);
+                return vector2;
             }
-            public override void Write(Utf8JsonWriter writer, Color color, JsonSerializerOptions options)
+            public override void Write(Utf8JsonWriter writer, Vector2 vector, JsonSerializerOptions options)
             {
-                string text = $"#{color.r:X}{color.g:X}{color.b:X}{color.a:X}";
-                writer.WriteStringValue(text);
+                writer.WriteStartObject();
+                writer.WriteNumber("X", vector.X);
+                writer.WriteNumber("Y", vector.Y);
+                writer.WriteEndObject();
             }
         }
     }
