@@ -21,7 +21,7 @@ namespace UltimateTicTacToe
                 BannerControler = new UI.BannerControler(active, inactve);
 
 
-                TimeSpan delay = new(0, 0, 1);
+                TimeSpan delay = new(0, 0, 0, 0, 100);
                 Thread thread = new(() => DelayedPlayerStart(delay));
                 thread.Start();
             }
@@ -47,6 +47,9 @@ namespace UltimateTicTacToe
             public UI.BannerControler BannerControler { get; protected set; }
             protected void NextPlayer()
             {
+                var mini = new Grid<Tile>();
+
+                string json = JsonSerializer.Serialize(mini);
                 Player temp;
                 ActivePlayer.EndTurn();
 

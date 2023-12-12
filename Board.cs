@@ -1,4 +1,5 @@
 using System.Numerics;
+using System.Text.Json.Serialization;
 using Raylib_cs;
 
 namespace UltimateTicTacToe
@@ -8,7 +9,7 @@ namespace UltimateTicTacToe
     */
     public interface IBoard<TCell> : ICell where TCell : ICell, new()
     {
-        public TCell[,] Cells { get; }
+        public TCell[][] Cells { get; }
     }
     public static class BoardExtensions
     {
@@ -22,10 +23,10 @@ namespace UltimateTicTacToe
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    if (board.Cells[i, j].Contains(cell))
+                    if (board.Cells[i][j].Contains(cell))
                     {
                         Address address = new(i, j);
-                        return board.Cells[i, j].PathTo(cell).Prepend(address).ToList();
+                        return board.Cells[i][j].PathTo(cell).Prepend(address).ToList();
                     }
                 }
             }
@@ -38,8 +39,8 @@ namespace UltimateTicTacToe
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    contains |= board.Cells[i, j].Equals(cell);
-                    contains |= board.Cells[i, j].Contains(cell);
+                    contains |= board.Cells[i][j].Equals(cell);
+                    contains |= board.Cells[i][j].Contains(cell);
                 }
             }
             return contains;
@@ -47,21 +48,27 @@ namespace UltimateTicTacToe
         public static bool HasWinner<TCell>(this IBoard<TCell> board) where TCell : ICell, new()
         {
             bool hasWinner = false;
-            Player[,] cellWinners =
-                from cell in board.Cells
-                select cell.Player;
 
-            Player topLeft = cellWinners[0, 0];
-            Player topCenter = cellWinners[0, 1];
-            Player topRight = cellWinners[0, 2];
+            Player?[,] cellWinners = new Player?[3, 3];
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    cellWinners[i, j] = board.Cells[i][j]?.Player;
+                }
+            }
 
-            Player leftCenter = cellWinners[1, 0];
-            Player trueCenter = cellWinners[1, 1];
-            Player rightCenter = cellWinners[1, 2];
+            Player? topLeft = cellWinners[0, 0];
+            Player? topCenter = cellWinners[0, 1];
+            Player? topRight = cellWinners[0, 2];
 
-            Player bottomLeft = cellWinners[2, 0];
-            Player bottomCenter = cellWinners[2, 1];
-            Player bottomRight = cellWinners[2, 2];
+            Player? leftCenter = cellWinners[1, 0];
+            Player? trueCenter = cellWinners[1, 1];
+            Player? rightCenter = cellWinners[1, 2];
+
+            Player? bottomLeft = cellWinners[2, 0];
+            Player? bottomCenter = cellWinners[2, 1];
+            Player? bottomRight = cellWinners[2, 2];
 
             // Diagonals
             hasWinner |= trueCenter != null
@@ -105,21 +112,26 @@ namespace UltimateTicTacToe
                 return null;
             }
 
-            Player[,] cellWinners =
-                from cell in board.Cells
-                select cell.Player;
+            Player?[,] cellWinners = new Player?[3, 3];
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    cellWinners[i, j] = board.Cells[i][j]?.Player;
+                }
+            }
 
-            Player topLeft = cellWinners[0, 0];
-            Player topCenter = cellWinners[0, 1];
-            Player topRight = cellWinners[0, 2];
+            Player? topLeft = cellWinners[0, 0];
+            Player? topCenter = cellWinners[0, 1];
+            Player? topRight = cellWinners[0, 2];
 
-            Player leftCenter = cellWinners[1, 0];
-            Player trueCenter = cellWinners[1, 1];
-            Player rightCenter = cellWinners[1, 2];
+            Player? leftCenter = cellWinners[1, 0];
+            Player? trueCenter = cellWinners[1, 1];
+            Player? rightCenter = cellWinners[1, 2];
 
-            Player bottomLeft = cellWinners[2, 0];
-            Player bottomCenter = cellWinners[2, 1];
-            Player bottomRight = cellWinners[2, 2];
+            Player? bottomLeft = cellWinners[2, 0];
+            Player? bottomCenter = cellWinners[2, 1];
+            Player? bottomRight = cellWinners[2, 2];
 
             if (trueCenter != null)
             {

@@ -6,7 +6,6 @@ namespace UltimateTicTacToe
 {
     namespace Game
     {
-        [JsonSerializable(typeof(Tile))]
         public class Tile : IDrawable, IUpdateable, ITransitionable, IClickableCell
         {
             public Tile()

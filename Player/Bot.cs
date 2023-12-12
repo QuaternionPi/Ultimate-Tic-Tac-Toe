@@ -30,26 +30,29 @@ namespace UltimateTicTacToe
         }
         protected static Grid<Grid<Tile>> Convert(Game.Grid<Game.Grid<Game.Tile>> board)
         {
-            Grid<Tile>[,] newGrids = new Grid<Tile>[3, 3];
+            Grid<Tile>[][] newGrids = new Grid<Tile>[3][];
             for (int i = 0; i < 3; i++)
             {
+                newGrids[i] = new Grid<Tile>[3];
                 for (int j = 0; j < 3; j++)
                 {
-                    Game.Grid<Game.Tile> grid = board.Cells[i, j];
-                    Tile[,] newTiles = new Tile[3, 3];
+                    Game.Grid<Game.Tile> grid = board.Cells[i][j];
+                    Tile[][] newTiles = new Tile[3][];
                     for (int k = 0; k < 3; k++)
                     {
+                        newTiles[k] = new Tile[3];
                         for (int l = 0; l < 3; l++)
                         {
-                            Game.Tile tile = grid.Cells[k, l];
+
+                            Game.Tile tile = grid.Cells[k][l];
                             Player? player = tile.Player;
                             bool placeable = tile.Placeable;
                             Tile newTile = new(player, placeable);
-                            newTiles[k, l] = newTile;
+                            newTiles[k][l] = newTile;
                         }
                     }
                     Grid<Tile> newGrid = new(newTiles);
-                    newGrids[i, j] = newGrid;
+                    newGrids[i][j] = newGrid;
                 }
             }
             return new(newGrids);
@@ -156,61 +159,55 @@ namespace UltimateTicTacToe
             }
             int evaluation = 0;
             evaluation -= NumPosibleMoves(board);
-            foreach (Grid<Tile> grid in board.Cells)
+            for (int i = 0; i < 3; i++)
             {
-                evaluation += Award(100, grid.Player, player, opponent);
-                evaluation += Award(10, grid.Cells[1, 1].Player, player, opponent);
-                evaluation += Award(5, grid.Cells[0, 0].Player, player, opponent);
-                evaluation += Award(5, grid.Cells[0, 2].Player, player, opponent);
-                evaluation += Award(5, grid.Cells[2, 0].Player, player, opponent);
-                evaluation += Award(5, grid.Cells[2, 2].Player, player, opponent);
+                for (int j = 0; j < 3; j++)
+                {
+                    var grid = board.Cells[i][j];
+                    evaluation += Award(100, grid.Player, player, opponent);
+                    evaluation += Award(10, grid.Cells[1][1].Player, player, opponent);
+                    evaluation += Award(5, grid.Cells[0][0].Player, player, opponent);
+                    evaluation += Award(5, grid.Cells[0][2].Player, player, opponent);
+                    evaluation += Award(5, grid.Cells[2][0].Player, player, opponent);
+                    evaluation += Award(5, grid.Cells[2][2].Player, player, opponent);
+                }
             }
-            evaluation += Award(50, board.Cells[1, 1].Player, player, opponent);
-            evaluation += Award(25, board.Cells[0, 0].Player, player, opponent);
-            evaluation += Award(25, board.Cells[0, 2].Player, player, opponent);
-            evaluation += Award(25, board.Cells[2, 0].Player, player, opponent);
-            evaluation += Award(25, board.Cells[2, 2].Player, player, opponent);
+            evaluation += Award(50, board.Cells[1][1].Player, player, opponent);
+            evaluation += Award(25, board.Cells[0][0].Player, player, opponent);
+            evaluation += Award(25, board.Cells[0][2].Player, player, opponent);
+            evaluation += Award(25, board.Cells[2][0].Player, player, opponent);
+            evaluation += Award(25, board.Cells[2][2].Player, player, opponent);
             return evaluation;
         }
         protected static int NumPosibleMoves(Grid<Grid<Tile>> board)
         {
             int count = 0;
-            foreach (Grid<Tile> grid in board.Cells)
-            {
-                if (grid.Placeable)
-                    foreach (Tile tile in grid.Cells)
-                    {
-                        count++;
-                    }
-            }
+            for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++)
+                    if (board.Cells[i][j].Placeable)
+                        for (int k = 0; k < 3; k++) for (int l = 0; l < 3; l++)
+                                if (board.Cells[i][j].Cells[k][l].Placeable)
+                                    count++;
+
             return count;
         }
         protected static List<(Grid<Tile>, Tile)> PosibleMoves(Grid<Grid<Tile>> board)
         {
             List<(Grid<Tile>, Tile)> posibleMoves = new();
-            foreach (Grid<Tile> grid in board.Cells)
-            {
-                if (grid.Placeable)
-                    foreach (Tile tile in grid.Cells)
-                    {
-                        if (tile.Placeable)
-                            posibleMoves.Add((grid, tile));
-                    }
-            }
+            for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++)
+                    if (board.Cells[i][j].Placeable)
+                        for (int k = 0; k < 3; k++) for (int l = 0; l < 3; l++)
+                                if (board.Cells[i][j].Cells[k][l].Placeable)
+                                    posibleMoves.Add((board.Cells[i][j], board.Cells[i][j].Cells[k][l]));
             return posibleMoves;
         }
         protected static List<(Game.Grid<Game.Tile>, Game.Tile)> PosibleMoves(Game.Grid<Game.Grid<Game.Tile>> board)
         {
             List<(Game.Grid<Game.Tile>, Game.Tile)> posibleMoves = new();
-            foreach (Game.Grid<Game.Tile> grid in board.Cells)
-            {
-                if (grid.Placeable)
-                    foreach (Game.Tile tile in grid.Cells)
-                    {
-                        if (tile.Placeable)
-                            posibleMoves.Add((grid, tile));
-                    }
-            }
+            for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++)
+                    if (board.Cells[i][j].Placeable)
+                        for (int k = 0; k < 3; k++) for (int l = 0; l < 3; l++)
+                                if (board.Cells[i][j].Cells[k][l].Placeable)
+                                    posibleMoves.Add((board.Cells[i][j], board.Cells[i][j].Cells[k][l]));
             return posibleMoves;
         }
         protected void MakeMove(Game.Grid<Game.Tile> grid, Game.Tile tile)
