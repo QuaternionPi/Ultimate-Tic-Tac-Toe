@@ -44,6 +44,8 @@ namespace UltimateTicTacToe
             protected bool ChangePlayer;
             [JsonInclude]
             public UI.BannerControler BannerControler { get; protected set; }
+            [JsonInclude]
+            public int TurnNumber { get; protected set; }
             public delegate void GameOverDel(Game sender, Player? winner);
             public event GameOverDel? GameOver;
             protected void NextPlayer()
@@ -58,6 +60,7 @@ namespace UltimateTicTacToe
                 TimeSpan delay = new(0, 0, 0, 0, 100);
                 Thread thread = new(() => DelayedPlayerStart(delay));
                 thread.Start();
+                TurnNumber++;
             }
             protected void HandlePlayerTurn(Player player, IEnumerable<ICell> cells)
             {

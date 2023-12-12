@@ -204,14 +204,10 @@ namespace UltimateTicTacToe
             var board = new Grid<Grid<Tile>>(null, sender.Board.Transform, true);
             Game = new Game.Game(sender.InactivePlayer, sender.ActivePlayer, board);
         }
-        protected void ResetGame()
-        {
-
-        }
         public void Draw()
         {
             Font font = Graphics.Text.GetFontDefault();
-            string message = "Ultimate Tic Tac Toe";
+            string message = $"Turn {Game.TurnNumber}";
             float spacing = 3;
             float fontSize = 30;
             float messageWidth = Graphics.Text.MeasureTextEx(font, message, fontSize, spacing).X;
