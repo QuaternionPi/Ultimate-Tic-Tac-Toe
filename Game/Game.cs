@@ -9,10 +9,9 @@ namespace UltimateTicTacToe
     {
         public class Game : IDrawable, IUpdateable
         {
-            public Game(Player active, Player inactve, Vector2 position)
+            public Game(Player active, Player inactve, Grid<Grid<Tile>> board)
             {
-                Transform2D transform = new Transform2D(position, 0, 4);
-                _board = new Grid<Grid<Tile>>(null, transform, true);
+                _board = board;
 
                 ActivePlayer = active;
                 InactivePlayer = inactve;
@@ -45,11 +44,10 @@ namespace UltimateTicTacToe
             protected bool ChangePlayer;
             [JsonInclude]
             public UI.BannerControler BannerControler { get; protected set; }
+            public delegate void GameOverDel(Game sender, Player? winner);
+            public event GameOverDel? GameOver;
             protected void NextPlayer()
             {
-                var mini = new Grid<Tile>();
-
-                string json = JsonSerializer.Serialize(mini);
                 Player temp;
                 ActivePlayer.EndTurn();
 
@@ -95,16 +93,11 @@ namespace UltimateTicTacToe
                 {
                     return;
                 }
-                // Board won by a player
-                if (Board.Player != null)
+                // Board won by a player or the board cannot be placed on
+                if (Board.Player != null || Board.Placeable == false)
                 {
-                    Board.Player.Score += 1;
-                    Board = new Grid<Grid<Tile>>(null, Board.Transform, true);
-                }
-                // Board is tied
-                if (Board.Player == null && Board.Placeable == false)
-                {
-                    Board = new Grid<Grid<Tile>>(null, Board.Transform, true);
+                    GameOver?.Invoke(this, Board.Player);
+                    return;
                 }
                 // Toggle players
                 BannerControler.Activate(ActivePlayer);
