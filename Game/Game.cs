@@ -1,4 +1,6 @@
 using System.Numerics;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Raylib_cs;
 
 namespace UltimateTicTacToe
@@ -7,26 +9,23 @@ namespace UltimateTicTacToe
     {
         public class Game : IDrawable, IUpdateable
         {
-            public Game(Player player1, Player player2, Vector2 position)
+            public Game(Player active, Player inactve, Vector2 position)
             {
-                Players = new Player[] { player1, player2 };
-
                 Transform2D transform = new Transform2D(position, 0, 4);
                 _board = new Grid<Grid<Tile>>(null, transform, true);
 
-                ActivePlayer = Players[0];
-                InactivePlayer = Players[1];
-                BannerControler = new UI.BannerControler(Players);
+                ActivePlayer = active;
+                InactivePlayer = inactve;
+                ActivePlayer.PlayTurn += HandlePlayerTurn;
+                InactivePlayer.PlayTurn += HandlePlayerTurn;
+                BannerControler = new UI.BannerControler(active, inactve);
 
-                foreach (Player player in Players)
-                {
-                    player.PlayTurn += HandlePlayerTurn;
-                }
 
                 TimeSpan delay = new(0, 0, 1);
                 Thread thread = new(() => DelayedPlayerStart(delay));
                 thread.Start();
             }
+            [JsonInclude]
             public Grid<Grid<Tile>> Board
             {
                 get
@@ -39,24 +38,22 @@ namespace UltimateTicTacToe
                 }
             }
             private Grid<Grid<Tile>> _board;
-            protected Player ActivePlayer;
-            protected Player InactivePlayer;
-            protected readonly Player[] Players;
+            [JsonInclude]
+            public Player ActivePlayer { get; protected set; }
+            [JsonInclude]
+            public Player InactivePlayer { get; protected set; }
             protected bool ChangePlayer;
-            protected UI.BannerControler BannerControler;
+            [JsonInclude]
+            public UI.BannerControler BannerControler { get; protected set; }
             protected void NextPlayer()
             {
+                Player temp;
                 ActivePlayer.EndTurn();
-                if (ActivePlayer == Players[0])
-                {
-                    ActivePlayer = Players[1];
-                    InactivePlayer = Players[0];
-                }
-                else if (ActivePlayer == Players[1])
-                {
-                    ActivePlayer = Players[0];
-                    InactivePlayer = Players[1];
-                }
+
+                temp = ActivePlayer;
+                ActivePlayer = InactivePlayer;
+                InactivePlayer = temp;
+
                 TimeSpan delay = new(0, 0, 0, 0, 100);
                 Thread thread = new(() => DelayedPlayerStart(delay));
                 thread.Start();

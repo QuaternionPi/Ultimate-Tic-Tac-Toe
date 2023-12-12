@@ -1,10 +1,12 @@
 using System.Numerics;
+using System.Text.Json.Serialization;
 using Raylib_cs;
 
 namespace UltimateTicTacToe
 {
     namespace Game
     {
+        [JsonSerializable(typeof(Tile))]
         public class Tile : IDrawable, IUpdateable, ITransitionable, IClickableCell
         {
             public Tile()
@@ -24,8 +26,11 @@ namespace UltimateTicTacToe
                     TransitionValue = 0;
                 }
             }
+            [JsonInclude]
             public Player? Player { get; }
+            [JsonInclude]
             public bool Placeable { get; }
+            [JsonInclude]
             public Transform2D Transform { get; }
             public event IClickableCell.ClickHandler? Clicked;
             public bool InTransition { get { return TransitionValue != 0; } }

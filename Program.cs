@@ -46,7 +46,7 @@ namespace UltimateTicTacToe
         {
             Player1 = new Human(Player.Symbol.X, Color.RED, 0);
             Player2 = new Human(Player.Symbol.O, Color.BLUE, 0);
-            UI = new UI.BannerControler(new Player[] { Player1, Player2 });
+            UI = new UI.BannerControler(Player1, Player2);
             UI.Activate(Player1);
             UI.Activate(Player2);
 

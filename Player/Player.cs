@@ -1,4 +1,5 @@
 using System.Numerics;
+using System.Text.Json.Serialization;
 using Raylib_cs;
 
 namespace UltimateTicTacToe
@@ -20,8 +21,11 @@ namespace UltimateTicTacToe
             Color = color;
             Score = score;
         }
+        [JsonInclude]
         public int Score;
+        [JsonInclude]
         public Symbol Shape { get; set; }
+        [JsonInclude]
         public Color Color { get; set; }
         public delegate void Turn(Player player, IEnumerable<ICell> cells);
         public event Turn? PlayTurn;

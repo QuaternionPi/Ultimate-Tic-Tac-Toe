@@ -1,12 +1,14 @@
 using System.Numerics;
+using System.Text.Json.Serialization;
 using Raylib_cs;
 
 namespace UltimateTicTacToe
 {
     namespace Game
     {
+        [JsonSerializable(typeof(object))]
         public class Grid<TCell> : IDrawable, IUpdateable, ITransitionable, IBoard<TCell>, IClickableCell
-            where TCell : IDrawable, IUpdateable, ITransitionable, IClickableCell, new()
+        where TCell : IDrawable, IUpdateable, ITransitionable, IClickableCell, new()
         {
             public Grid()
             {
@@ -14,7 +16,7 @@ namespace UltimateTicTacToe
                 Cells = new TCell[3, 3];
                 Player = null;
                 Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
-                WinningPlayerTile = new Tile(null, victoryTileTransform, true, 0);
+                WinningPlayerTile = new Tile(Player, victoryTileTransform, true, 0);
             }
             public Grid(Player? player, Transform2D transform, bool placeable)
             {
@@ -119,7 +121,9 @@ namespace UltimateTicTacToe
                     }
                 }
             }
+            [JsonInclude]
             public Transform2D Transform { get; }
+            [JsonInclude]
             public Player? Player { get; }
             public bool Placeable
             {
@@ -133,8 +137,11 @@ namespace UltimateTicTacToe
                 }
             }
             public event IClickableCell.ClickHandler? Clicked;
+            [JsonInclude]
+            //[JsonConverter(typeof(Json.Array2DConverter))]
             public TCell[,] Cells { get; }
-            protected Tile WinningPlayerTile { get; }
+            [JsonInclude]
+            public Tile WinningPlayerTile { get; }
             public bool InTransition
             {
                 get

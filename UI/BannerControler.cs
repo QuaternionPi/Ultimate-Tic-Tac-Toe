@@ -1,4 +1,5 @@
 using System.Numerics;
+using System.Text.Json.Serialization;
 using Raylib_cs;
 
 namespace UltimateTicTacToe
@@ -10,16 +11,18 @@ namespace UltimateTicTacToe
         */
         public class BannerControler : IDrawable
         {
-            public BannerControler(Player[] players)
+            public BannerControler(Player active, Player inactive)
             {
                 Font = Graphics.Text.GetFontDefault();
-                Transform2D leftTransform = new(new Vector2(85, 85), 0, 3);
                 Transform2D rightTransform = new(new Vector2(815, 85), 0, 3);
-                LeftBanner = new Banner(players[1], leftTransform, false);
-                RightBanner = new Banner(players[0], rightTransform, true);
+                Transform2D leftTransform = new(new Vector2(85, 85), 0, 3);
+                RightBanner = new Banner(active, rightTransform, true);
+                LeftBanner = new Banner(inactive, leftTransform, false);
             }
-            protected Banner LeftBanner;
-            protected Banner RightBanner;
+            [JsonInclude]
+            public Banner RightBanner { get; protected set; }
+            [JsonInclude]
+            public Banner LeftBanner { get; protected set; }
             protected readonly Font Font;
             public void Draw()
             {
