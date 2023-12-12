@@ -7,6 +7,21 @@ namespace UltimateTicTacToe
 {
     namespace Json
     {
+        internal static class Vector2ConverterReaderWriterExtensions
+        {
+            public static Vector2 GetVector2(this ref Utf8JsonReader reader)
+            {
+                Vector2Converter converter = new();
+                Vector2 vector = converter.Read(ref reader, typeof(Vector2), JsonSerializerOptions.Default);
+                return vector;
+            }
+            public static void WriteVector2(this Utf8JsonWriter writer, string propertyName, Vector2 vector)
+            {
+                Vector2Converter converter = new();
+                writer.WritePropertyName(propertyName);
+                converter.Write(writer, vector, JsonSerializerOptions.Default);
+            }
+        }
         public class Vector2Converter : System.Text.Json.Serialization.JsonConverter<Vector2>
         {
             public override Vector2 Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
