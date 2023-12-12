@@ -1,5 +1,9 @@
 namespace UltimateTicTacToe
 {
+    /*
+    The base object of Ultimate Tic Tac Toe
+    Cells store which player won them and weather or not they are placable
+    */
     public interface ICell
     {
         public Player? Player { get; }

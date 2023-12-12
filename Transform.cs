@@ -3,6 +3,9 @@ using Raylib_cs;
 
 namespace UltimateTicTacToe
 {
+    /*
+    Position, Rotation and Scale in 2D space
+    */
     public readonly struct Transform2D
     {
         public Transform2D(Vector2 position, float rotation = 0, float scale = 1)

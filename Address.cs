@@ -1,5 +1,8 @@
 namespace UltimateTicTacToe
 {
+    /*
+    Stores a position on a 3x3 grid
+    */
     public readonly struct Address
     {
         public Address(int x, int y)

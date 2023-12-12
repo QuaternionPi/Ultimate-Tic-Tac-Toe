@@ -5,6 +5,9 @@ namespace UltimateTicTacToe
 {
     namespace UI
     {
+        /*
+        Displays a team's symbol and score
+        */
         public class Banner : IDrawable
         {
             public Banner(Player player, Transform2D transform, bool active)

@@ -3,6 +3,9 @@ using Raylib_cs;
 
 namespace UltimateTicTacToe
 {
+    /*
+    Determines if two objects are colliding
+    */
     public static class CheckCollision
     {
         public static bool Recs(Rectangle rec1, Rectangle rec2) =>

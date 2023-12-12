@@ -5,6 +5,9 @@ namespace UltimateTicTacToe
 {
     namespace UI
     {
+        /*
+        UI Element for picking colors
+        */
         public class ColorPicker : IDrawable, IUpdateable
         {
             public ColorPicker(Transform2D transform, Color[] colors, int buttonsPerRow)
