@@ -10,9 +10,9 @@ namespace UltimateTicTacToe
         {
             public class PlayGame : IProgramMode
             {
-                public PlayGame(Player player1, Player player2)
+                public PlayGame(IProgramMode? previous, Player player1, Player player2)
                 {
-
+                    Previous = previous;
                     var position = new Vector2(450, 350);
                     var transform = new Transform2D(position, 0, 4);
                     var board = new Grid<Grid<Tile>>(null, transform, true);

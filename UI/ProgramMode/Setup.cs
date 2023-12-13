@@ -10,8 +10,9 @@ namespace UltimateTicTacToe
         {
             public class Setup : IProgramMode
             {
-                public Setup()
+                public Setup(IProgramMode? previous = null)
                 {
+                    Previous = previous;
                     Player1 = new Human(Player.Symbol.X, Color.RED, 0);
                     Player2 = new Human(Player.Symbol.O, Color.BLUE, 0);
                     UI = new UI.BannerControler(Player1, Player2);
@@ -95,7 +96,7 @@ namespace UltimateTicTacToe
                         player2 = new Human(Player2.Shape, Player2.Color, 0);
                     else
                         player2 = new Bot(Player2.Shape, Player2.Color, 0);
-                    IProgramMode mode = new PlayGame(player1, player2);
+                    IProgramMode mode = new PlayGame(this, player1, player2);
                     SwitchTo?.Invoke(this, mode);
                 }
                 protected void SetPlayer1Color(Color color) => Player1.Color = color;
