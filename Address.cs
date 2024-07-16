@@ -1,21 +1,19 @@
-namespace UltimateTicTacToe
+namespace UltimateTicTacToe;
+/*
+Stores a position on a 3x3 grid
+*/
+public readonly struct Address
 {
-    /*
-    Stores a position on a 3x3 grid
-    */
-    public readonly struct Address
+    public Address(int x, int y)
     {
-        public Address(int x, int y)
+        if (x > 2 | x < 0 | y > 2 | y < 0)
         {
-            if (x > 2 | x < 0 | y > 2 | y < 0)
-            {
-                throw new IndexOutOfRangeException("Position not in grid");
-            }
-            X = x;
-            Y = y;
+            throw new IndexOutOfRangeException("Position not in grid");
         }
-        public int X { get; }
-        public int Y { get; }
-        public (int, int) XY { get { return (X, Y); } }
+        X = x;
+        Y = y;
     }
+    public int X { get; }
+    public int Y { get; }
+    public (int, int) XY { get { return (X, Y); } }
 }
