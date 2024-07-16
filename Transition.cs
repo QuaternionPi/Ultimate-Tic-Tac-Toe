@@ -1,8 +1,6 @@
-namespace UltimateTicTacToe
+namespace UltimateTicTacToe;
+public interface ITransitionable
 {
-    public interface ITransitionable
-    {
-        public bool InTransition { get; }
-        public float TransitionValue { get; }
-    }
+    public bool InTransition { get; }
+    public float TransitionValue { get; }
 }
