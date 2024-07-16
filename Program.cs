@@ -1,47 +1,43 @@
-﻿using System.Numerics;
-using Raylib_cs;
-using UltimateTicTacToe.Game;
+﻿using Raylib_cs;
 using UltimateTicTacToe.UI.ProgramMode;
 
-namespace UltimateTicTacToe
+namespace UltimateTicTacToe;
+public static class Program
 {
-    public static class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
+        Window.SetConfigFlags(ConfigFlags.FLAG_MSAA_4X_HINT);
+        Window.Init(900, 650, "Ultimate Tic Tac Toe");
+        Window.SetTargetFPS(30);
+
+        Image windowIcon = Raylib.LoadImage("./Window Icon.png");
+        Window.SetWindowIcon(windowIcon);
+        Raylib.UnloadImage(windowIcon);
+
+        Mode.SwitchTo += ChangeMode;
+        while (!Window.ShouldClose())
         {
-            Window.SetConfigFlags(ConfigFlags.FLAG_MSAA_4X_HINT);
-            Window.Init(900, 650, "Ultimate Tic Tac Toe");
-            Window.SetTargetFPS(30);
+            Mode.Update();
+            Graphics.BeginDrawing();
+            Graphics.ClearBackground(Color.RAYWHITE);
 
-            Image windowIcon = Raylib.LoadImage("./Window Icon.png");
-            Window.SetWindowIcon(windowIcon);
-            Raylib.UnloadImage(windowIcon);
-
-            Mode.SwitchTo += ChangeMode;
-            while (!Window.ShouldClose())
-            {
-                Mode.Update();
-                Graphics.BeginDrawing();
-                Graphics.ClearBackground(Color.RAYWHITE);
-
-                Mode.Draw();
-                Graphics.EndDrawing();
-            }
-        }
-        private static IProgramMode Mode = new Setup();
-        private static void ChangeMode(IProgramMode from, IProgramMode to)
-        {
-            from.SwitchTo -= ChangeMode;
-            Mode = to;
-            to.SwitchTo += ChangeMode;
+            Mode.Draw();
+            Graphics.EndDrawing();
         }
     }
-    public class Save
+    private static IProgramMode Mode = new Setup();
+    private static void ChangeMode(IProgramMode from, IProgramMode to)
     {
-
+        from.SwitchTo -= ChangeMode;
+        Mode = to;
+        to.SwitchTo += ChangeMode;
     }
-    public class Load
-    {
+}
+public class Save
+{
 
-    }
+}
+public class Load
+{
+
 }
