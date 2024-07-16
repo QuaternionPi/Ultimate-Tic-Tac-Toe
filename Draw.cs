@@ -1,7 +1,5 @@
-namespace UltimateTicTacToe
+namespace UltimateTicTacToe;
+public interface IDrawable
 {
-    public interface IDrawable
-    {
-        public void Draw();
-    }
+    public void Draw();
 }
