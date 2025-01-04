@@ -4,8 +4,8 @@ using Raylib_cs;
 
 namespace UltimateTicTacToe.Game;
 
-public class Grid<TCell> : IDrawable, IUpdatable, ITransitionable, IBoard<TCell>, IClickableCell
-where TCell : IDrawable, IUpdatable, ITransitionable, IClickableCell, new()
+public class Grid<TCell> : IDrawable, IUpdatable, ITransitional, IBoard<TCell>, IClickableCell
+where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell, new()
 {
     public Grid()
     {
