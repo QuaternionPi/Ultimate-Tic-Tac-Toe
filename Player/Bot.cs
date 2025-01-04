@@ -139,11 +139,11 @@ namespace UltimateTicTacToe
             }
             return minEvaluation;
         }
-        protected static int Award<T>(int amount, T? compair, T positive, T negative) where T : class
+        protected static int Award<T>(int amount, T? compare, T positive, T negative) where T : class
         {
-            if (positive.Equals(compair))
+            if (positive.Equals(compare))
                 return amount;
-            if (negative.Equals(compair))
+            if (negative.Equals(compare))
                 return -amount;
             return 0;
         }
