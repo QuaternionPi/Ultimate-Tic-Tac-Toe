@@ -2,7 +2,7 @@ using System.Numerics;
 using Raylib_cs;
 
 namespace UltimateTicTacToe.UI;
-public class Button : IDrawable, IUpdateable
+public class Button : IDrawable, IUpdatable
 {
     public Button(
         Transform2D transform,

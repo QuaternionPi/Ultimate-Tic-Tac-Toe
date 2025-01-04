@@ -6,7 +6,7 @@ namespace UltimateTicTacToe
 {
     namespace Game
     {
-        public class Tile : IDrawable, IUpdateable, ITransitionable, IClickableCell
+        public class Tile : IDrawable, IUpdatable, ITransitionable, IClickableCell
         {
             public Tile()
             {

@@ -1,17 +1,17 @@
 using System.Text.Json.Serialization;
 
 namespace UltimateTicTacToe.Game;
-public class Game : IDrawable, IUpdateable
+public class Game : IDrawable, IUpdatable
 {
-    public Game(Player active, Player inactve, Grid<Grid<Tile>> board)
+    public Game(Player active, Player inactive, Grid<Grid<Tile>> board)
     {
         _board = board;
 
         ActivePlayer = active;
-        InactivePlayer = inactve;
+        InactivePlayer = inactive;
         ActivePlayer.PlayTurn += HandlePlayerTurn;
         InactivePlayer.PlayTurn += HandlePlayerTurn;
-        BannerControler = new UI.BannerControler(active, inactve);
+        BannerController = new UI.BannerController(active, inactive);
 
 
         TimeSpan delay = new(0, 0, 0, 0, 100);
@@ -37,7 +37,7 @@ public class Game : IDrawable, IUpdateable
     public Player InactivePlayer { get; protected set; }
     protected bool ChangePlayer;
     [JsonInclude]
-    public UI.BannerControler BannerControler { get; protected set; }
+    public UI.BannerController BannerController { get; protected set; }
     [JsonInclude]
     public int TurnNumber { get; protected set; }
     public delegate void GameOverDel(Game sender, Player? winner);
@@ -74,7 +74,7 @@ public class Game : IDrawable, IUpdateable
     public void Draw()
     {
         Board.Draw();
-        BannerControler.Draw();
+        BannerController.Draw();
     }
     public void Update()
     {
@@ -97,7 +97,7 @@ public class Game : IDrawable, IUpdateable
             return;
         }
         // Toggle players
-        BannerControler.Activate(ActivePlayer);
-        BannerControler.Deactivate(InactivePlayer);
+        BannerController.Activate(ActivePlayer);
+        BannerController.Deactivate(InactivePlayer);
     }
 }

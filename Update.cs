@@ -1,6 +1,6 @@
 namespace UltimateTicTacToe
 {
-    public interface IUpdateable
+    public interface IUpdatable
     {
         public void Update();
     }

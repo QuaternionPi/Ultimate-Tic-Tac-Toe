@@ -1,14 +1,13 @@
 using System.Numerics;
 using System.Text.Json.Serialization;
-using Raylib_cs;
 
 namespace UltimateTicTacToe.UI;
 /*
 Controls the position and activation of two banners; one for each team
 */
-public class BannerControler : IDrawable
+public class BannerController : IDrawable
 {
-    public BannerControler(Player active, Player inactive)
+    public BannerController(Player active, Player inactive)
     {
         Transform2D rightTransform = new(new Vector2(815, 85), 0, 3);
         Transform2D leftTransform = new(new Vector2(85, 85), 0, 3);

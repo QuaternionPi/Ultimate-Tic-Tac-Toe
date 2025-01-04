@@ -9,7 +9,7 @@ public class Setup : IProgramMode
         Previous = previous;
         Player1 = new Human(Player.Symbol.X, Color.RED, 0);
         Player2 = new Human(Player.Symbol.O, Color.BLUE, 0);
-        UI = new UI.BannerControler(Player1, Player2);
+        UI = new UI.BannerController(Player1, Player2);
         UI.Activate(Player1);
         UI.Activate(Player2);
 
@@ -58,7 +58,7 @@ public class Setup : IProgramMode
     public float TransitionValue { get; }
     public event IProgramMode.SwitchToDel? SwitchTo;
     public IProgramMode? Previous { get; }
-    protected UI.BannerControler UI { get; }
+    protected UI.BannerController UI { get; }
     protected UI.ColorPicker RightColorPicker { get; }
     protected UI.ColorPicker LeftColorPicker { get; }
     protected Player Player1;
