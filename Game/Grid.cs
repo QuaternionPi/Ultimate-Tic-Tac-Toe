@@ -66,17 +66,17 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell, new()
         Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
         WinningPlayerTile = new Tile(Player, victoryTileTransform, true, TransitionValue);
     }
-    public Grid(Grid<TCell> original, IEnumerable<ICell> TCellrace, Player player, bool placeable)
+    public Grid(Grid<TCell> original, IEnumerable<ICell> TCelltrace, Player player, bool placeable)
     {
-        if (TCellrace.Last().Placeable == false)
+        if (TCelltrace.Last().Placeable == false)
         {
             throw new Exception("You Cannot place on that cell");
         }
         Transform = original.Transform;
         Cells = new TCell[3][];
 
-        ICell TCelloReplace = TCellrace.Last();
-        ICell targetCell = TCellrace.First();
+        ICell TCelloReplace = TCelltrace.Last();
+        ICell targetCell = TCelltrace.First();
 
         for (int i = 0; i < 3; i++)
         {
@@ -86,7 +86,7 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell, new()
                 TCell cell = original.Cells[i][j];
                 if (cell.Equals(targetCell))
                 {
-                    cell = (TCell)cell.Place(TCellrace.Skip(1), player, placeable);
+                    cell = (TCell)cell.Place(TCelltrace.Skip(1), player, placeable);
                 }
                 else
                 {
@@ -122,7 +122,7 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell, new()
                 bool cellPlaceable = (i == nextX) && (j == nextY) && (Player == null);
                 if (cell.Equals(targetCell))
                 {
-                    cell = (TCell)cell.Place(TCellrace.Skip(1), player, cellPlaceable);
+                    cell = (TCell)cell.Place(TCelltrace.Skip(1), player, cellPlaceable);
                 }
                 else
                 {

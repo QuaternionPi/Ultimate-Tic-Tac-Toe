@@ -59,16 +59,16 @@ namespace UltimateTicTacToe
                 Cells = cells;
                 Player = this.Winner();
             }
-            public Grid(Grid<TCell> original, IEnumerable<ICell> TCellrace, Player player, bool placeable)
+            public Grid(Grid<TCell> original, IEnumerable<ICell> TCelltrace, Player player, bool placeable)
             {
-                if (TCellrace.Last().Placeable == false)
+                if (TCelltrace.Last().Placeable == false)
                 {
                     throw new Exception("You Cannot place on that cell");
                 }
                 Cells = new TCell[3][];
 
-                ICell TCelloReplace = TCellrace.Last();
-                ICell targetCell = TCellrace.First();
+                ICell TCelloReplace = TCelltrace.Last();
+                ICell targetCell = TCelltrace.First();
 
                 for (int i = 0; i < 3; i++)
                 {
@@ -78,7 +78,7 @@ namespace UltimateTicTacToe
                         TCell cell = original.Cells[i][j];
                         if (cell.Equals(targetCell))
                         {
-                            cell = (TCell)cell.Place(TCellrace.Skip(1), player, placeable);
+                            cell = (TCell)cell.Place(TCelltrace.Skip(1), player, placeable);
                         }
                         else
                         {

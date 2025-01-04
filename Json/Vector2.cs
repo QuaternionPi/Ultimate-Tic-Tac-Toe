@@ -30,7 +30,7 @@ namespace UltimateTicTacToe
                             y = reader.GetSingle();
                             break;
                         default:
-                            throw new JsonException($"Unkown property: {propertyName}");
+                            throw new JsonException($"Unknown property: {propertyName}");
                     }
                     reader.Read();
                 }
