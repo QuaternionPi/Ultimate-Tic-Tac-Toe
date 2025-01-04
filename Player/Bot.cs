@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Numerics;
 using Raylib_cs;
 
@@ -212,10 +213,7 @@ namespace UltimateTicTacToe
         }
         protected void MakeMove(Game.Grid<Game.Tile> grid, Game.Tile tile)
         {
-            if (Board == null)
-            {
-                throw new Exception("Board can't be null when youre playing a move");
-            }
+            Debug.Assert(Board != null, "Board can't be null when you're playing a move");
             InvokePlayTurn(this, new List<ICell>() { Board, grid, tile });
         }
     }
