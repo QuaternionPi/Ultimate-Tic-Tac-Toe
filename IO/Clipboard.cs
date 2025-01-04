@@ -1,23 +1,21 @@
 using Raylib_cs;
 
-namespace UltimateTicTacToe
+namespace UltimateTicTacToe;
+public static class Clipboard
 {
-    public static class Clipboard
+    public static string Text
     {
-        public static string Text
+        get
         {
-            get
+            unsafe
             {
-                unsafe
-                {
-                    sbyte* raw = Raylib.GetClipboardText();
-                    return raw->ToString();
-                }
+                sbyte* raw = Raylib.GetClipboardText();
+                return raw->ToString();
             }
-            set
-            {
-                Raylib.SetClipboardText(value);
-            }
+        }
+        set
+        {
+            Raylib.SetClipboardText(value);
         }
     }
 }

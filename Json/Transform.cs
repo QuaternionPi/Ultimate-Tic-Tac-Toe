@@ -1,3 +1,1 @@
-namespace UltimateTicTacToe
-{
-}
+namespace UltimateTicTacToe;
