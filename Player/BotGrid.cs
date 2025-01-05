@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Numerics;
 using System.Text.Json.Serialization;
 
@@ -60,10 +61,7 @@ public partial class Bot
         }
         public Grid(Grid<TCell> original, IEnumerable<ICell> TCelltrace, Player player, bool placeable)
         {
-            if (TCelltrace.Last().Placeable == false)
-            {
-                throw new Exception("You Cannot place on that cell");
-            }
+            Debug.Assert(TCelltrace.Last().Placeable != false, "You Cannot place on that cell");
             Cells = new TCell[3][];
 
             ICell TCelloReplace = TCelltrace.Last();

@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace UltimateTicTacToe;
 /*
 The 3 by 3 objects that Ultimate Tic Tac Toe is played on
@@ -10,10 +12,7 @@ public static class BoardExtensions
 {
     public static List<Address> PathToCell<TCell>(this IBoard<TCell> board, ICell cell) where TCell : ICell, new()
     {
-        if (board.Contains(cell) == false)
-        {
-            throw new Exception($"Cell: {cell} is not contained. There is no path to it");
-        }
+        Debug.Assert(board.Contains(cell) != false, $"Cell: {cell} is not contained. There is no path to it");
         for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 3; j++)

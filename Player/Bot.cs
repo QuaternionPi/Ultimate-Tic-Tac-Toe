@@ -63,10 +63,7 @@ public partial class Bot : Player
         Player opponent
         )
     {
-        if (moves.Any() == false)
-        {
-            throw new Exception("Cannot choose best move from no moves");
-        }
+        Debug.Assert(moves.Any() != false, "Cannot choose best move from no moves");
         int alpha = -100000;
         int beta = 100000;
         int depth;

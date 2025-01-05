@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Numerics;
 using System.Text.Json.Serialization;
 using Raylib_cs;
@@ -68,10 +69,7 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell, new()
     }
     public Grid(Grid<TCell> original, IEnumerable<ICell> TCelltrace, Player player, bool placeable)
     {
-        if (TCelltrace.Last().Placeable == false)
-        {
-            throw new Exception("You Cannot place on that cell");
-        }
+        Debug.Assert(TCelltrace.Last().Placeable != false, "You Cannot place on that cell");
         Transform = original.Transform;
         Cells = new TCell[3][];
 
