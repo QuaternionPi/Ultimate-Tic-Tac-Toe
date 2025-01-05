@@ -19,6 +19,5 @@ public interface ICell
 public interface IClickableCell : ICell
 {
     Transform2D Transform { get; }
-    public delegate void ClickHandler(IEnumerable<ICell> cells);
-    public event ClickHandler? Clicked;
+    public event Action<IEnumerable<ICell>>? Clicked;
 }

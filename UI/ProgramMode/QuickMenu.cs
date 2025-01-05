@@ -3,7 +3,7 @@ public class QuickMenu : IProgramMode
 {
     public bool InTransition { get; }
     public float TransitionValue { get; }
-    public event IProgramMode.SwitchToDel? SwitchTo;
+    public event Action<IProgramMode, IProgramMode>? SwitchTo;
     public IProgramMode? Previous { get; }
     public void Draw()
     {

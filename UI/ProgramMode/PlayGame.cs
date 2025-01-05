@@ -16,7 +16,7 @@ public class PlayGame : IProgramMode
     }
     public bool InTransition { get; }
     public float TransitionValue { get; }
-    public event IProgramMode.SwitchToDel? SwitchTo;
+    public event Action<IProgramMode, IProgramMode>? SwitchTo;
     public IProgramMode? Previous { get; }
     private Game.Game _game;
     protected Game.Game Game

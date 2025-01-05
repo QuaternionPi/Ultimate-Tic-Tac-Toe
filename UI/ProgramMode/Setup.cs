@@ -56,7 +56,7 @@ public class Setup : IProgramMode
     protected List<UI.Button> Buttons;
     public bool InTransition { get; }
     public float TransitionValue { get; }
-    public event IProgramMode.SwitchToDel? SwitchTo;
+    public event Action<IProgramMode, IProgramMode>? SwitchTo;
     public IProgramMode? Previous { get; }
     protected UI.BannerController UI { get; }
     protected UI.ColorPicker RightColorPicker { get; }

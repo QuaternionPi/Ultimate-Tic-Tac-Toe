@@ -26,8 +26,7 @@ public abstract class Player : IUpdatable
     public Symbol Shape { get; set; }
     [JsonInclude]
     public Color Color { get; set; }
-    public delegate void Turn(Player player, IEnumerable<ICell> cells);
-    public event Turn? PlayTurn;
+    public event Action<Player, IEnumerable<ICell>>? PlayTurn;
     protected void InvokePlayTurn(Player player, IEnumerable<ICell> cells) => PlayTurn?.Invoke(player, cells);
     public abstract void BeginTurn(Game.Grid<Game.Grid<Game.Tile>> board, Player opponent);
     public abstract void EndTurn();

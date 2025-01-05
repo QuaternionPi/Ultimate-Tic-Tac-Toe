@@ -150,7 +150,7 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell, new()
             return false;
         }
     }
-    public event IClickableCell.ClickHandler? Clicked;
+    public event Action<IEnumerable<ICell>>? Clicked;
     [JsonInclude]
     //[JsonConverter(typeof(Json.Array2DConverter))]
     public TCell[][] Cells { get; }

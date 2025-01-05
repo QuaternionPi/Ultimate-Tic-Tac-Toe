@@ -28,7 +28,7 @@ public class Tile : IDrawable, IUpdatable, ITransitional, IClickableCell
     public bool Placeable { get; }
     [JsonInclude]
     public Transform2D Transform { get; }
-    public event IClickableCell.ClickHandler? Clicked;
+    public event Action<IEnumerable<ICell>>? Clicked;
     public bool InTransition { get { return TransitionValue != 0; } }
     public float TransitionValue { get; protected set; }
     public void Draw()

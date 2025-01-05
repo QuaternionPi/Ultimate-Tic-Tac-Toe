@@ -37,8 +37,7 @@ public class ColorPicker : IDrawable, IUpdatable
     public Transform2D Transform { get; }
     private ColorSelectionButton[] Buttons { get; }
     private void ColorButtonClicked(Color color) => Clicked?.Invoke(color);
-    public delegate void Click(Color color);
-    public event Click? Clicked;
+    public event Action<Color>? Clicked;
     public void Draw()
     {
         foreach (ColorSelectionButton button in Buttons)
@@ -65,8 +64,7 @@ public class ColorPicker : IDrawable, IUpdatable
         public Transform2D Transform { get; protected set; }
         public Color Color { get; protected set; }
         protected float Radius;
-        public delegate void Click(Color color);
-        public event Click? Clicked;
+        public event Action<Color>? Clicked;
         public void Draw()
         {
             Graphics.Draw.CircleV(Transform.Position, Radius + 5, Color.LIGHTGRAY);
