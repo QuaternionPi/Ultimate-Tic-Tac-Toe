@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "name": "C#: Ultimate Tic Tac Toe",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\src\\Ultimate Tic Tac Toe.csproj",
+            "launchConfigurationId": "TargetFramework=;Ultimate Tic Tac Toe"
+        },
+        {
+            "name": "C#: Ultimate Tic Tac Toe Tests",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\tests\\Ultimate Tic Tac Toe Tests.csproj",
+            "launchConfigurationId": "TargetFramework=;Ultimate Tic Tac Toe"
+        }
+    ]
+}
