@@ -247,9 +247,9 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell, new()
     {
         return new Grid<TCell>(player, transform, placeable);
     }
-    public ICell Place(IEnumerable<ICell> TCellrace, Player player, bool placeable)
+    public ICell Place(IEnumerable<ICell> TCelltrace, Player player, bool placeable)
     {
-        return new Grid<TCell>(this, TCellrace, player, placeable);
+        return new Grid<TCell>(this, TCelltrace, player, placeable);
     }
     public ICell DeepCopyPlacable(bool placeable)
     {
