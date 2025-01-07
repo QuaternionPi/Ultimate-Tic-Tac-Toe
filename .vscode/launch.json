@@ -12,7 +12,7 @@
             "type": "dotnet",
             "request": "launch",
             "projectPath": "${workspaceFolder}\\tests\\Ultimate Tic Tac Toe Tests.csproj",
-            "launchConfigurationId": "TargetFramework=;Ultimate Tic Tac Toe"
+            "launchConfigurationId": "TargetFramework=;Ultimate Tic Tac Toe Tests"
         }
     ]
 }

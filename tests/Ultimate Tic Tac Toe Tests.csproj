@@ -19,4 +19,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\src\Ultimate Tic Tac Toe.csproj" />
+  </ItemGroup>
+
 </Project>
