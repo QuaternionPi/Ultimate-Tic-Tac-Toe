@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Ultimate Tic Tac Toe.csproj" />
+    <ProjectReference Include="..\src\UltimateTicTacToe.csproj" />
   </ItemGroup>
 
 </Project>
