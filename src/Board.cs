@@ -10,7 +10,7 @@ public interface IBoard<TCell> : ICell where TCell : ICell
 }
 public static class BoardExtensions
 {
-    public static List<Address> PathToCell<TCell>(this IBoard<TCell> board, ICell cell) where TCell : ICell, new()
+    public static List<Address> PathToCell<TCell>(this IBoard<TCell> board, ICell cell) where TCell : ICell
     {
         Debug.Assert(board.Contains(cell) != false, $"Cell: {cell} is not contained. There is no path to it");
         for (int i = 0; i < 9; i++)
@@ -23,7 +23,7 @@ public static class BoardExtensions
         }
         throw new Exception($"Cell: {cell} was not found");
     }
-    public static bool ContainsCell<TCell>(this IBoard<TCell> board, ICell cell) where TCell : ICell, new()
+    public static bool ContainsCell<TCell>(this IBoard<TCell> board, ICell cell) where TCell : ICell
     {
         bool contains = false;
         for (int i = 0; i < 9; i++)
@@ -33,7 +33,7 @@ public static class BoardExtensions
         }
         return contains;
     }
-    public static bool HasWinner<TCell>(this IBoard<TCell> board) where TCell : ICell, new()
+    public static bool HasWinner<TCell>(this IBoard<TCell> board) where TCell : ICell
     {
         bool hasWinner = false;
 
@@ -90,7 +90,7 @@ public static class BoardExtensions
             && rightCenter == bottomRight;
         return hasWinner;
     }
-    public static Player? Winner<TCell>(this IBoard<TCell> board) where TCell : ICell, new()
+    public static Player? Winner<TCell>(this IBoard<TCell> board) where TCell : ICell
     {
         if (board.HasWinner() == false)
         {

@@ -6,7 +6,7 @@ using Raylib_cs;
 namespace UltimateTicTacToe.Game;
 
 public class LargeGrid<TCell> : IDrawable, IUpdatable, ITransitional, IBoard<TCell>, IClickableCell
-where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell, new()
+where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell
 {
     public LargeGrid(IEnumerable<TCell> cells, Tile winningPlayerTile, Transform2D transform)
     {
@@ -17,40 +17,6 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell, new()
         }
         Transform = transform;
         WinningPlayerTile = winningPlayerTile;
-    }
-    public LargeGrid()
-    {
-        Transform = new Transform2D(Vector2.Zero, 0, 1);
-        Cells = new TCell[9];
-        for (int i = 0; i < 9; i++)
-        {
-            var address = new Address(i);
-            Vector2 cellPosition = PixelPosition(Transform, address.X, address.Y);
-            Transform2D cellTransform = new Transform2D(cellPosition, 0, 1);
-            TCell cell = (TCell)new TCell().Create(null, cellTransform, false);
-            Cells[i] = cell;
-            cell.Clicked += HandleClickedCell;
-        }
-        Player = null;
-        Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
-        WinningPlayerTile = new Tile(Player, victoryTileTransform, true, 0);
-    }
-    public LargeGrid(Player? player, Transform2D transform, bool placeable)
-    {
-        Transform = transform;
-        Cells = new TCell[9];
-        for (int i = 0; i < 9; i++)
-        {
-            var address = new Address(i);
-            Vector2 cellPosition = PixelPosition(Transform, address.X, address.Y);
-            Transform2D cellTransform = new Transform2D(cellPosition, 0, 1);
-            TCell cell = (TCell)new TCell().Create(null, cellTransform, placeable);
-            Cells[i] = cell;
-            cell.Clicked += HandleClickedCell;
-        }
-        Player = this.Winner();
-        Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
-        WinningPlayerTile = new Tile(Player, victoryTileTransform, true, TransitionValue);
     }
     public LargeGrid(LargeGrid<TCell> original, bool placeable)
     {
@@ -216,10 +182,6 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell, new()
         }
         if (gridCellInTransition == false)
             WinningPlayerTile.Update();
-    }
-    public ICell Create(Player? player, Transform2D transform, bool placeable)
-    {
-        return new Grid<TCell>(player, transform, placeable);
     }
     public ICell Place(IEnumerable<ICell> TCelltrace, Player player, bool placeable)
     {

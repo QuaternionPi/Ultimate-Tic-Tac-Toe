@@ -10,7 +10,6 @@ public interface ICell
 {
     public Player? Player { get; }
     public bool Placeable { get; }
-    public ICell Create(Player? player, Transform2D transform, bool placeable);
     public ICell Place(IEnumerable<ICell> cells, Player player, bool placeable);
     public ICell DeepCopyPlacable(bool placeable);
     public List<Address> PathTo(ICell cell);
