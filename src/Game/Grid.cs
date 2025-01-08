@@ -98,38 +98,6 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell, new()
         Player = this.Winner();
         Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
         WinningPlayerTile = new Tile(Player, victoryTileTransform, true, TransitionValue);
-        if (Cells[0][0] is Tile || Player != null)
-        {
-            return;
-        }
-
-        Address nextPlayableAddress = original.PathTo(TCelloReplace).Last();
-        (int nextX, int nextY) = nextPlayableAddress.XY;
-        TCell nextCell = Cells[nextX][nextY];
-
-        if (nextCell.Placeable == false)
-        {
-            Cells[nextX][nextY] = (TCell)nextCell.DeepCopyPlacable(false);
-            return;
-        }
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                TCell cell = original.Cells[i][j];
-                bool cellPlaceable = (i == nextX) && (j == nextY) && (Player == null);
-                if (cell.Equals(targetCell))
-                {
-                    cell = (TCell)cell.Place(TCelltrace.Skip(1), player, cellPlaceable);
-                }
-                else
-                {
-                    cell = (TCell)cell.DeepCopyPlacable(cellPlaceable);
-                }
-                Cells[i][j] = cell;
-                cell.Clicked += HandleClickedCell;
-            }
-        }
     }
     [JsonInclude]
     public Transform2D Transform { get; }
