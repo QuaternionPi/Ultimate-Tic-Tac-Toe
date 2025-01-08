@@ -14,7 +14,7 @@ public class SmallGridTests
     public void EmptyGridHasNineEmptyCells()
     {
         Grid<Tile> grid = new();
-        foreach(var row in grid.Cells)
+        foreach (var row in grid.Cells)
             foreach (var cell in row)
                 Assert.Null(cell.Player);
     }
@@ -27,7 +27,8 @@ public class SmallGridTests
     [InlineData(0, 2, 1, 2, 2, 2)] // Right column
     [InlineData(0, 0, 1, 1, 2, 2)] // Negative diagonal
     [InlineData(2, 0, 1, 1, 0, 2)] // Positive diagonal
-    public void WonByThreeInARow(int x1, int y1, int x2, int y2, int x3, int y3){
+    public void WonByThreeInARow(int x1, int y1, int x2, int y2, int x3, int y3)
+    {
         Grid<Tile> grid = new(null, new(), true);
         Bot player = new(Player.Symbol.O, Color.BLUE, 0);
 
@@ -43,7 +44,8 @@ public class SmallGridTests
         Assert.Equal(winner, player);
     }
     [Fact]
-    public void GameNotWonByConstellationOfSix(){
+    public void GameNotWonByConstellationOfSix()
+    {
         Grid<Tile> grid = new(null, new(), true);
         Bot player = new(Player.Symbol.O, Color.BLUE, 0);
 
@@ -64,4 +66,35 @@ public class SmallGridTests
 
         Assert.Null(winner);
     }
+    [Fact]
+    public void GameCanTie()
+    {
+        Grid<Tile> grid = new(null, new(), true);
+        Bot player1 = new(Player.Symbol.O, Color.BLUE, 0);
+        Bot player2 = new(Player.Symbol.X, Color.RED, 0);
+
+        Tile topLeft = grid.Cells[0][0];
+        grid = (Grid<Tile>)grid.Place([topLeft], player1, true);
+        Tile topMiddle = grid.Cells[0][1];
+        grid = (Grid<Tile>)grid.Place([topMiddle], player1, true);
+        Tile topRight = grid.Cells[0][2];
+        grid = (Grid<Tile>)grid.Place([topRight], player2, true);
+        Tile leftMiddle = grid.Cells[1][0];
+        grid = (Grid<Tile>)grid.Place([leftMiddle], player2, true);
+        Tile trueMiddle = grid.Cells[1][1];
+        grid = (Grid<Tile>)grid.Place([trueMiddle], player1, true);
+        Tile rightMiddle = grid.Cells[1][2];
+        grid = (Grid<Tile>)grid.Place([rightMiddle], player1, true);
+        Tile bottomLeft = grid.Cells[2][0];
+        grid = (Grid<Tile>)grid.Place([bottomLeft], player1, true);
+        Tile bottomMiddle = grid.Cells[2][1];
+        grid = (Grid<Tile>)grid.Place([bottomMiddle], player2, true);
+        Tile bottomRight = grid.Cells[2][2];
+        grid = (Grid<Tile>)grid.Place([bottomRight], player2, true);
+
+        Player? winner = grid.Winner();
+
+        Assert.Null(winner);
+    }
+
 }
