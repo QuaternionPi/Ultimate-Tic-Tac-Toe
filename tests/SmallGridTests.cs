@@ -40,7 +40,28 @@ public class SmallGridTests
 
         Player? winner = grid.Winner();
 
-        Console.WriteLine(winner);
         Assert.Equal(winner, player);
+    }
+    [Fact]
+    public void GameNotWonByConstellationOfSix(){
+        Grid<Tile> grid = new(null, new(), true);
+        Bot player = new(Player.Symbol.O, Color.BLUE, 0);
+
+        Tile topLeft = grid.Cells[0][0];
+        grid = (Grid<Tile>)grid.Place([topLeft], player, true);
+        Tile topMiddle = grid.Cells[0][1];
+        grid = (Grid<Tile>)grid.Place([topMiddle], player, true);
+        Tile leftMiddle = grid.Cells[1][0];
+        grid = (Grid<Tile>)grid.Place([leftMiddle], player, true);
+        Tile bottomRight = grid.Cells[2][2];
+        grid = (Grid<Tile>)grid.Place([bottomRight], player, true);
+        Tile bottomMiddle = grid.Cells[2][1];
+        grid = (Grid<Tile>)grid.Place([bottomMiddle], player, true);
+        Tile rightMiddle = grid.Cells[1][2];
+        grid = (Grid<Tile>)grid.Place([rightMiddle], player, true);
+
+        Player? winner = grid.Winner();
+
+        Assert.Null(winner);
     }
 }
