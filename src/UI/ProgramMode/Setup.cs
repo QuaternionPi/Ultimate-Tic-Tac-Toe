@@ -1,5 +1,6 @@
 using System.Numerics;
 using Raylib_cs;
+using UltimateTicTacToe.Game;
 
 namespace UltimateTicTacToe.UI.ProgramMode;
 public class Setup : IProgramMode
@@ -52,6 +53,9 @@ public class Setup : IProgramMode
                         rightBotButton,
                         leftBotButton,
                     };
+
+        SetPlayer1Bot();
+        SetPlayer2Bot();
     }
     protected List<UI.Button> Buttons;
     public bool InTransition { get; }
@@ -86,12 +90,52 @@ public class Setup : IProgramMode
             player1 = new Human(Player1.Shape, Player1.Color, 0);
         else
             player1 = new Bot(Player1.Shape, Player1.Color, 0);
+
         if (Player2Type == "Human")
             player2 = new Human(Player2.Shape, Player2.Color, 0);
         else
             player2 = new Bot(Player2.Shape, Player2.Color, 0);
-        IProgramMode mode = new PlayGame(this, player1, player2);
+
+
+        var position = new Vector2(450, 350);
+        var transform = new Transform2D(position, 0, 4);
+        LargeGrid<Grid<Tile>> board = EmptyBoard(transform);
+
+
+        IProgramMode mode = new PlayGame(this, player1, player2, board);
         SwitchTo?.Invoke(this, mode);
+    }
+    protected LargeGrid<Grid<Tile>> EmptyBoard(Transform2D transform)
+    {
+        var cells = new Grid<Tile>[9];
+        for (int i = 0; i < 9; i++)
+        {
+            var address = new Address(i);
+            var cellPosition = LargeGrid<Grid<Tile>>.PixelPosition(transform, address.X, address.Y);
+            var cellTransform = new Transform2D(cellPosition, 0, 1);
+
+            Grid<Tile> cell = EmptyGrid(cellTransform);
+            cells[i] = cell;
+        }
+        var victoryTileTransform = new Transform2D(transform.Position, 0, transform.Scale * 4);
+        var victoryTile = new Tile(null, victoryTileTransform, true, 0);
+        return new LargeGrid<Grid<Tile>>(cells, victoryTile, transform);
+    }
+    protected Grid<Tile> EmptyGrid(Transform2D transform)
+    {
+        var cells = new Tile[9];
+        for (int i = 0; i < 9; i++)
+        {
+            var address = new Address(i);
+            var cellPosition = LargeGrid<Grid<Tile>>.PixelPosition(transform, address.X, address.Y);
+            var cellTransform = new Transform2D(cellPosition, 0, 1);
+
+            var cell = new Tile(null, cellTransform, true, 0);
+            cells[i] = cell;
+        }
+        var victoryTileTransform = new Transform2D(transform.Position, 0, transform.Scale * 4);
+        var victoryTile = new Tile(null, victoryTileTransform, true, 0);
+        return new Grid<Tile>(cells, victoryTile, transform);
     }
     protected void SetPlayer1Color(Color color) => Player1.Color = color;
     protected void SetPlayer2Color(Color color) => Player2.Color = color;

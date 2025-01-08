@@ -8,13 +8,24 @@ namespace UltimateTicTacToe.Game;
 public class LargeGrid<TCell> : IDrawable, IUpdatable, ITransitional, IBoard<TCell>, IClickableCell
 where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell, new()
 {
+    public LargeGrid(IEnumerable<TCell> cells, Tile winningPlayerTile, Transform2D transform)
+    {
+        Cells = cells.ToArray();
+        foreach (var cell in cells)
+        {
+            cell.Clicked += HandleClickedCell;
+        }
+        Transform = transform;
+        WinningPlayerTile = winningPlayerTile;
+    }
     public LargeGrid()
     {
         Transform = new Transform2D(Vector2.Zero, 0, 1);
         Cells = new TCell[9];
         for (int i = 0; i < 9; i++)
         {
-            Vector2 cellPosition = PixelPosition(new Address(i));
+            var address = new Address(i);
+            Vector2 cellPosition = PixelPosition(Transform, address.X, address.Y);
             Transform2D cellTransform = new Transform2D(cellPosition, 0, 1);
             TCell cell = (TCell)new TCell().Create(null, cellTransform, false);
             Cells[i] = cell;
@@ -30,7 +41,8 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell, new()
         Cells = new TCell[9];
         for (int i = 0; i < 9; i++)
         {
-            Vector2 cellPosition = PixelPosition(new Address(i));
+            var address = new Address(i);
+            Vector2 cellPosition = PixelPosition(Transform, address.X, address.Y);
             Transform2D cellTransform = new Transform2D(cellPosition, 0, 1);
             TCell cell = (TCell)new TCell().Create(null, cellTransform, placeable);
             Cells[i] = cell;
@@ -222,11 +234,10 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell, new()
         IEnumerable<ICell> newCells = cells.Prepend(this).ToList();
         Clicked?.Invoke(newCells);
     }
-    public Vector2 PixelPosition(Address address)
+    public static Vector2 PixelPosition(Transform2D transform, int i, int j)
     {
-        (int i, int j) = address.XY;
-        int x = (int)(Transform.Position.X + (i - 1) * 50 * Transform.Scale);
-        int y = (int)(Transform.Position.Y + (j - 1) * 50 * Transform.Scale);
+        int x = (int)(transform.Position.X + (i - 1) * 50 * transform.Scale);
+        int y = (int)(transform.Position.Y + (j - 1) * 50 * transform.Scale);
         return new Vector2(x, y);
     }
     public void DrawGrid()

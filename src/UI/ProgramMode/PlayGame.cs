@@ -5,12 +5,9 @@ using UltimateTicTacToe.Game;
 namespace UltimateTicTacToe.UI.ProgramMode;
 public class PlayGame : IProgramMode
 {
-    public PlayGame(IProgramMode? previous, Player player1, Player player2)
+    public PlayGame(IProgramMode? previous, Player player1, Player player2, LargeGrid<Grid<Tile>> board)
     {
         Previous = previous;
-        var position = new Vector2(450, 350);
-        var transform = new Transform2D(position, 0, 4);
-        var board = new LargeGrid<Grid<Tile>>(null, transform, true);
         _game = new Game.Game(player1, player2, board);
         Game.GameOver += GameOver;
     }
