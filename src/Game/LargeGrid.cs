@@ -11,18 +11,14 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell, new()
     public LargeGrid()
     {
         Transform = new Transform2D(Vector2.Zero, 0, 1);
-        Cells = new TCell[3][];
-        for (int i = 0; i < 3; i++)
+        Cells = new TCell[9];
+        for (int i = 0; i < 9; i++)
         {
-            Cells[i] = new TCell[3];
-            for (int j = 0; j < 3; j++)
-            {
-                Vector2 cellPosition = PixelPosition(new Address(i, j));
-                Transform2D cellTransform = new Transform2D(cellPosition, 0, 1);
-                TCell cell = (TCell)new TCell().Create(null, cellTransform, false);
-                Cells[i][j] = cell;
-                cell.Clicked += HandleClickedCell;
-            }
+            Vector2 cellPosition = PixelPosition(new Address(i));
+            Transform2D cellTransform = new Transform2D(cellPosition, 0, 1);
+            TCell cell = (TCell)new TCell().Create(null, cellTransform, false);
+            Cells[i] = cell;
+            cell.Clicked += HandleClickedCell;
         }
         Player = null;
         Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
@@ -31,18 +27,14 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell, new()
     public LargeGrid(Player? player, Transform2D transform, bool placeable)
     {
         Transform = transform;
-        Cells = new TCell[3][];
-        for (int i = 0; i < 3; i++)
+        Cells = new TCell[9];
+        for (int i = 0; i < 9; i++)
         {
-            Cells[i] = new TCell[3];
-            for (int j = 0; j < 3; j++)
-            {
-                Vector2 cellPosition = PixelPosition(new Address(i, j));
-                Transform2D cellTransform = new Transform2D(cellPosition, 0, 1);
-                TCell cell = (TCell)new TCell().Create(null, cellTransform, placeable);
-                Cells[i][j] = cell;
-                cell.Clicked += HandleClickedCell;
-            }
+            Vector2 cellPosition = PixelPosition(new Address(i));
+            Transform2D cellTransform = new Transform2D(cellPosition, 0, 1);
+            TCell cell = (TCell)new TCell().Create(null, cellTransform, placeable);
+            Cells[i] = cell;
+            cell.Clicked += HandleClickedCell;
         }
         Player = this.Winner();
         Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
@@ -51,17 +43,13 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell, new()
     public LargeGrid(LargeGrid<TCell> original, bool placeable)
     {
         Transform = original.Transform;
-        Cells = new TCell[3][];
-        for (int i = 0; i < 3; i++)
+        Cells = new TCell[9];
+        for (int i = 0; i < 9; i++)
         {
-            Cells[i] = new TCell[3];
-            for (int j = 0; j < 3; j++)
-            {
-                TCell cell = original.Cells[i][j];
-                TCell newCell = (TCell)cell.DeepCopyPlacable(placeable);
-                Cells[i][j] = newCell;
-                newCell.Clicked += HandleClickedCell;
-            }
+            TCell cell = original.Cells[i];
+            TCell newCell = (TCell)cell.DeepCopyPlacable(placeable);
+            Cells[i] = newCell;
+            newCell.Clicked += HandleClickedCell;
         }
         Player = this.Winner();
         Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
@@ -71,64 +59,57 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell, new()
     {
         Debug.Assert(TCelltrace.Last().Placeable != false, "You Cannot place on that cell");
         Transform = original.Transform;
-        Cells = new TCell[3][];
+        Cells = new TCell[9];
 
         ICell TCelloReplace = TCelltrace.Last();
         ICell targetCell = TCelltrace.First();
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 9; i++)
         {
-            Cells[i] = new TCell[3];
-            for (int j = 0; j < 3; j++)
+            TCell cell = original.Cells[i];
+            if (cell.Equals(targetCell))
             {
-                TCell cell = original.Cells[i][j];
-                if (cell.Equals(targetCell))
-                {
-                    cell = (TCell)cell.Place(TCelltrace.Skip(1), player, placeable);
-                }
-                else
-                {
-                    cell = (TCell)cell.DeepCopyPlacable(placeable);
-                }
-                Cells[i][j] = cell;
-                cell.Clicked += HandleClickedCell;
+                cell = (TCell)cell.Place(TCelltrace.Skip(1), player, placeable);
             }
+            else
+            {
+                cell = (TCell)cell.DeepCopyPlacable(placeable);
+            }
+            Cells[i] = cell;
+            cell.Clicked += HandleClickedCell;
         }
 
         Player = this.Winner();
         Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
         WinningPlayerTile = new Tile(Player, victoryTileTransform, true, TransitionValue);
-        if (Cells[0][0] is Tile || Player != null)
+        if (Cells[0] is Tile || Player != null)
         {
             return;
         }
 
         Address nextPlayableAddress = original.PathTo(TCelloReplace).Last();
-        (int nextX, int nextY) = nextPlayableAddress.XY;
-        TCell nextCell = Cells[nextX][nextY];
+        int index = nextPlayableAddress.Index;
+        TCell nextCell = Cells[index];
 
         if (nextCell.Placeable == false)
         {
-            Cells[nextX][nextY] = (TCell)nextCell.DeepCopyPlacable(false);
+            Cells[index] = (TCell)nextCell.DeepCopyPlacable(false);
             return;
         }
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 9; i++)
         {
-            for (int j = 0; j < 3; j++)
+            TCell cell = original.Cells[i];
+            bool cellPlaceable = (i == index) && (Player == null);
+            if (cell.Equals(targetCell))
             {
-                TCell cell = original.Cells[i][j];
-                bool cellPlaceable = (i == nextX) && (j == nextY) && (Player == null);
-                if (cell.Equals(targetCell))
-                {
-                    cell = (TCell)cell.Place(TCelltrace.Skip(1), player, cellPlaceable);
-                }
-                else
-                {
-                    cell = (TCell)cell.DeepCopyPlacable(cellPlaceable);
-                }
-                Cells[i][j] = cell;
-                cell.Clicked += HandleClickedCell;
+                cell = (TCell)cell.Place(TCelltrace.Skip(1), player, cellPlaceable);
             }
+            else
+            {
+                cell = (TCell)cell.DeepCopyPlacable(cellPlaceable);
+            }
+            Cells[i] = cell;
+            cell.Clicked += HandleClickedCell;
         }
     }
     [JsonInclude]
@@ -141,17 +122,16 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell, new()
         {
             if (Player != null)
                 return false;
-            for (int i = 0; i < 3; i++)
-                for (int j = 0; j < 3; j++)
-                    if (Cells[i][j].Placeable == true)
-                        return true;
+            for (int i = 0; i < 9; i++)
+                if (Cells[i].Placeable == true)
+                    return true;
             return false;
         }
     }
     public event Action<IEnumerable<ICell>>? Clicked;
     [JsonInclude]
     //[JsonConverter(typeof(Json.Array2DConverter))]
-    public TCell[][] Cells { get; }
+    public TCell[] Cells { get; }
     [JsonInclude]
     public Tile WinningPlayerTile { get; }
     public bool InTransition
@@ -162,14 +142,11 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell, new()
             {
                 return true;
             }
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 9; i++)
             {
-                for (int j = 0; j < 3; j++)
+                if (Cells[i].InTransition)
                 {
-                    if (Cells[i][j].InTransition)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
             return false;
@@ -179,15 +156,12 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell, new()
     {
         get
         {
-            var values = new float[3, 3];
-            for (int i = 0; i < 3; i++)
+            var values = new float[9];
+            for (int i = 0; i < 9; i++)
             {
-                for (int j = 0; j < 3; j++)
-                {
-                    values[i, j] = Cells[i][j].TransitionValue;
-                }
+                values[i] = Cells[i].TransitionValue;
             }
-            float max = values[0, 0];
+            float max = values[0];
             foreach (var value in values)
             {
                 max = Math.Max(value, max);
@@ -202,12 +176,9 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell, new()
     public void Draw()
     {
         bool gridCellInTransition = false;
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 9; i++)
         {
-            for (int j = 0; j < 3; j++)
-            {
-                gridCellInTransition |= Cells[i][j].InTransition;
-            }
+            gridCellInTransition |= Cells[i].InTransition;
         }
         if (Player != null && gridCellInTransition == false)
         {
@@ -215,30 +186,21 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell, new()
             return;
         }
         DrawGrid();
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 9; i++)
         {
-            for (int j = 0; j < 3; j++)
-            {
-                Cells[i][j].Draw();
-            }
+            Cells[i].Draw();
         }
     }
     public void Update()
     {
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 9; i++)
         {
-            for (int j = 0; j < 3; j++)
-            {
-                Cells[i][j].Update();
-            }
+            Cells[i].Update();
         }
         bool gridCellInTransition = false;
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 9; i++)
         {
-            for (int j = 0; j < 3; j++)
-            {
-                gridCellInTransition |= Cells[i][j].InTransition;
-            }
+            gridCellInTransition |= Cells[i].InTransition;
         }
         if (gridCellInTransition == false)
             WinningPlayerTile.Update();

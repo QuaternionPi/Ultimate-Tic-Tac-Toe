@@ -6,22 +6,19 @@ The 3 by 3 objects that Ultimate Tic Tac Toe is played on
 */
 public interface IBoard<TCell> : ICell where TCell : ICell, new()
 {
-    public TCell[][] Cells { get; }
+    public TCell[] Cells { get; }
 }
 public static class BoardExtensions
 {
     public static List<Address> PathToCell<TCell>(this IBoard<TCell> board, ICell cell) where TCell : ICell, new()
     {
         Debug.Assert(board.Contains(cell) != false, $"Cell: {cell} is not contained. There is no path to it");
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 9; i++)
         {
-            for (int j = 0; j < 3; j++)
+            if (board.Cells[i].Contains(cell))
             {
-                if (board.Cells[i][j].Contains(cell))
-                {
-                    Address address = new(i, j);
-                    return board.Cells[i][j].PathTo(cell).Prepend(address).ToList();
-                }
+                Address address = new(i);
+                return board.Cells[i].PathTo(cell).Prepend(address).ToList();
             }
         }
         throw new Exception($"Cell: {cell} was not found");
@@ -29,13 +26,10 @@ public static class BoardExtensions
     public static bool ContainsCell<TCell>(this IBoard<TCell> board, ICell cell) where TCell : ICell, new()
     {
         bool contains = false;
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 9; i++)
         {
-            for (int j = 0; j < 3; j++)
-            {
-                contains |= board.Cells[i][j].Equals(cell);
-                contains |= board.Cells[i][j].Contains(cell);
-            }
+            contains |= board.Cells[i].Equals(cell);
+            contains |= board.Cells[i].Contains(cell);
         }
         return contains;
     }
@@ -43,26 +37,23 @@ public static class BoardExtensions
     {
         bool hasWinner = false;
 
-        Player?[,] cellWinners = new Player?[3, 3];
-        for (int i = 0; i < 3; i++)
+        Player?[] cellWinners = new Player?[9];
+        for (int i = 0; i < 9; i++)
         {
-            for (int j = 0; j < 3; j++)
-            {
-                cellWinners[i, j] = board.Cells[i][j]?.Player;
-            }
+            cellWinners[i] = board.Cells[i]?.Player;
         }
 
-        Player? topLeft = cellWinners[0, 0];
-        Player? topCenter = cellWinners[0, 1];
-        Player? topRight = cellWinners[0, 2];
+        Player? topLeft = cellWinners[0];
+        Player? topCenter = cellWinners[1];
+        Player? topRight = cellWinners[2];
 
-        Player? leftCenter = cellWinners[1, 0];
-        Player? trueCenter = cellWinners[1, 1];
-        Player? rightCenter = cellWinners[1, 2];
+        Player? leftCenter = cellWinners[3];
+        Player? trueCenter = cellWinners[4];
+        Player? rightCenter = cellWinners[5];
 
-        Player? bottomLeft = cellWinners[2, 0];
-        Player? bottomCenter = cellWinners[2, 1];
-        Player? bottomRight = cellWinners[2, 2];
+        Player? bottomLeft = cellWinners[6];
+        Player? bottomCenter = cellWinners[7];
+        Player? bottomRight = cellWinners[8];
 
         // Diagonals
         hasWinner |= trueCenter != null
@@ -106,26 +97,23 @@ public static class BoardExtensions
             return null;
         }
 
-        Player?[,] cellWinners = new Player?[3, 3];
-        for (int i = 0; i < 3; i++)
+        Player?[] cellWinners = new Player?[9];
+        for (int i = 0; i < 9; i++)
         {
-            for (int j = 0; j < 3; j++)
-            {
-                cellWinners[i, j] = board.Cells[i][j]?.Player;
-            }
+            cellWinners[i] = board.Cells[i]?.Player;
         }
 
-        Player? topLeft = cellWinners[0, 0];
-        Player? topCenter = cellWinners[0, 1];
-        Player? topRight = cellWinners[0, 2];
+        Player? topLeft = cellWinners[0];
+        Player? topCenter = cellWinners[1];
+        Player? topRight = cellWinners[2];
 
-        Player? leftCenter = cellWinners[1, 0];
-        Player? trueCenter = cellWinners[1, 1];
-        Player? rightCenter = cellWinners[1, 2];
+        Player? leftCenter = cellWinners[3];
+        Player? trueCenter = cellWinners[4];
+        Player? rightCenter = cellWinners[5];
 
-        Player? bottomLeft = cellWinners[2, 0];
-        Player? bottomCenter = cellWinners[2, 1];
-        Player? bottomRight = cellWinners[2, 2];
+        Player? bottomLeft = cellWinners[6];
+        Player? bottomCenter = cellWinners[7];
+        Player? bottomRight = cellWinners[8];
 
         if (trueCenter != null)
         {

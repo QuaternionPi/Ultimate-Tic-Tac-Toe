@@ -127,45 +127,42 @@ public partial class Bot : Player
         }
         int evaluation = 0;
         evaluation -= NumPossibleMoves(board);
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 9; i++)
         {
-            for (int j = 0; j < 3; j++)
-            {
-                var grid = board.Cells[i][j];
-                evaluation += Award(100, grid.Player, player, opponent);
-                evaluation += Award(10, grid.Cells[1][1].Player, player, opponent);
-                evaluation += Award(5, grid.Cells[0][0].Player, player, opponent);
-                evaluation += Award(5, grid.Cells[0][2].Player, player, opponent);
-                evaluation += Award(5, grid.Cells[2][0].Player, player, opponent);
-                evaluation += Award(5, grid.Cells[2][2].Player, player, opponent);
-            }
+            var grid = board.Cells[i];
+            evaluation += Award(100, grid.Player, player, opponent);
+            evaluation += Award(10, grid.Cells[4].Player, player, opponent);
+            evaluation += Award(5, grid.Cells[0].Player, player, opponent);
+            evaluation += Award(5, grid.Cells[2].Player, player, opponent);
+            evaluation += Award(5, grid.Cells[6].Player, player, opponent);
+            evaluation += Award(5, grid.Cells[8].Player, player, opponent);
         }
-        evaluation += Award(50, board.Cells[1][1].Player, player, opponent);
-        evaluation += Award(25, board.Cells[0][0].Player, player, opponent);
-        evaluation += Award(25, board.Cells[0][2].Player, player, opponent);
-        evaluation += Award(25, board.Cells[2][0].Player, player, opponent);
-        evaluation += Award(25, board.Cells[2][2].Player, player, opponent);
+        evaluation += Award(50, board.Cells[4].Player, player, opponent);
+        evaluation += Award(25, board.Cells[0].Player, player, opponent);
+        evaluation += Award(25, board.Cells[2].Player, player, opponent);
+        evaluation += Award(25, board.Cells[6].Player, player, opponent);
+        evaluation += Award(25, board.Cells[8].Player, player, opponent);
         return evaluation;
     }
     protected static int NumPossibleMoves(LargeGrid<Grid<Tile>> board)
     {
         int count = 0;
-        for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++)
-                if (board.Cells[i][j].Placeable)
-                    for (int k = 0; k < 3; k++) for (int l = 0; l < 3; l++)
-                            if (board.Cells[i][j].Cells[k][l].Placeable)
-                                count++;
+        for (int i = 0; i < 9; i++)
+            if (board.Cells[i].Placeable)
+                for (int k = 0; k < 9; k++)
+                    if (board.Cells[i].Cells[k].Placeable)
+                        count++;
 
         return count;
     }
     protected static List<(Grid<Tile>, Tile)> PossibleMoves(LargeGrid<Grid<Tile>> board)
     {
         List<(Grid<Tile>, Tile)> possibleMoves = new();
-        for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++)
-                if (board.Cells[i][j].Placeable)
-                    for (int k = 0; k < 3; k++) for (int l = 0; l < 3; l++)
-                            if (board.Cells[i][j].Cells[k][l].Placeable)
-                                possibleMoves.Add((board.Cells[i][j], board.Cells[i][j].Cells[k][l]));
+        for (int i = 0; i < 9; i++)
+            if (board.Cells[i].Placeable)
+                for (int k = 0; k < 9; k++)
+                    if (board.Cells[i].Cells[k].Placeable)
+                        possibleMoves.Add((board.Cells[i], board.Cells[i].Cells[k]));
         return possibleMoves;
     }
     protected void MakeMove(Grid<Tile> grid, Tile tile)
