@@ -10,7 +10,7 @@ public class PlayGame : IProgramMode
         Previous = previous;
         var position = new Vector2(450, 350);
         var transform = new Transform2D(position, 0, 4);
-        var board = new Grid<Grid<Tile>>(null, transform, true);
+        var board = new LargeGrid<Grid<Tile>>(null, transform, true);
         _game = new Game.Game(player1, player2, board);
         Game.GameOver += GameOver;
     }
@@ -38,7 +38,7 @@ public class PlayGame : IProgramMode
         {
             winner.Score += 1;
         }
-        var board = new Grid<Grid<Tile>>(null, sender.Board.Transform, true);
+        var board = new LargeGrid<Grid<Tile>>(null, sender.Board.Transform, true);
         Game = new Game.Game(sender.InactivePlayer, sender.ActivePlayer, board);
     }
     public void Draw()

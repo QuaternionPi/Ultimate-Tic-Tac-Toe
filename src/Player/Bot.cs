@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using UltimateTicTacToe.Game;
 using Raylib_cs;
 
 namespace UltimateTicTacToe;
@@ -7,11 +8,11 @@ public partial class Bot : Player
     public Bot(Symbol symbol, Color color, int score) : base(symbol, color, score)
     {
     }
-    protected Game.Grid<Game.Grid<Game.Tile>>? Board;
-    public override void BeginTurn(Game.Grid<Game.Grid<Game.Tile>> board, Player opponent)
+    protected LargeGrid<Grid<Tile>>? Board;
+    public override void BeginTurn(LargeGrid<Grid<Tile>> board, Player opponent)
     {
         Board = board;
-        List<(Game.Grid<Game.Tile>, Game.Tile)> possibleMoves = PossibleMoves(board);
+        List<(Grid<Tile>, Tile)> possibleMoves = PossibleMoves(board);
         var move = BestMove(board, possibleMoves, this, opponent);
         MakeMove(move.Item1, move.Item2);
     }
@@ -27,38 +28,9 @@ public partial class Bot : Player
     {
 
     }
-    protected static Grid<Grid<Tile>> Convert(Game.Grid<Game.Grid<Game.Tile>> board)
-    {
-        Grid<Tile>[][] newGrids = new Grid<Tile>[3][];
-        for (int i = 0; i < 3; i++)
-        {
-            newGrids[i] = new Grid<Tile>[3];
-            for (int j = 0; j < 3; j++)
-            {
-                Game.Grid<Game.Tile> grid = board.Cells[i][j];
-                Tile[][] newTiles = new Tile[3][];
-                for (int k = 0; k < 3; k++)
-                {
-                    newTiles[k] = new Tile[3];
-                    for (int l = 0; l < 3; l++)
-                    {
-
-                        Game.Tile tile = grid.Cells[k][l];
-                        Player? player = tile.Player;
-                        bool placeable = tile.Placeable;
-                        Tile newTile = new(player, placeable);
-                        newTiles[k][l] = newTile;
-                    }
-                }
-                Grid<Tile> newGrid = new(newTiles);
-                newGrids[i][j] = newGrid;
-            }
-        }
-        return new(newGrids);
-    }
-    protected static (Game.Grid<Game.Tile>, Game.Tile) BestMove(
-        Game.Grid<Game.Grid<Game.Tile>> board,
-        IEnumerable<(Game.Grid<Game.Tile>, Game.Tile)> moves,
+    protected static (Grid<Tile>, Tile) BestMove(
+        LargeGrid<Grid<Tile>> board,
+        IEnumerable<(Grid<Tile>, Tile)> moves,
         Player player,
         Player opponent
         )
@@ -84,10 +56,10 @@ public partial class Bot : Player
             from move in moves.AsParallel()
             select (move,
                 -Minimax(
-                    Convert((Game.Grid<Game.Grid<Game.Tile>>)board.Place(
+                    (LargeGrid<Grid<Tile>>)board.Place(
                         new List<ICell>() { move.Item1, move.Item2 },
                         player,
-                        true)),
+                        true),
                     depth,
                     -beta,
                     -alpha,
@@ -95,7 +67,7 @@ public partial class Bot : Player
                     player));
 
         int minEvaluation = 10000;
-        (Game.Grid<Game.Tile>, Game.Tile) bestMove = moves.First();
+        (Grid<Tile>, Tile) bestMove = moves.First();
 
         foreach (var (move, evaluation) in evaluatedMoves)
         {
@@ -108,7 +80,7 @@ public partial class Bot : Player
         return bestMove;
     }
     protected static int Minimax(
-        Grid<Grid<Tile>> board,
+        LargeGrid<Grid<Tile>> board,
         int depth,
         int alpha,
         int beta,
@@ -126,7 +98,7 @@ public partial class Bot : Player
         foreach (var move in possibleMoves)
         {
             var cellTrace = new List<ICell>() { move.Item1, move.Item2 };
-            var placedBoard = (Grid<Grid<Tile>>)board.Place(cellTrace, player, true);
+            var placedBoard = (LargeGrid<Grid<Tile>>)board.Place(cellTrace, player, true);
             var evaluation = -Minimax(placedBoard, depth - 1, -beta, -alpha, opponent, player);
             minEvaluation = Math.Min(minEvaluation, evaluation);
             beta = Math.Min(beta, evaluation);
@@ -143,7 +115,7 @@ public partial class Bot : Player
             return -amount;
         return 0;
     }
-    protected static int Evaluate(Grid<Grid<Tile>> board, Player player, Player opponent)
+    protected static int Evaluate(LargeGrid<Grid<Tile>> board, Player player, Player opponent)
     {
         if (board.Player == player)
         {
@@ -175,7 +147,7 @@ public partial class Bot : Player
         evaluation += Award(25, board.Cells[2][2].Player, player, opponent);
         return evaluation;
     }
-    protected static int NumPossibleMoves(Grid<Grid<Tile>> board)
+    protected static int NumPossibleMoves(LargeGrid<Grid<Tile>> board)
     {
         int count = 0;
         for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++)
@@ -186,7 +158,7 @@ public partial class Bot : Player
 
         return count;
     }
-    protected static List<(Grid<Tile>, Tile)> PossibleMoves(Grid<Grid<Tile>> board)
+    protected static List<(Grid<Tile>, Tile)> PossibleMoves(LargeGrid<Grid<Tile>> board)
     {
         List<(Grid<Tile>, Tile)> possibleMoves = new();
         for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++)
@@ -196,17 +168,7 @@ public partial class Bot : Player
                                 possibleMoves.Add((board.Cells[i][j], board.Cells[i][j].Cells[k][l]));
         return possibleMoves;
     }
-    protected static List<(Game.Grid<Game.Tile>, Game.Tile)> PossibleMoves(Game.Grid<Game.Grid<Game.Tile>> board)
-    {
-        List<(Game.Grid<Game.Tile>, Game.Tile)> possibleMoves = new();
-        for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++)
-                if (board.Cells[i][j].Placeable)
-                    for (int k = 0; k < 3; k++) for (int l = 0; l < 3; l++)
-                            if (board.Cells[i][j].Cells[k][l].Placeable)
-                                possibleMoves.Add((board.Cells[i][j], board.Cells[i][j].Cells[k][l]));
-        return possibleMoves;
-    }
-    protected void MakeMove(Game.Grid<Game.Tile> grid, Game.Tile tile)
+    protected void MakeMove(Grid<Tile> grid, Tile tile)
     {
         Debug.Assert(Board != null, "Board can't be null when you're playing a move");
         InvokePlayTurn(this, new List<ICell>() { Board, grid, tile });
