@@ -4,7 +4,7 @@ namespace UltimateTicTacToe;
 /*
 The 3 by 3 objects that Ultimate Tic Tac Toe is played on
 */
-public interface IBoard<TCell> : ICell where TCell : ICell, new()
+public interface IBoard<TCell> : ICell where TCell : ICell
 {
     public TCell[] Cells { get; }
 }

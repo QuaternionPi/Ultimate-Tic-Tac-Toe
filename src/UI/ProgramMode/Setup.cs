@@ -102,7 +102,7 @@ public class Setup : IProgramMode
         LargeGrid<Grid<Tile>> board = EmptyBoard(transform);
 
 
-        IProgramMode mode = new PlayGame(this, player1, player2, board);
+        IProgramMode mode = new PlayGame(this, player1, player2, () => EmptyBoard(transform));
         SwitchTo?.Invoke(this, mode);
     }
     protected LargeGrid<Grid<Tile>> EmptyBoard(Transform2D transform)

@@ -5,9 +5,11 @@ using UltimateTicTacToe.Game;
 namespace UltimateTicTacToe.UI.ProgramMode;
 public class PlayGame : IProgramMode
 {
-    public PlayGame(IProgramMode? previous, Player player1, Player player2, LargeGrid<Grid<Tile>> board)
+    public PlayGame(IProgramMode? previous, Player player1, Player player2, Func<LargeGrid<Grid<Tile>>> newBoard)
     {
         Previous = previous;
+        NewBoard = newBoard;
+        var board = newBoard();
         _game = new Game.Game(player1, player2, board);
         Game.GameOver += GameOver;
     }
@@ -16,6 +18,7 @@ public class PlayGame : IProgramMode
     public event Action<IProgramMode, IProgramMode>? SwitchTo;
     public IProgramMode? Previous { get; }
     private Game.Game _game;
+    private Func<LargeGrid<Grid<Tile>>> NewBoard;
     protected Game.Game Game
     {
         get
@@ -35,7 +38,7 @@ public class PlayGame : IProgramMode
         {
             winner.Score += 1;
         }
-        var board = new LargeGrid<Grid<Tile>>(null, sender.Board.Transform, true);
+        var board = NewBoard();
         Game = new Game.Game(sender.InactivePlayer, sender.ActivePlayer, board);
     }
     public void Draw()
