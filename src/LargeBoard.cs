@@ -4,17 +4,17 @@ namespace UltimateTicTacToe;
 /*
 The 3 by 3 objects that Ultimate Tic Tac Toe is played on
 */
-public interface ILargeBoard<TGrid, TCell> : ICell where TCell : ICell where TGrid : IBoard<TCell>
+public interface ILargeBoard<TGrid, TCell> where TCell : ICell where TGrid : IBoard<TCell>
 {
     public TGrid[] Cells { get; }
     Transform2D Transform { get; }
-    public event Action<IEnumerable<ICell>>? Clicked;
+    public event Action<ILargeBoard<TGrid, TCell>, TGrid, TCell>? Clicked;
+    public ILargeBoard<TGrid, TCell> Place(TGrid grid, TCell cell, Player player, bool placeable);
 }
 public static class LargeBoardExtensions
 {
     public static List<Address> PathToCell<TGrid, TCell>(this ILargeBoard<TGrid, TCell> board, ICell cell) where TCell : ICell where TGrid : IBoard<TCell>
     {
-        Debug.Assert(board.Contains(cell) != false, $"Cell: {cell} is not contained. There is no path to it");
         for (int i = 0; i < 9; i++)
         {
             if (board.Cells[i].Contains(cell))

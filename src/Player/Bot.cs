@@ -53,11 +53,12 @@ public partial class Bot : Player
         }
 
         var evaluatedMoves =
-            from move in moves.AsParallel()
+            from move in moves//.AsParallel()
             select (move,
                 -Minimax(
                     (LargeGrid<Grid<Tile>, Tile>)board.Place(
-                        new List<ICell>() { move.Item1, move.Item2 },
+                        move.Item1,
+                        move.Item2,
                         player,
                         true),
                     depth,
@@ -97,8 +98,7 @@ public partial class Bot : Player
         int minEvaluation = 10000;
         foreach (var move in possibleMoves)
         {
-            var cellTrace = new List<ICell>() { move.Item1, move.Item2 };
-            var placedBoard = (LargeGrid<Grid<Tile>, Tile>)board.Place(cellTrace, player, true);
+            var placedBoard = (LargeGrid<Grid<Tile>, Tile>)board.Place(move.Item1, move.Item2, player, true);
             var evaluation = -Minimax(placedBoard, depth - 1, -beta, -alpha, opponent, player);
             minEvaluation = Math.Min(minEvaluation, evaluation);
             beta = Math.Min(beta, evaluation);
@@ -168,6 +168,6 @@ public partial class Bot : Player
     protected void MakeMove(Grid<Tile> grid, Tile tile)
     {
         Debug.Assert(Board != null, "Board can't be null when you're playing a move");
-        InvokePlayTurn(this, new List<ICell>() { Board, grid, tile });
+        InvokePlayTurn(this, Board, grid, tile);
     }
 }

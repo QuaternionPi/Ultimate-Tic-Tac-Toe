@@ -28,7 +28,7 @@ public class Tile : IDrawable, IUpdatable, ITransitional, ICell
     public bool Placeable { get; }
     [JsonInclude]
     public Transform2D Transform { get; }
-    public event Action<IEnumerable<ICell>>? Clicked;
+    public event Action<ICell>? Clicked;
     public bool InTransition { get { return TransitionValue != 0; } }
     public float TransitionValue { get; protected set; }
     public void Draw()
@@ -52,16 +52,11 @@ public class Tile : IDrawable, IUpdatable, ITransitional, ICell
         bool collision = CheckCollision.PointRec(mousePosition, rectangle);
         if (leftMouse && collision)
         {
-            var cells = new List<ICell>() { this };
-            Clicked?.Invoke(cells);
+            Clicked?.Invoke(this);
         }
         TransitionValue = Math.Max(0, TransitionValue - 0.07f / MathF.Sqrt(Transform.Scale));
     }
-    public Tile Place(Player player, bool placeable)
-    {
-        return new Tile(player, Transform, placeable, 0);
-    }
-    public ICell Place(IEnumerable<ICell> cells, Player player, bool placeable)
+    public ICell Place(Player player, bool placeable)
     {
         return new Tile(player, Transform, placeable, 1);
     }

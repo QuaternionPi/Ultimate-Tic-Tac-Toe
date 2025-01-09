@@ -34,21 +34,18 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
         Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
         WinningPlayerTile = new Tile(Player, victoryTileTransform, true, TransitionValue);
     }
-    public LargeGrid(LargeGrid<TGrid, TCell> original, IEnumerable<ICell> TCelltrace, Player player, bool placeable)
+    public LargeGrid(LargeGrid<TGrid, TCell> original, TGrid targetGrid, TCell targetCell, Player player, bool placeable)
     {
-        Debug.Assert(TCelltrace.Last().Placeable != false, "You Cannot place on that cell");
+        Debug.Assert(targetCell.Placeable != false, "You Cannot place on that cell");
         Transform = original.Transform;
         Cells = new TGrid[9];
-
-        ICell TCelloReplace = TCelltrace.Last();
-        ICell targetCell = TCelltrace.First();
 
         for (int i = 0; i < 9; i++)
         {
             TGrid cell = original.Cells[i];
-            if (cell.Equals(targetCell))
+            if (cell.Equals(targetGrid))
             {
-                cell = (TGrid)cell.Place(TCelltrace.Skip(1), player, placeable);
+                cell = (TGrid)cell.Place(targetCell, player, placeable);
             }
             else
             {
@@ -61,12 +58,12 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
         Player = this.Winner();
         Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
         WinningPlayerTile = new Tile(Player, victoryTileTransform, true, TransitionValue);
-        if (Cells[0] is Tile || Player != null)
+        if (Player != null)
         {
             return;
         }
 
-        Address nextPlayableAddress = original.PathTo(TCelloReplace).Last();
+        Address nextPlayableAddress = original.PathTo(targetCell).Last();
         int index = nextPlayableAddress.Index;
         TGrid nextCell = Cells[index];
 
@@ -79,9 +76,9 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
         {
             TGrid cell = original.Cells[i];
             bool cellPlaceable = (i == index) && (Player == null);
-            if (cell.Equals(targetCell))
+            if (cell.Equals(targetGrid))
             {
-                cell = (TGrid)cell.Place(TCelltrace.Skip(1), player, cellPlaceable);
+                cell = (TGrid)cell.Place(targetCell, player, cellPlaceable);
             }
             else
             {
@@ -91,6 +88,7 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
             cell.Clicked += HandleClickedCell;
         }
     }
+
     [JsonInclude]
     public Transform2D Transform { get; }
     [JsonInclude]
@@ -107,7 +105,7 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
             return false;
         }
     }
-    public event Action<IEnumerable<ICell>>? Clicked;
+    public event Action<ILargeBoard<TGrid, TCell>, TGrid, TCell>? Clicked;
     [JsonInclude]
     //[JsonConverter(typeof(Json.Array2DConverter))]
     public TGrid[] Cells { get; }
@@ -184,18 +182,22 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
         if (gridCellInTransition == false)
             WinningPlayerTile.Update();
     }
+    public ILargeBoard<TGrid, TCell> Place(TGrid grid, TCell cell, Player player, bool placeable)
+    {
+        return new LargeGrid<TGrid, TCell>(this, grid, cell, player, placeable);
+    }
     public ICell Place(IEnumerable<ICell> TCelltrace, Player player, bool placeable)
     {
-        return (ICell)new LargeGrid<TGrid, TCell>(this, TCelltrace, player, placeable);
+        throw new NotImplementedException();
+        //return (ICell)new LargeGrid<TGrid, TCell>(this, TCelltrace, player, placeable);
     }
     public ICell DeepCopyPlacable(bool placeable)
     {
         return (ICell)new LargeGrid<TGrid, TCell>(this, placeable);
     }
-    public void HandleClickedCell(IEnumerable<ICell> cells)
+    public void HandleClickedCell(IBoard<TCell> board, TCell cell)
     {
-        IEnumerable<ICell> newCells = cells.Prepend((ICell)this).ToList();
-        Clicked?.Invoke(newCells);
+        Clicked?.Invoke(this, (TGrid)board, (TCell)cell);
     }
     public static Vector2 PixelPosition(Transform2D transform, int i, int j)
     {

@@ -1,4 +1,5 @@
 using Raylib_cs;
+using UltimateTicTacToe.Game;
 
 namespace UltimateTicTacToe;
 public class Human : Player
@@ -6,8 +7,8 @@ public class Human : Player
     public Human(Symbol symbol, Color color, int score) : base(symbol, color, score)
     {
     }
-    protected Game.LargeGrid<Game.Grid<Game.Tile>, Game.Tile>? Board;
-    public override void BeginTurn(Game.LargeGrid<Game.Grid<Game.Tile>, Game.Tile> board, Player opponent)
+    protected LargeGrid<Grid<Tile>, Tile>? Board;
+    public override void BeginTurn(LargeGrid<Grid<Tile>, Tile> board, Player opponent)
     {
         Board = board;
         Board.Clicked += HandleClickedBoard;
@@ -25,16 +26,12 @@ public class Human : Player
     {
 
     }
-    protected void HandleClickedBoard(IEnumerable<ICell> cells)
+    private void HandleClickedBoard(ILargeBoard<Grid<Tile>, Tile> board, Grid<Tile> grid, Tile tile)
     {
-        if (cells.Last().Placeable == false)
+        if (tile.Placeable == false)
         {
             return;
         }
-        if (!cells.First().Equals(Board))
-        {
-            throw new Exception("Board click not from board");
-        }
-        InvokePlayTurn(this, cells);
+        InvokePlayTurn(this, (LargeGrid<Grid<Tile>, Tile>)board, grid, tile);
     }
 }

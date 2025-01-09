@@ -56,14 +56,14 @@ public class Game : IDrawable, IUpdatable
         thread.Start();
         TurnNumber++;
     }
-    protected void HandlePlayerTurn(Player player, IEnumerable<ICell> cells)
+    protected void HandlePlayerTurn(Player player, ILargeBoard<Grid<Tile>, Tile> board, Grid<Tile> grid, Tile tile)
     {
         if (player != ActivePlayer)
         {
             Console.WriteLine($"Not player {player}'s turn");
             return;
         }
-        Board = (LargeGrid<Grid<Tile>, Tile>)Board.Place(cells.Skip(1), ActivePlayer, true);
+        Board = (LargeGrid<Grid<Tile>, Tile>)Board.Place(grid, tile, ActivePlayer, true);
         ChangePlayer = true;
     }
     protected void DelayedPlayerStart(TimeSpan delay)

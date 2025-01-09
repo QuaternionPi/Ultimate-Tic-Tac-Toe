@@ -4,11 +4,17 @@ namespace UltimateTicTacToe;
 /*
 The 3 by 3 objects that Ultimate Tic Tac Toe is played on
 */
-public interface IBoard<TCell> : ICell where TCell : ICell
+public interface IBoard<TCell> where TCell : ICell
 {
     public TCell[] Cells { get; }
+    public Player? Player { get; }
+    public bool Placeable { get; }
+    public IBoard<TCell> Place(TCell cell, Player player, bool placeable);
+    public IBoard<TCell> DeepCopyPlacable(bool placeable);
+    public List<Address> PathTo(ICell cell);
+    public bool Contains(ICell cell);
     Transform2D Transform { get; }
-    public event Action<IEnumerable<ICell>>? Clicked;
+    public event Action<IBoard<TCell>, TCell>? Clicked;
 }
 public static class BoardExtensions
 {

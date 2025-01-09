@@ -10,10 +10,10 @@ public interface ICell
 {
     public Player? Player { get; }
     public bool Placeable { get; }
-    public ICell Place(IEnumerable<ICell> cells, Player player, bool placeable);
+    public ICell Place(Player player, bool placeable);
     public ICell DeepCopyPlacable(bool placeable);
     public List<Address> PathTo(ICell cell);
     public bool Contains(ICell cell);
     Transform2D Transform { get; }
-    public event Action<IEnumerable<ICell>>? Clicked;
+    public event Action<ICell>? Clicked;
 }

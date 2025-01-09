@@ -44,7 +44,7 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
             TCell cell = original.Cells[i];
             if (cell.Equals(targetCell))
             {
-                cell = (TCell)cell.Place([], player, placeable);
+                cell = (TCell)cell.Place(player, placeable);
             }
             else
             {
@@ -74,7 +74,7 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
             return false;
         }
     }
-    public event Action<IEnumerable<ICell>>? Clicked;
+    public event Action<IBoard<TCell>, TCell>? Clicked;
     [JsonInclude]
     //[JsonConverter(typeof(Json.Array2DConverter))]
     public TCell[] Cells { get; }
@@ -151,22 +151,21 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
         if (gridCellInTransition == false)
             WinningPlayerTile.Update();
     }
-    public Grid<TCell> Place(TCell cell, Player player, bool placeable)
+    public IBoard<TCell> Place(TCell cell, Player player, bool placeable)
     {
         return new Grid<TCell>(this, cell, player, placeable);
     }
     public ICell Place(IEnumerable<ICell> TCelltrace, Player player, bool placeable)
     {
-        return new Grid<TCell>(this, (TCell)TCelltrace.First(), player, placeable);
+        return (ICell)new Grid<TCell>(this, (TCell)TCelltrace.First(), player, placeable);
     }
-    public ICell DeepCopyPlacable(bool placeable)
+    public IBoard<TCell> DeepCopyPlacable(bool placeable)
     {
         return new Grid<TCell>(this, placeable);
     }
-    public void HandleClickedCell(IEnumerable<ICell> cells)
+    public void HandleClickedCell(ICell cell)
     {
-        IEnumerable<ICell> newCells = cells.Prepend(this).ToList();
-        Clicked?.Invoke(newCells);
+        Clicked?.Invoke(this, (TCell)cell);
     }
     public static Vector2 PixelPosition(Transform2D transform, int i, int j)
     {
