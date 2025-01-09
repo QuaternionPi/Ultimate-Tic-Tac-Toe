@@ -63,7 +63,7 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
             return;
         }
 
-        Address nextPlayableAddress = original.PathTo(targetCell).Last();
+        Address nextPlayableAddress = original.Location(targetCell).Item2;
         int index = nextPlayableAddress.Index;
         TGrid nextCell = Cells[index];
 
@@ -148,7 +148,19 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
             return max;
         }
     }
-    public List<Address> PathTo(TCell cell) => this.PathToCell(cell);
+    public (Address, Address) Location(TCell cell)
+    {
+        for (int i = 0; i < 9; i++)
+        {
+            if (Cells[i].Contains(cell))
+            {
+                Address address = new(i);
+                Address innerAddress = Cells[i].Location(cell);
+                return (address, innerAddress);
+            }
+        }
+        throw new Exception($"Cell: {cell} was not found");
+    }
     public bool Contains(TCell cell)
     {
         return Cells.Any((x) => x.Contains(cell));

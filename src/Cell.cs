@@ -12,7 +12,6 @@ public interface ICell
     public bool Placeable { get; }
     public ICell Place(Player player, bool placeable);
     public ICell DeepCopyPlacable(bool placeable);
-    public List<Address> PathTo(ICell cell);
     Transform2D Transform { get; }
     public event Action<ICell>? Clicked;
 }

@@ -13,28 +13,6 @@ public interface ILargeBoard<TGrid, TCell> where TCell : ICell where TGrid : IBo
 }
 public static class LargeBoardExtensions
 {
-    public static List<Address> PathToCell<TGrid, TCell>(this ILargeBoard<TGrid, TCell> board, TCell cell) where TCell : ICell where TGrid : IBoard<TCell>
-    {
-        for (int i = 0; i < 9; i++)
-        {
-            if (board.Cells[i].Contains(cell))
-            {
-                Address address = new(i);
-                return board.Cells[i].PathTo(cell).Prepend(address).ToList();
-            }
-        }
-        throw new Exception($"Cell: {cell} was not found");
-    }
-    public static bool ContainsCell<TGrid, TCell>(this ILargeBoard<TGrid, TCell> board, TCell cell) where TCell : ICell where TGrid : IBoard<TCell>
-    {
-        bool contains = false;
-        for (int i = 0; i < 9; i++)
-        {
-            contains |= board.Cells[i].Equals(cell);
-            contains |= board.Cells[i].Contains(cell);
-        }
-        return contains;
-    }
     public static bool HasWinner<TGrid, TCell>(this ILargeBoard<TGrid, TCell> board) where TCell : ICell where TGrid : IBoard<TCell>
     {
         bool hasWinner = false;

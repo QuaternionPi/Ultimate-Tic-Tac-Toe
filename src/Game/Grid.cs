@@ -117,9 +117,9 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
             return max;
         }
     }
-    public List<Address> PathTo(TCell cell)
+    public Address Location(TCell cell)
     {
-        return new List<Address>() { new Address(Cells.ToList().IndexOf(cell)) };
+        return new Address(Cells.ToList().IndexOf(cell));
     }
     public bool Contains(TCell cell)
     {
