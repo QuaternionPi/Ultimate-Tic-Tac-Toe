@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using Raylib_cs;
 
 namespace UltimateTicTacToe.Game;
-public class Tile : IDrawable, IUpdatable, ITransitional, IClickableCell
+public class Tile : IDrawable, IUpdatable, ITransitional, ICell
 {
     public Tile()
     {
@@ -57,9 +57,9 @@ public class Tile : IDrawable, IUpdatable, ITransitional, IClickableCell
         }
         TransitionValue = Math.Max(0, TransitionValue - 0.07f / MathF.Sqrt(Transform.Scale));
     }
-    public ICell Create(Player? player, Transform2D transform, bool placeable)
+    public Tile Place(Player player, bool placeable)
     {
-        return new Tile(player, transform, placeable, 0);
+        return new Tile(player, Transform, placeable, 0);
     }
     public ICell Place(IEnumerable<ICell> cells, Player player, bool placeable)
     {

@@ -5,10 +5,11 @@ using Raylib_cs;
 
 namespace UltimateTicTacToe.Game;
 
-public class LargeGrid<TCell> : IDrawable, IUpdatable, ITransitional, IBoard<TCell>, IClickableCell
-where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell
+public class LargeGrid<TGrid, TCell> : IDrawable, IUpdatable, ITransitional, ILargeBoard<TGrid, TCell>
+where TGrid : IDrawable, IUpdatable, ITransitional, IBoard<TCell>
+where TCell : IDrawable, IUpdatable, ITransitional, ICell
 {
-    public LargeGrid(IEnumerable<TCell> cells, Tile winningPlayerTile, Transform2D transform)
+    public LargeGrid(IEnumerable<TGrid> cells, Tile winningPlayerTile, Transform2D transform)
     {
         Cells = cells.ToArray();
         foreach (var cell in cells)
@@ -18,14 +19,14 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell
         Transform = transform;
         WinningPlayerTile = winningPlayerTile;
     }
-    public LargeGrid(LargeGrid<TCell> original, bool placeable)
+    public LargeGrid(LargeGrid<TGrid, TCell> original, bool placeable)
     {
         Transform = original.Transform;
-        Cells = new TCell[9];
+        Cells = new TGrid[9];
         for (int i = 0; i < 9; i++)
         {
-            TCell cell = original.Cells[i];
-            TCell newCell = (TCell)cell.DeepCopyPlacable(placeable);
+            TGrid cell = original.Cells[i];
+            TGrid newCell = (TGrid)cell.DeepCopyPlacable(placeable);
             Cells[i] = newCell;
             newCell.Clicked += HandleClickedCell;
         }
@@ -33,25 +34,25 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell
         Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
         WinningPlayerTile = new Tile(Player, victoryTileTransform, true, TransitionValue);
     }
-    public LargeGrid(LargeGrid<TCell> original, IEnumerable<ICell> TCelltrace, Player player, bool placeable)
+    public LargeGrid(LargeGrid<TGrid, TCell> original, IEnumerable<ICell> TCelltrace, Player player, bool placeable)
     {
         Debug.Assert(TCelltrace.Last().Placeable != false, "You Cannot place on that cell");
         Transform = original.Transform;
-        Cells = new TCell[9];
+        Cells = new TGrid[9];
 
         ICell TCelloReplace = TCelltrace.Last();
         ICell targetCell = TCelltrace.First();
 
         for (int i = 0; i < 9; i++)
         {
-            TCell cell = original.Cells[i];
+            TGrid cell = original.Cells[i];
             if (cell.Equals(targetCell))
             {
-                cell = (TCell)cell.Place(TCelltrace.Skip(1), player, placeable);
+                cell = (TGrid)cell.Place(TCelltrace.Skip(1), player, placeable);
             }
             else
             {
-                cell = (TCell)cell.DeepCopyPlacable(placeable);
+                cell = (TGrid)cell.DeepCopyPlacable(placeable);
             }
             Cells[i] = cell;
             cell.Clicked += HandleClickedCell;
@@ -67,24 +68,24 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell
 
         Address nextPlayableAddress = original.PathTo(TCelloReplace).Last();
         int index = nextPlayableAddress.Index;
-        TCell nextCell = Cells[index];
+        TGrid nextCell = Cells[index];
 
         if (nextCell.Placeable == false)
         {
-            Cells[index] = (TCell)nextCell.DeepCopyPlacable(false);
+            Cells[index] = (TGrid)nextCell.DeepCopyPlacable(false);
             return;
         }
         for (int i = 0; i < 9; i++)
         {
-            TCell cell = original.Cells[i];
+            TGrid cell = original.Cells[i];
             bool cellPlaceable = (i == index) && (Player == null);
             if (cell.Equals(targetCell))
             {
-                cell = (TCell)cell.Place(TCelltrace.Skip(1), player, cellPlaceable);
+                cell = (TGrid)cell.Place(TCelltrace.Skip(1), player, cellPlaceable);
             }
             else
             {
-                cell = (TCell)cell.DeepCopyPlacable(cellPlaceable);
+                cell = (TGrid)cell.DeepCopyPlacable(cellPlaceable);
             }
             Cells[i] = cell;
             cell.Clicked += HandleClickedCell;
@@ -109,7 +110,7 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell
     public event Action<IEnumerable<ICell>>? Clicked;
     [JsonInclude]
     //[JsonConverter(typeof(Json.Array2DConverter))]
-    public TCell[] Cells { get; }
+    public TGrid[] Cells { get; }
     [JsonInclude]
     public Tile WinningPlayerTile { get; }
     public bool InTransition
@@ -185,15 +186,15 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell
     }
     public ICell Place(IEnumerable<ICell> TCelltrace, Player player, bool placeable)
     {
-        return new LargeGrid<TCell>(this, TCelltrace, player, placeable);
+        return (ICell)new LargeGrid<TGrid, TCell>(this, TCelltrace, player, placeable);
     }
     public ICell DeepCopyPlacable(bool placeable)
     {
-        return new LargeGrid<TCell>(this, placeable);
+        return (ICell)new LargeGrid<TGrid, TCell>(this, placeable);
     }
     public void HandleClickedCell(IEnumerable<ICell> cells)
     {
-        IEnumerable<ICell> newCells = cells.Prepend(this).ToList();
+        IEnumerable<ICell> newCells = cells.Prepend((ICell)this).ToList();
         Clicked?.Invoke(newCells);
     }
     public static Vector2 PixelPosition(Transform2D transform, int i, int j)

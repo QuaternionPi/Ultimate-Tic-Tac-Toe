@@ -5,7 +5,7 @@ using UltimateTicTacToe.Game;
 namespace UltimateTicTacToe.UI.ProgramMode;
 public class PlayGame : IProgramMode
 {
-    public PlayGame(IProgramMode? previous, Player player1, Player player2, Func<LargeGrid<Grid<Tile>>> newBoard)
+    public PlayGame(IProgramMode? previous, Player player1, Player player2, Func<LargeGrid<Grid<Tile>, Tile>> newBoard)
     {
         Previous = previous;
         NewBoard = newBoard;
@@ -18,7 +18,7 @@ public class PlayGame : IProgramMode
     public event Action<IProgramMode, IProgramMode>? SwitchTo;
     public IProgramMode? Previous { get; }
     private Game.Game _game;
-    private Func<LargeGrid<Grid<Tile>>> NewBoard;
+    private Func<LargeGrid<Grid<Tile>, Tile>> NewBoard;
     protected Game.Game Game
     {
         get

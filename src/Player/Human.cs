@@ -6,8 +6,8 @@ public class Human : Player
     public Human(Symbol symbol, Color color, int score) : base(symbol, color, score)
     {
     }
-    protected Game.LargeGrid<Game.Grid<Game.Tile>>? Board;
-    public override void BeginTurn(Game.LargeGrid<Game.Grid<Game.Tile>> board, Player opponent)
+    protected Game.LargeGrid<Game.Grid<Game.Tile>, Game.Tile>? Board;
+    public override void BeginTurn(Game.LargeGrid<Game.Grid<Game.Tile>, Game.Tile> board, Player opponent)
     {
         Board = board;
         Board.Clicked += HandleClickedBoard;

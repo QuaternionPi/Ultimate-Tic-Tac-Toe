@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace UltimateTicTacToe.Game;
 public class Game : IDrawable, IUpdatable
 {
-    public Game(Player active, Player inactive, LargeGrid<Grid<Tile>> board)
+    public Game(Player active, Player inactive, LargeGrid<Grid<Tile>, Tile> board)
     {
         _board = board;
 
@@ -19,7 +19,7 @@ public class Game : IDrawable, IUpdatable
         thread.Start();
     }
     [JsonInclude]
-    public LargeGrid<Grid<Tile>> Board
+    public LargeGrid<Grid<Tile>, Tile> Board
     {
         get
         {
@@ -30,7 +30,7 @@ public class Game : IDrawable, IUpdatable
             _board = value;
         }
     }
-    private LargeGrid<Grid<Tile>> _board;
+    private LargeGrid<Grid<Tile>, Tile> _board;
     [JsonInclude]
     public Player ActivePlayer { get; protected set; }
     [JsonInclude]
@@ -63,7 +63,7 @@ public class Game : IDrawable, IUpdatable
             Console.WriteLine($"Not player {player}'s turn");
             return;
         }
-        Board = (LargeGrid<Grid<Tile>>)Board.Place(cells.Skip(1), ActivePlayer, true);
+        Board = (LargeGrid<Grid<Tile>, Tile>)Board.Place(cells.Skip(1), ActivePlayer, true);
         ChangePlayer = true;
     }
     protected void DelayedPlayerStart(TimeSpan delay)

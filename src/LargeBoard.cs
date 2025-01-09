@@ -4,15 +4,15 @@ namespace UltimateTicTacToe;
 /*
 The 3 by 3 objects that Ultimate Tic Tac Toe is played on
 */
-public interface IBoard<TCell> : ICell where TCell : ICell
+public interface ILargeBoard<TGrid, TCell> : ICell where TCell : ICell where TGrid : IBoard<TCell>
 {
-    public TCell[] Cells { get; }
+    public TGrid[] Cells { get; }
     Transform2D Transform { get; }
     public event Action<IEnumerable<ICell>>? Clicked;
 }
-public static class BoardExtensions
+public static class LargeBoardExtensions
 {
-    public static List<Address> PathToCell<TCell>(this IBoard<TCell> board, ICell cell) where TCell : ICell
+    public static List<Address> PathToCell<TGrid, TCell>(this ILargeBoard<TGrid, TCell> board, ICell cell) where TCell : ICell where TGrid : IBoard<TCell>
     {
         Debug.Assert(board.Contains(cell) != false, $"Cell: {cell} is not contained. There is no path to it");
         for (int i = 0; i < 9; i++)
@@ -25,7 +25,7 @@ public static class BoardExtensions
         }
         throw new Exception($"Cell: {cell} was not found");
     }
-    public static bool ContainsCell<TCell>(this IBoard<TCell> board, ICell cell) where TCell : ICell
+    public static bool ContainsCell<TGrid, TCell>(this ILargeBoard<TGrid, TCell> board, ICell cell) where TCell : ICell where TGrid : IBoard<TCell>
     {
         bool contains = false;
         for (int i = 0; i < 9; i++)
@@ -35,7 +35,7 @@ public static class BoardExtensions
         }
         return contains;
     }
-    public static bool HasWinner<TCell>(this IBoard<TCell> board) where TCell : ICell
+    public static bool HasWinner<TGrid, TCell>(this ILargeBoard<TGrid, TCell> board) where TCell : ICell where TGrid : IBoard<TCell>
     {
         bool hasWinner = false;
 
@@ -92,7 +92,7 @@ public static class BoardExtensions
             && rightCenter == bottomRight;
         return hasWinner;
     }
-    public static Player? Winner<TCell>(this IBoard<TCell> board) where TCell : ICell
+    public static Player? Winner<TGrid, TCell>(this ILargeBoard<TGrid, TCell> board) where TCell : ICell where TGrid : IBoard<TCell>
     {
         if (board.HasWinner() == false)
         {

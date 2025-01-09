@@ -14,9 +14,6 @@ public interface ICell
     public ICell DeepCopyPlacable(bool placeable);
     public List<Address> PathTo(ICell cell);
     public bool Contains(ICell cell);
-}
-public interface IClickableCell : ICell
-{
     Transform2D Transform { get; }
     public event Action<IEnumerable<ICell>>? Clicked;
 }

@@ -5,8 +5,8 @@ using Raylib_cs;
 
 namespace UltimateTicTacToe.Game;
 
-public class Grid<TCell> : IDrawable, IUpdatable, ITransitional, IBoard<TCell>, IClickableCell
-where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell
+public class Grid<TCell> : IDrawable, IUpdatable, ITransitional, IBoard<TCell>
+where TCell : IDrawable, IUpdatable, ITransitional, ICell
 {
     public Grid(IEnumerable<TCell> cells, Tile winningPlayerTile, Transform2D transform)
     {
@@ -33,21 +33,18 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell
         Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
         WinningPlayerTile = new Tile(Player, victoryTileTransform, true, TransitionValue);
     }
-    public Grid(Grid<TCell> original, IEnumerable<ICell> TCelltrace, Player player, bool placeable)
+    public Grid(Grid<TCell> original, TCell targetCell, Player player, bool placeable)
     {
-        Debug.Assert(TCelltrace.Last().Placeable != false, "You Cannot place on that cell");
+        Debug.Assert(targetCell.Placeable != false, "You Cannot place on that cell");
         Transform = original.Transform;
         Cells = new TCell[9];
-
-        ICell TCelloReplace = TCelltrace.Last();
-        ICell targetCell = TCelltrace.First();
 
         for (int i = 0; i < 9; i++)
         {
             TCell cell = original.Cells[i];
             if (cell.Equals(targetCell))
             {
-                cell = (TCell)cell.Place(TCelltrace.Skip(1), player, placeable);
+                cell = (TCell)cell.Place([], player, placeable);
             }
             else
             {
@@ -154,9 +151,13 @@ where TCell : IDrawable, IUpdatable, ITransitional, IClickableCell
         if (gridCellInTransition == false)
             WinningPlayerTile.Update();
     }
+    public Grid<TCell> Place(TCell cell, Player player, bool placeable)
+    {
+        return new Grid<TCell>(this, cell, player, placeable);
+    }
     public ICell Place(IEnumerable<ICell> TCelltrace, Player player, bool placeable)
     {
-        return new Grid<TCell>(this, TCelltrace, player, placeable);
+        return new Grid<TCell>(this, (TCell)TCelltrace.First(), player, placeable);
     }
     public ICell DeepCopyPlacable(bool placeable)
     {

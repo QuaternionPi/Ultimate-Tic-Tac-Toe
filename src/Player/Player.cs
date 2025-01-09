@@ -28,7 +28,7 @@ public abstract class Player : IUpdatable
     public Color Color { get; set; }
     public event Action<Player, IEnumerable<ICell>>? PlayTurn;
     protected void InvokePlayTurn(Player player, IEnumerable<ICell> cells) => PlayTurn?.Invoke(player, cells);
-    public abstract void BeginTurn(Game.LargeGrid<Game.Grid<Game.Tile>> board, Player opponent);
+    public abstract void BeginTurn(Game.LargeGrid<Game.Grid<Game.Tile>, Game.Tile> board, Player opponent);
     public abstract void EndTurn();
     public abstract void Update();
     public void DrawSymbol(Transform2D transform, float transitionValue)

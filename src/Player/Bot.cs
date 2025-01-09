@@ -8,8 +8,8 @@ public partial class Bot : Player
     public Bot(Symbol symbol, Color color, int score) : base(symbol, color, score)
     {
     }
-    protected LargeGrid<Grid<Tile>>? Board;
-    public override void BeginTurn(LargeGrid<Grid<Tile>> board, Player opponent)
+    protected LargeGrid<Grid<Tile>, Tile>? Board;
+    public override void BeginTurn(LargeGrid<Grid<Tile>, Tile> board, Player opponent)
     {
         Board = board;
         List<(Grid<Tile>, Tile)> possibleMoves = PossibleMoves(board);
@@ -29,7 +29,7 @@ public partial class Bot : Player
 
     }
     protected static (Grid<Tile>, Tile) BestMove(
-        LargeGrid<Grid<Tile>> board,
+        LargeGrid<Grid<Tile>, Tile> board,
         IEnumerable<(Grid<Tile>, Tile)> moves,
         Player player,
         Player opponent
@@ -56,7 +56,7 @@ public partial class Bot : Player
             from move in moves.AsParallel()
             select (move,
                 -Minimax(
-                    (LargeGrid<Grid<Tile>>)board.Place(
+                    (LargeGrid<Grid<Tile>, Tile>)board.Place(
                         new List<ICell>() { move.Item1, move.Item2 },
                         player,
                         true),
@@ -80,7 +80,7 @@ public partial class Bot : Player
         return bestMove;
     }
     protected static int Minimax(
-        LargeGrid<Grid<Tile>> board,
+        LargeGrid<Grid<Tile>, Tile> board,
         int depth,
         int alpha,
         int beta,
@@ -98,7 +98,7 @@ public partial class Bot : Player
         foreach (var move in possibleMoves)
         {
             var cellTrace = new List<ICell>() { move.Item1, move.Item2 };
-            var placedBoard = (LargeGrid<Grid<Tile>>)board.Place(cellTrace, player, true);
+            var placedBoard = (LargeGrid<Grid<Tile>, Tile>)board.Place(cellTrace, player, true);
             var evaluation = -Minimax(placedBoard, depth - 1, -beta, -alpha, opponent, player);
             minEvaluation = Math.Min(minEvaluation, evaluation);
             beta = Math.Min(beta, evaluation);
@@ -115,7 +115,7 @@ public partial class Bot : Player
             return -amount;
         return 0;
     }
-    protected static int Evaluate(LargeGrid<Grid<Tile>> board, Player player, Player opponent)
+    protected static int Evaluate(LargeGrid<Grid<Tile>, Tile> board, Player player, Player opponent)
     {
         if (board.Player == player)
         {
@@ -144,7 +144,7 @@ public partial class Bot : Player
         evaluation += Award(25, board.Cells[8].Player, player, opponent);
         return evaluation;
     }
-    protected static int NumPossibleMoves(LargeGrid<Grid<Tile>> board)
+    protected static int NumPossibleMoves(LargeGrid<Grid<Tile>, Tile> board)
     {
         int count = 0;
         for (int i = 0; i < 9; i++)
@@ -155,7 +155,7 @@ public partial class Bot : Player
 
         return count;
     }
-    protected static List<(Grid<Tile>, Tile)> PossibleMoves(LargeGrid<Grid<Tile>> board)
+    protected static List<(Grid<Tile>, Tile)> PossibleMoves(LargeGrid<Grid<Tile>, Tile> board)
     {
         List<(Grid<Tile>, Tile)> possibleMoves = new();
         for (int i = 0; i < 9; i++)
