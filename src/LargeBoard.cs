@@ -13,7 +13,7 @@ public interface ILargeBoard<TGrid, TCell> where TCell : ICell where TGrid : IBo
 }
 public static class LargeBoardExtensions
 {
-    public static List<Address> PathToCell<TGrid, TCell>(this ILargeBoard<TGrid, TCell> board, ICell cell) where TCell : ICell where TGrid : IBoard<TCell>
+    public static List<Address> PathToCell<TGrid, TCell>(this ILargeBoard<TGrid, TCell> board, TCell cell) where TCell : ICell where TGrid : IBoard<TCell>
     {
         for (int i = 0; i < 9; i++)
         {
@@ -25,7 +25,7 @@ public static class LargeBoardExtensions
         }
         throw new Exception($"Cell: {cell} was not found");
     }
-    public static bool ContainsCell<TGrid, TCell>(this ILargeBoard<TGrid, TCell> board, ICell cell) where TCell : ICell where TGrid : IBoard<TCell>
+    public static bool ContainsCell<TGrid, TCell>(this ILargeBoard<TGrid, TCell> board, TCell cell) where TCell : ICell where TGrid : IBoard<TCell>
     {
         bool contains = false;
         for (int i = 0; i < 9; i++)

@@ -117,8 +117,14 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
             return max;
         }
     }
-    public List<Address> PathTo(ICell cell) => this.PathToCell(cell);
-    public bool Contains(ICell cell) => this.ContainsCell(cell);
+    public List<Address> PathTo(TCell cell)
+    {
+        return new List<Address>() { new Address(Cells.ToList().IndexOf(cell)) };
+    }
+    public bool Contains(TCell cell)
+    {
+        return Cells.Any((x) => x.Equals(cell));
+    }
     public void Draw()
     {
         bool gridCellInTransition = false;

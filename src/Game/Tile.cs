@@ -65,5 +65,4 @@ public class Tile : IDrawable, IUpdatable, ITransitional, ICell
         return new Tile(Player, Transform, placeable, TransitionValue);
     }
     public List<Address> PathTo(ICell cell) => new List<Address>();
-    public bool Contains(ICell cell) => cell.Equals(this);
 }

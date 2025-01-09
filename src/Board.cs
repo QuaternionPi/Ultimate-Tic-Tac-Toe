@@ -11,19 +11,19 @@ public interface IBoard<TCell> where TCell : ICell
     public bool Placeable { get; }
     public IBoard<TCell> Place(TCell cell, Player player, bool placeable);
     public IBoard<TCell> DeepCopyPlacable(bool placeable);
-    public List<Address> PathTo(ICell cell);
-    public bool Contains(ICell cell);
+    public List<Address> PathTo(TCell cell);
+    public bool Contains(TCell cell);
     Transform2D Transform { get; }
     public event Action<IBoard<TCell>, TCell>? Clicked;
 }
 public static class BoardExtensions
 {
-    public static List<Address> PathToCell<TCell>(this IBoard<TCell> board, ICell cell) where TCell : ICell
+    public static List<Address> PathToCell<TCell>(this IBoard<TCell> board, TCell cell) where TCell : ICell
     {
         Debug.Assert(board.Contains(cell) != false, $"Cell: {cell} is not contained. There is no path to it");
         for (int i = 0; i < 9; i++)
         {
-            if (board.Cells[i].Contains(cell))
+            if (board.Cells[i].Equals(cell))
             {
                 Address address = new(i);
                 return board.Cells[i].PathTo(cell).Prepend(address).ToList();
@@ -31,13 +31,12 @@ public static class BoardExtensions
         }
         throw new Exception($"Cell: {cell} was not found");
     }
-    public static bool ContainsCell<TCell>(this IBoard<TCell> board, ICell cell) where TCell : ICell
+    public static bool ContainsCell<TCell>(this IBoard<TCell> board, TCell cell) where TCell : ICell
     {
         bool contains = false;
         for (int i = 0; i < 9; i++)
         {
             contains |= board.Cells[i].Equals(cell);
-            contains |= board.Cells[i].Contains(cell);
         }
         return contains;
     }
