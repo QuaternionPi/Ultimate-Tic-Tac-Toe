@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace UltimateTicTacToe;
 /*
 The 3 by 3 objects that Ultimate Tic Tac Toe is played on
@@ -11,7 +9,7 @@ public interface IBoard<TCell> where TCell : ICell
     public bool Placeable { get; }
     public IBoard<TCell> Place(TCell cell, Player player, bool placeable);
     public IBoard<TCell> DeepCopyPlacable(bool placeable);
-    public Address Location(TCell cell);
+    public int Location(TCell cell);
     public bool Contains(TCell cell);
     Transform2D Transform { get; }
     public event Action<IBoard<TCell>, TCell>? Clicked;

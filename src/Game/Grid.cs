@@ -117,9 +117,9 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
             return max;
         }
     }
-    public Address Location(TCell cell)
+    public int Location(TCell cell)
     {
-        return new Address(Cells.ToList().IndexOf(cell));
+        return Cells.ToList().IndexOf(cell);
     }
     public bool Contains(TCell cell)
     {

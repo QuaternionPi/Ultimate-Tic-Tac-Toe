@@ -110,8 +110,8 @@ public class Setup : IProgramMode
         var cells = new Grid<Tile>[9];
         for (int i = 0; i < 9; i++)
         {
-            var address = new Address(i);
-            var cellPosition = LargeGrid<Grid<Tile>, Tile>.PixelPosition(transform, address.X, address.Y);
+            var address = PositionOfIndex(i);
+            var cellPosition = LargeGrid<Grid<Tile>, Tile>.PixelPosition(transform, (int)address.X, (int)address.Y);
             var cellTransform = new Transform2D(cellPosition, 0, 1);
 
             Grid<Tile> cell = EmptyGrid(cellTransform);
@@ -126,8 +126,8 @@ public class Setup : IProgramMode
         var cells = new Tile[9];
         for (int i = 0; i < 9; i++)
         {
-            var address = new Address(i);
-            var cellPosition = LargeGrid<Grid<Tile>, Tile>.PixelPosition(transform, address.X, address.Y);
+            var address = PositionOfIndex(i);
+            var cellPosition = LargeGrid<Grid<Tile>, Tile>.PixelPosition(transform, (int)address.X, (int)address.Y);
             var cellTransform = new Transform2D(cellPosition, 0, 1);
 
             var cell = new Tile(null, cellTransform, true, 0);
@@ -136,6 +136,12 @@ public class Setup : IProgramMode
         var victoryTileTransform = new Transform2D(transform.Position, 0, transform.Scale * 4);
         var victoryTile = new Tile(null, victoryTileTransform, true, 0);
         return new Grid<Tile>(cells, victoryTile, transform);
+    }
+    public Vector2 PositionOfIndex(int index)
+    {
+        int x = index / 3;
+        int y = index % 3;
+        return new Vector2(x, y);
     }
     protected void SetPlayer1Color(Color color) => Player1.Color = color;
     protected void SetPlayer2Color(Color color) => Player2.Color = color;
