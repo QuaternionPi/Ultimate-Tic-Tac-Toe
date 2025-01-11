@@ -18,7 +18,7 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
         Transform = transform;
         WinningPlayerTile = winningPlayerTile;
     }
-    public Grid(Grid<TCell> original, TCell targetCell, Player player)
+    public Grid(Grid<TCell> original, TCell targetCell, Player.Player player)
     {
         Debug.Assert(targetCell.Player == null, "You Cannot place on that cell");
         Transform = original.Transform;
@@ -47,7 +47,7 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
     [JsonInclude]
     public Transform2D Transform { get; }
     [JsonInclude]
-    public Player? Player { get; }
+    public Player.Player? Player { get; }
     public bool AnyPlaceable { get { return Cells.Any((x) => x.Player == null); } }
     public event Action<IBoard<TCell>, TCell>? Clicked;
     [JsonInclude]
@@ -132,11 +132,11 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
         if (gridCellInTransition == false)
             WinningPlayerTile.Update();
     }
-    public IBoard<TCell> Place(TCell cell, Player player)
+    public IBoard<TCell> Place(TCell cell, Player.Player player)
     {
         return new Grid<TCell>(this, cell, player);
     }
-    public ICell Place(IEnumerable<ICell> TCelltrace, Player player)
+    public ICell Place(IEnumerable<ICell> TCelltrace, Player.Player player)
     {
         return (ICell)new Grid<TCell>(this, (TCell)TCelltrace.First(), player);
     }

@@ -1,10 +1,9 @@
-using System.Reflection.Metadata;
 using System.Text.Json.Serialization;
 
 namespace UltimateTicTacToe.Game;
 public class Game : IDrawable, IUpdatable
 {
-    public Game(Player active, Player inactive, LargeGrid<Grid<Tile>, Tile> board)
+    public Game(Player.Player active, Player.Player inactive, LargeGrid<Grid<Tile>, Tile> board)
     {
         Board = board;
         ActivePlayer = active;
@@ -22,19 +21,19 @@ public class Game : IDrawable, IUpdatable
     [JsonInclude]
     public LargeGrid<Grid<Tile>, Tile> Board { get; protected set; }
     [JsonInclude]
-    public Player ActivePlayer { get; protected set; }
+    public Player.Player ActivePlayer { get; protected set; }
     [JsonInclude]
-    public Player InactivePlayer { get; protected set; }
+    public Player.Player InactivePlayer { get; protected set; }
     protected bool ChangePlayer;
     [JsonInclude]
     public UI.BannerController BannerController { get; protected set; }
     [JsonInclude]
     public int TurnNumber { get; protected set; }
-    public delegate void GameOverDel(Game sender, Player? winner);
+    public delegate void GameOverDel(Game sender, Player.Player? winner);
     public event GameOverDel? GameOver;
     protected void NextPlayer()
     {
-        Player temp;
+        Player.Player temp;
         ActivePlayer.EndTurn();
 
         temp = ActivePlayer;
@@ -47,7 +46,7 @@ public class Game : IDrawable, IUpdatable
         //ActivePlayer.BeginTurn(Board, InactivePlayer);
         TurnNumber++;
     }
-    protected void HandlePlayerTurn(Player player, ILargeBoard<Grid<Tile>, Tile> board, Grid<Tile> grid, Tile tile)
+    protected void HandlePlayerTurn(Player.Player player, ILargeBoard<Grid<Tile>, Tile> board, Grid<Tile> grid, Tile tile)
     {
         if (player != ActivePlayer)
         {

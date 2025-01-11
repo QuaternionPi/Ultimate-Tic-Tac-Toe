@@ -24,7 +24,7 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
         Transform = transform;
         WinningPlayerTile = winningPlayerTile;
     }
-    public LargeGrid(LargeGrid<TGrid, TCell> original, TGrid targetGrid, TCell targetCell, Player player)
+    public LargeGrid(LargeGrid<TGrid, TCell> original, TGrid targetGrid, TCell targetCell, Player.Player player)
     {
         Debug.Assert(original.Placeable[original.Location(targetCell).Item1], "You Cannot place on that cell");
         Transform = original.Transform;
@@ -88,7 +88,7 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
     [JsonInclude]
     public Transform2D Transform { get; }
     [JsonInclude]
-    public Player? Player { get; }
+    public Player.Player? Player { get; }
     public bool AnyPlaceable
     {
         get
@@ -193,11 +193,11 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
         if (gridCellInTransition == false)
             WinningPlayerTile.Update();
     }
-    public ILargeBoard<TGrid, TCell> Place(TGrid grid, TCell cell, Player player)
+    public ILargeBoard<TGrid, TCell> Place(TGrid grid, TCell cell, Player.Player player)
     {
         return new LargeGrid<TGrid, TCell>(this, grid, cell, player);
     }
-    public ICell Place(IEnumerable<ICell> TCelltrace, Player player)
+    public ICell Place(IEnumerable<ICell> TCelltrace, Player.Player player)
     {
         throw new NotImplementedException();
         //return (ICell)new LargeGrid<TGrid, TCell>(this, TCelltrace, player, placeable);

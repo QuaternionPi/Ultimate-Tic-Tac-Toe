@@ -7,7 +7,7 @@ Controls the position and activation of two banners; one for each team
 */
 public class BannerController : IDrawable
 {
-    public BannerController(Player active, Player inactive)
+    public BannerController(Player.Player active, Player.Player inactive)
     {
         Transform2D rightTransform = new(new Vector2(815, 85), 0, 3);
         Transform2D leftTransform = new(new Vector2(85, 85), 0, 3);
@@ -23,7 +23,7 @@ public class BannerController : IDrawable
         LeftBanner.Draw();
         RightBanner.Draw();
     }
-    public void Activate(Player player)
+    public void Activate(Player.Player player)
     {
         if (player == LeftBanner.Player)
             LeftBanner = new Banner(
@@ -38,7 +38,7 @@ public class BannerController : IDrawable
                 true
             );
     }
-    public void Deactivate(Player player)
+    public void Deactivate(Player.Player player)
     {
         if (player == LeftBanner.Player)
             LeftBanner = new Banner(

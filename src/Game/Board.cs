@@ -1,41 +1,42 @@
-namespace UltimateTicTacToe;
+using UltimateTicTacToe.Player;
+namespace UltimateTicTacToe.Game;
 /*
 The 3 by 3 objects that Ultimate Tic Tac Toe is played on
 */
-public interface ILargeBoard<TGrid, TCell> where TCell : ICell where TGrid : IBoard<TCell>
+public interface IBoard<TCell> where TCell : ICell
 {
-    public TGrid[] Cells { get; }
-    public Player? Player { get; }
+    public TCell[] Cells { get; }
+    public Player.Player? Player { get; }
     public bool AnyPlaceable { get; }
-    public ILargeBoard<TGrid, TCell> Place(TGrid grid, TCell cell, Player player);
-    public (int, int) Location(TCell cell);
+    public IBoard<TCell> Place(TCell cell, Player.Player player);
+    public int Location(TCell cell);
     public bool Contains(TCell cell);
     Transform2D Transform { get; }
-    public event Action<ILargeBoard<TGrid, TCell>, TGrid, TCell>? Clicked;
+    public event Action<IBoard<TCell>, TCell>? Clicked;
 }
-public static class LargeBoardExtensions
+public static class BoardExtensions
 {
-    public static bool HasWinner<TGrid, TCell>(this ILargeBoard<TGrid, TCell> board) where TCell : ICell where TGrid : IBoard<TCell>
+    public static bool HasWinner<TCell>(this IBoard<TCell> board) where TCell : ICell
     {
         bool hasWinner = false;
 
-        Player?[] cellWinners = new Player?[9];
+        Player.Player?[] cellWinners = new Player.Player?[9];
         for (int i = 0; i < 9; i++)
         {
             cellWinners[i] = board.Cells[i]?.Player;
         }
 
-        Player? topLeft = cellWinners[0];
-        Player? topCenter = cellWinners[1];
-        Player? topRight = cellWinners[2];
+        Player.Player? topLeft = cellWinners[0];
+        Player.Player? topCenter = cellWinners[1];
+        Player.Player? topRight = cellWinners[2];
 
-        Player? leftCenter = cellWinners[3];
-        Player? trueCenter = cellWinners[4];
-        Player? rightCenter = cellWinners[5];
+        Player.Player? leftCenter = cellWinners[3];
+        Player.Player? trueCenter = cellWinners[4];
+        Player.Player? rightCenter = cellWinners[5];
 
-        Player? bottomLeft = cellWinners[6];
-        Player? bottomCenter = cellWinners[7];
-        Player? bottomRight = cellWinners[8];
+        Player.Player? bottomLeft = cellWinners[6];
+        Player.Player? bottomCenter = cellWinners[7];
+        Player.Player? bottomRight = cellWinners[8];
 
         // Diagonals
         hasWinner |= trueCenter != null
@@ -72,30 +73,30 @@ public static class LargeBoardExtensions
             && rightCenter == bottomRight;
         return hasWinner;
     }
-    public static Player? Winner<TGrid, TCell>(this ILargeBoard<TGrid, TCell> board) where TCell : ICell where TGrid : IBoard<TCell>
+    public static Player.Player? Winner<TCell>(this IBoard<TCell> board) where TCell : ICell
     {
         if (board.HasWinner() == false)
         {
             return null;
         }
 
-        Player?[] cellWinners = new Player?[9];
+        Player.Player?[] cellWinners = new Player.Player?[9];
         for (int i = 0; i < 9; i++)
         {
             cellWinners[i] = board.Cells[i]?.Player;
         }
 
-        Player? topLeft = cellWinners[0];
-        Player? topCenter = cellWinners[1];
-        Player? topRight = cellWinners[2];
+        Player.Player? topLeft = cellWinners[0];
+        Player.Player? topCenter = cellWinners[1];
+        Player.Player? topRight = cellWinners[2];
 
-        Player? leftCenter = cellWinners[3];
-        Player? trueCenter = cellWinners[4];
-        Player? rightCenter = cellWinners[5];
+        Player.Player? leftCenter = cellWinners[3];
+        Player.Player? trueCenter = cellWinners[4];
+        Player.Player? rightCenter = cellWinners[5];
 
-        Player? bottomLeft = cellWinners[6];
-        Player? bottomCenter = cellWinners[7];
-        Player? bottomRight = cellWinners[8];
+        Player.Player? bottomLeft = cellWinners[6];
+        Player.Player? bottomCenter = cellWinners[7];
+        Player.Player? bottomRight = cellWinners[8];
 
         if (trueCenter != null)
         {

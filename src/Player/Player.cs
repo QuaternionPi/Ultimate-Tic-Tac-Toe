@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using Raylib_cs;
 using UltimateTicTacToe.Game;
 
-namespace UltimateTicTacToe;
+namespace UltimateTicTacToe.Player;
 public abstract class Player : IUpdatable
 {
     public static readonly Color[] AllowedColors = {

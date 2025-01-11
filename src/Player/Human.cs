@@ -1,7 +1,7 @@
 using Raylib_cs;
 using UltimateTicTacToe.Game;
 
-namespace UltimateTicTacToe;
+namespace UltimateTicTacToe.Player;
 public class Human : Player
 {
     public Human(Symbol symbol, Color color, int score) : base(symbol, color, score)

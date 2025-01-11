@@ -1,5 +1,6 @@
 using System.Numerics;
 using System.Text.Json.Serialization;
+using UltimateTicTacToe.Player;
 using Raylib_cs;
 
 namespace UltimateTicTacToe.Game;
@@ -10,7 +11,7 @@ public class Tile : IDrawable, IUpdatable, ITransitional, ICell
         Player = null;
         Transform = new Transform2D(Vector2.Zero, 0, 0);
     }
-    public Tile(Player? player, Transform2D transform, float transitionValue)
+    public Tile(Player.Player? player, Transform2D transform, float transitionValue)
     {
         Player = player;
         Transform = transform;
@@ -21,7 +22,7 @@ public class Tile : IDrawable, IUpdatable, ITransitional, ICell
         }
     }
     [JsonInclude]
-    public Player? Player { get; }
+    public Player.Player? Player { get; }
     [JsonInclude]
     public Transform2D Transform { get; }
     public event Action<ICell>? Clicked;
@@ -52,7 +53,7 @@ public class Tile : IDrawable, IUpdatable, ITransitional, ICell
         }
         TransitionValue = Math.Max(0, TransitionValue - 0.07f / MathF.Sqrt(Transform.Scale));
     }
-    public ICell Place(Player? player)
+    public ICell Place(Player.Player? player)
     {
         return new Tile(player, Transform, 1);
     }

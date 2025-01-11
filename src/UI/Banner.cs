@@ -7,7 +7,7 @@ Displays a team's symbol and score
 */
 public class Banner : IDrawable
 {
-    public Banner(Player player, Transform2D transform, bool active)
+    public Banner(Player.Player player, Transform2D transform, bool active)
     {
         Player = player;
         Transform = transform;
@@ -16,7 +16,7 @@ public class Banner : IDrawable
         Tile = new Game.Tile(Player, Transform, 0);
     }
     public Transform2D Transform { get; }
-    public Player Player { get; }
+    public Player.Player Player { get; }
     public bool Active { get; }
     protected Game.Tile Tile { get; }
     protected Font Font { get; }

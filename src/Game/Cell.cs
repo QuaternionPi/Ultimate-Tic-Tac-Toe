@@ -1,4 +1,5 @@
-namespace UltimateTicTacToe;
+using UltimateTicTacToe.Player;
+namespace UltimateTicTacToe.Game;
 /*
 The base object of Ultimate Tic Tac Toe
 Cells store which player won them and weather or not they are placable
@@ -8,8 +9,8 @@ Cells store which player won them and weather or not they are placable
 //[JsonDerivedType(typeof(Game.Grid<Game.Grid<Game.Tile>>), 3)]
 public interface ICell
 {
-    public Player? Player { get; }
-    public ICell Place(Player? player);
+    public Player.Player? Player { get; }
+    public ICell Place(Player.Player? player);
     Transform2D Transform { get; }
     public event Action<ICell>? Clicked;
 }

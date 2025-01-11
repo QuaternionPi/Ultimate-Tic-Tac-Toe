@@ -1,5 +1,6 @@
 using System.Numerics;
 using Raylib_cs;
+using UltimateTicTacToe.Player;
 using UltimateTicTacToe.Game;
 
 namespace UltimateTicTacToe.UI.ProgramMode;
@@ -8,13 +9,13 @@ public class Setup : IProgramMode
     public Setup(IProgramMode? previous = null)
     {
         Previous = previous;
-        Player1 = new Human(Player.Symbol.X, Color.RED, 0);
-        Player2 = new Human(Player.Symbol.O, Color.BLUE, 0);
+        Player1 = new Human(Player.Player.Symbol.X, Color.RED, 0);
+        Player2 = new Human(Player.Player.Symbol.O, Color.BLUE, 0);
         UI = new UI.BannerController(Player1, Player2);
         UI.Activate(Player1);
         UI.Activate(Player2);
 
-        var colors = Player.AllowedColors;
+        var colors = Player.Player.AllowedColors;
         RightColorPicker = new UI.ColorPicker(new Transform2D(new Vector2(900 - 135, 270)), colors, 3);
         LeftColorPicker = new UI.ColorPicker(new Transform2D(new Vector2(35, 270)), colors, 3);
 
@@ -65,8 +66,8 @@ public class Setup : IProgramMode
     protected UI.BannerController UI { get; }
     protected UI.ColorPicker RightColorPicker { get; }
     protected UI.ColorPicker LeftColorPicker { get; }
-    protected Player Player1;
-    protected Player Player2;
+    protected Player.Player Player1;
+    protected Player.Player Player2;
     protected string Player1Type;
     protected string Player2Type;
     public void Draw()
@@ -84,8 +85,8 @@ public class Setup : IProgramMode
     }
     protected void SetupGame()
     {
-        Player player1;
-        Player player2;
+        Player.Player player1;
+        Player.Player player2;
         if (Player1Type == "Human")
             player1 = new Human(Player1.Shape, Player1.Color, 0);
         else
