@@ -12,6 +12,11 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
     public LargeGrid(IEnumerable<TGrid> cells, Tile winningPlayerTile, Transform2D transform)
     {
         Cells = cells.ToArray();
+        Placeable = new bool[Cells.Length];
+        for (int i = 0; i < 9; i++)
+        {
+            Placeable[i] = true;
+        }
         foreach (var cell in cells)
         {
             cell.Clicked += HandleClickedCell;
@@ -19,37 +24,23 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
         Transform = transform;
         WinningPlayerTile = winningPlayerTile;
     }
-    public LargeGrid(LargeGrid<TGrid, TCell> original, bool placeable)
+    public LargeGrid(LargeGrid<TGrid, TCell> original, TGrid targetGrid, TCell targetCell, Player player)
     {
-        Transform = original.Transform;
-        Cells = new TGrid[9];
-        for (int i = 0; i < 9; i++)
-        {
-            TGrid cell = original.Cells[i];
-            TGrid newCell = (TGrid)cell.DeepCopyPlacable(placeable);
-            Cells[i] = newCell;
-            newCell.Clicked += HandleClickedCell;
-        }
-        Player = this.Winner();
-        Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
-        WinningPlayerTile = new Tile(Player, victoryTileTransform, true, TransitionValue);
-    }
-    public LargeGrid(LargeGrid<TGrid, TCell> original, TGrid targetGrid, TCell targetCell, Player player, bool placeable)
-    {
-        Debug.Assert(targetCell.Placeable != false, "You Cannot place on that cell");
+        Debug.Assert(original.Placeable[original.Location(targetCell).Item1], "You Cannot place on that cell");
         Transform = original.Transform;
         Cells = new TGrid[9];
 
         for (int i = 0; i < 9; i++)
         {
-            TGrid cell = original.Cells[i];
-            if (cell.Equals(targetGrid))
+            TGrid originalCell = original.Cells[i];
+            TGrid cell;
+            if (originalCell.Equals(targetGrid))
             {
-                cell = (TGrid)cell.Place(targetCell, player, placeable);
+                cell = (TGrid)originalCell.Place(targetCell, player);
             }
             else
             {
-                cell = (TGrid)cell.DeepCopyPlacable(placeable);
+                cell = (TGrid)originalCell.Place(targetCell, originalCell.Player);
             }
             Cells[i] = cell;
             cell.Clicked += HandleClickedCell;
@@ -57,49 +48,55 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
 
         Player = this.Winner();
         Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
-        WinningPlayerTile = new Tile(Player, victoryTileTransform, true, TransitionValue);
+        WinningPlayerTile = new Tile(Player, victoryTileTransform, TransitionValue);
+        Placeable = new bool[9];
         if (Player != null)
         {
+            for (int i = 0; i < 9; i++)
+            {
+                Placeable[i] = false;
+            }
             return;
         }
 
         int nextPlayableAddress = original.Location(targetCell).Item2;
         TGrid nextCell = Cells[nextPlayableAddress];
 
-        if (nextCell.Placeable == false)
+        if (nextCell.AnyPlaceable == false || nextCell.Player != null)
         {
-            Cells[nextPlayableAddress] = (TGrid)nextCell.DeepCopyPlacable(false);
-            return;
+            for (int i = 0; i < 9; i++)
+            {
+                if (Cells[i].AnyPlaceable == false || Cells[i].Player != null)
+                {
+                    Placeable[i] = false;
+                }
+                else
+                {
+                    Placeable[i] = true;
+                }
+            }
         }
-        for (int i = 0; i < 9; i++)
+        else
         {
-            TGrid cell = original.Cells[i];
-            bool cellPlaceable = (i == nextPlayableAddress) && (Player == null);
-            if (cell.Equals(targetGrid))
+            for (int i = 0; i < 9; i++)
             {
-                cell = (TGrid)cell.Place(targetCell, player, cellPlaceable);
+                Placeable[i] = false;
             }
-            else
-            {
-                cell = (TGrid)cell.DeepCopyPlacable(cellPlaceable);
-            }
-            Cells[i] = cell;
-            cell.Clicked += HandleClickedCell;
+            Placeable[nextPlayableAddress] = true;
         }
     }
-
     [JsonInclude]
     public Transform2D Transform { get; }
     [JsonInclude]
     public Player? Player { get; }
-    public bool Placeable
+    public bool AnyPlaceable
     {
         get
         {
             if (Player != null)
                 return false;
             for (int i = 0; i < 9; i++)
-                if (Cells[i].Placeable == true)
+                if (Cells[i].AnyPlaceable == true)
                     return true;
             return false;
         }
@@ -108,6 +105,7 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
     [JsonInclude]
     //[JsonConverter(typeof(Json.Array2DConverter))]
     public TGrid[] Cells { get; }
+    public bool[] Placeable { get; }
     [JsonInclude]
     public Tile WinningPlayerTile { get; }
     public bool InTransition
@@ -195,18 +193,14 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
         if (gridCellInTransition == false)
             WinningPlayerTile.Update();
     }
-    public ILargeBoard<TGrid, TCell> Place(TGrid grid, TCell cell, Player player, bool placeable)
+    public ILargeBoard<TGrid, TCell> Place(TGrid grid, TCell cell, Player player)
     {
-        return new LargeGrid<TGrid, TCell>(this, grid, cell, player, placeable);
+        return new LargeGrid<TGrid, TCell>(this, grid, cell, player);
     }
-    public ICell Place(IEnumerable<ICell> TCelltrace, Player player, bool placeable)
+    public ICell Place(IEnumerable<ICell> TCelltrace, Player player)
     {
         throw new NotImplementedException();
         //return (ICell)new LargeGrid<TGrid, TCell>(this, TCelltrace, player, placeable);
-    }
-    public ICell DeepCopyPlacable(bool placeable)
-    {
-        return (ICell)new LargeGrid<TGrid, TCell>(this, placeable);
     }
     public void HandleClickedCell(IBoard<TCell> board, TCell cell)
     {

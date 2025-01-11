@@ -9,13 +9,11 @@ public class Tile : IDrawable, IUpdatable, ITransitional, ICell
     {
         Player = null;
         Transform = new Transform2D(Vector2.Zero, 0, 0);
-        Placeable = false;
     }
-    public Tile(Player? player, Transform2D transform, bool placeable, float transitionValue)
+    public Tile(Player? player, Transform2D transform, float transitionValue)
     {
         Player = player;
         Transform = transform;
-        Placeable = placeable && Player == null;
         TransitionValue = transitionValue;
         if (Player == null)
         {
@@ -25,15 +23,13 @@ public class Tile : IDrawable, IUpdatable, ITransitional, ICell
     [JsonInclude]
     public Player? Player { get; }
     [JsonInclude]
-    public bool Placeable { get; }
-    [JsonInclude]
     public Transform2D Transform { get; }
     public event Action<ICell>? Clicked;
     public bool InTransition { get { return TransitionValue != 0; } }
     public float TransitionValue { get; protected set; }
     public void Draw()
     {
-        if (Placeable)
+        if (false)
         {
             int width = 20;
             Graphics.Draw.Rectangle((int)Transform.Position.X - width / 2, (int)Transform.Position.Y - width / 2, width, width, Color.LIGHTGRAY);
@@ -56,12 +52,8 @@ public class Tile : IDrawable, IUpdatable, ITransitional, ICell
         }
         TransitionValue = Math.Max(0, TransitionValue - 0.07f / MathF.Sqrt(Transform.Scale));
     }
-    public ICell Place(Player player, bool placeable)
+    public ICell Place(Player? player)
     {
-        return new Tile(player, Transform, placeable, 1);
-    }
-    public ICell DeepCopyPlacable(bool placeable)
-    {
-        return new Tile(Player, Transform, placeable, TransitionValue);
+        return new Tile(player, Transform, 1);
     }
 }

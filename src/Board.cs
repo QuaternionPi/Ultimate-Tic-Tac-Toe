@@ -6,9 +6,8 @@ public interface IBoard<TCell> where TCell : ICell
 {
     public TCell[] Cells { get; }
     public Player? Player { get; }
-    public bool Placeable { get; }
-    public IBoard<TCell> Place(TCell cell, Player player, bool placeable);
-    public IBoard<TCell> DeepCopyPlacable(bool placeable);
+    public bool AnyPlaceable { get; }
+    public IBoard<TCell> Place(TCell cell, Player player);
     public int Location(TCell cell);
     public bool Contains(TCell cell);
     Transform2D Transform { get; }

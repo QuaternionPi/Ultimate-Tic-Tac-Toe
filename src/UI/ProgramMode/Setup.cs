@@ -118,7 +118,7 @@ public class Setup : IProgramMode
             cells[i] = cell;
         }
         var victoryTileTransform = new Transform2D(transform.Position, 0, transform.Scale * 4);
-        var victoryTile = new Tile(null, victoryTileTransform, true, 0);
+        var victoryTile = new Tile(null, victoryTileTransform, 0);
         return new LargeGrid<Grid<Tile>, Tile>(cells, victoryTile, transform);
     }
     protected Grid<Tile> EmptyGrid(Transform2D transform)
@@ -130,11 +130,11 @@ public class Setup : IProgramMode
             var cellPosition = LargeGrid<Grid<Tile>, Tile>.PixelPosition(transform, (int)address.X, (int)address.Y);
             var cellTransform = new Transform2D(cellPosition, 0, 1);
 
-            var cell = new Tile(null, cellTransform, true, 0);
+            var cell = new Tile(null, cellTransform, 0);
             cells[i] = cell;
         }
         var victoryTileTransform = new Transform2D(transform.Position, 0, transform.Scale * 4);
-        var victoryTile = new Tile(null, victoryTileTransform, true, 0);
+        var victoryTile = new Tile(null, victoryTileTransform, 0);
         return new Grid<Tile>(cells, victoryTile, transform);
     }
     public Vector2 PositionOfIndex(int index)

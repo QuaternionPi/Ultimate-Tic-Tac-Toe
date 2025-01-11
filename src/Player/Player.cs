@@ -29,7 +29,7 @@ public abstract class Player : IUpdatable
     public Color Color { get; set; }
     public event Action<Player, LargeGrid<Grid<Tile>, Tile>, Grid<Tile>, Tile>? PlayTurn;
     protected void InvokePlayTurn(Player player, LargeGrid<Grid<Tile>, Tile> board, Grid<Tile> grid, Tile tile) => PlayTurn?.Invoke(player, board, grid, tile);
-    public abstract void BeginTurn(Game.LargeGrid<Game.Grid<Game.Tile>, Game.Tile> board, Player opponent);
+    public abstract void BeginTurn(LargeGrid<Grid<Tile>, Tile> board, Player opponent);
     public abstract void EndTurn();
     public abstract void Update();
     public void DrawSymbol(Transform2D transform, float transitionValue)

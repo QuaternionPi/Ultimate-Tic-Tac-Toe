@@ -13,7 +13,7 @@ public class Banner : IDrawable
         Transform = transform;
         Active = active;
         Font = Graphics.Text.GetFontDefault();
-        Tile = new Game.Tile(Player, Transform, false, 0);
+        Tile = new Game.Tile(Player, Transform, 0);
     }
     public Transform2D Transform { get; }
     public Player Player { get; }

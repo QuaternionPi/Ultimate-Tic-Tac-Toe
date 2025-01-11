@@ -18,37 +18,23 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
         Transform = transform;
         WinningPlayerTile = winningPlayerTile;
     }
-    public Grid(Grid<TCell> original, bool placeable)
+    public Grid(Grid<TCell> original, TCell targetCell, Player player)
     {
-        Transform = original.Transform;
-        Cells = new TCell[9];
-        for (int i = 0; i < 9; i++)
-        {
-            TCell cell = original.Cells[i];
-            TCell newCell = (TCell)cell.DeepCopyPlacable(placeable);
-            Cells[i] = newCell;
-            newCell.Clicked += HandleClickedCell;
-        }
-        Player = this.Winner();
-        Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
-        WinningPlayerTile = new Tile(Player, victoryTileTransform, true, TransitionValue);
-    }
-    public Grid(Grid<TCell> original, TCell targetCell, Player player, bool placeable)
-    {
-        Debug.Assert(targetCell.Placeable != false, "You Cannot place on that cell");
+        Debug.Assert(targetCell.Player == null, "You Cannot place on that cell");
         Transform = original.Transform;
         Cells = new TCell[9];
 
         for (int i = 0; i < 9; i++)
         {
-            TCell cell = original.Cells[i];
-            if (cell.Equals(targetCell))
+            TCell originalCell = original.Cells[i];
+            TCell cell;
+            if (originalCell.Equals(targetCell))
             {
-                cell = (TCell)cell.Place(player, placeable);
+                cell = (TCell)originalCell.Place(player);
             }
             else
             {
-                cell = (TCell)cell.DeepCopyPlacable(placeable);
+                cell = (TCell)originalCell.Place(originalCell.Player);
             }
             Cells[i] = cell;
             cell.Clicked += HandleClickedCell;
@@ -56,24 +42,13 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
 
         Player = this.Winner();
         Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
-        WinningPlayerTile = new Tile(Player, victoryTileTransform, true, TransitionValue);
+        WinningPlayerTile = new Tile(Player, victoryTileTransform, TransitionValue);
     }
     [JsonInclude]
     public Transform2D Transform { get; }
     [JsonInclude]
     public Player? Player { get; }
-    public bool Placeable
-    {
-        get
-        {
-            if (Player != null)
-                return false;
-            for (int i = 0; i < 9; i++)
-                if (Cells[i].Placeable == true)
-                    return true;
-            return false;
-        }
-    }
+    public bool AnyPlaceable { get { return Cells.Any((x) => x.Player == null); } }
     public event Action<IBoard<TCell>, TCell>? Clicked;
     [JsonInclude]
     //[JsonConverter(typeof(Json.Array2DConverter))]
@@ -157,17 +132,13 @@ where TCell : IDrawable, IUpdatable, ITransitional, ICell
         if (gridCellInTransition == false)
             WinningPlayerTile.Update();
     }
-    public IBoard<TCell> Place(TCell cell, Player player, bool placeable)
+    public IBoard<TCell> Place(TCell cell, Player player)
     {
-        return new Grid<TCell>(this, cell, player, placeable);
+        return new Grid<TCell>(this, cell, player);
     }
-    public ICell Place(IEnumerable<ICell> TCelltrace, Player player, bool placeable)
+    public ICell Place(IEnumerable<ICell> TCelltrace, Player player)
     {
-        return (ICell)new Grid<TCell>(this, (TCell)TCelltrace.First(), player, placeable);
-    }
-    public IBoard<TCell> DeepCopyPlacable(bool placeable)
-    {
-        return new Grid<TCell>(this, placeable);
+        return (ICell)new Grid<TCell>(this, (TCell)TCelltrace.First(), player);
     }
     public void HandleClickedCell(ICell cell)
     {

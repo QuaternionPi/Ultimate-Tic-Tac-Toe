@@ -9,9 +9,7 @@ Cells store which player won them and weather or not they are placable
 public interface ICell
 {
     public Player? Player { get; }
-    public bool Placeable { get; }
-    public ICell Place(Player player, bool placeable);
-    public ICell DeepCopyPlacable(bool placeable);
+    public ICell Place(Player? player);
     Transform2D Transform { get; }
     public event Action<ICell>? Clicked;
 }

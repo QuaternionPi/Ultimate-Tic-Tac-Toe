@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using System.Text.Json.Serialization;
 
 namespace UltimateTicTacToe.Game;
@@ -5,8 +6,7 @@ public class Game : IDrawable, IUpdatable
 {
     public Game(Player active, Player inactive, LargeGrid<Grid<Tile>, Tile> board)
     {
-        _board = board;
-
+        Board = board;
         ActivePlayer = active;
         InactivePlayer = inactive;
         ActivePlayer.PlayTurn += HandlePlayerTurn;
@@ -14,23 +14,13 @@ public class Game : IDrawable, IUpdatable
         BannerController = new UI.BannerController(active, inactive);
 
 
-        TimeSpan delay = new(0, 0, 0, 0, 100);
+        TimeSpan delay = new(0, 0, 0, 0, 300);
         Thread thread = new(() => DelayedPlayerStart(delay));
         thread.Start();
+        //ActivePlayer.BeginTurn(Board, InactivePlayer);
     }
     [JsonInclude]
-    public LargeGrid<Grid<Tile>, Tile> Board
-    {
-        get
-        {
-            return _board;
-        }
-        protected set
-        {
-            _board = value;
-        }
-    }
-    private LargeGrid<Grid<Tile>, Tile> _board;
+    public LargeGrid<Grid<Tile>, Tile> Board { get; protected set; }
     [JsonInclude]
     public Player ActivePlayer { get; protected set; }
     [JsonInclude]
@@ -54,6 +44,7 @@ public class Game : IDrawable, IUpdatable
         TimeSpan delay = new(0, 0, 0, 0, 100);
         Thread thread = new(() => DelayedPlayerStart(delay));
         thread.Start();
+        //ActivePlayer.BeginTurn(Board, InactivePlayer);
         TurnNumber++;
     }
     protected void HandlePlayerTurn(Player player, ILargeBoard<Grid<Tile>, Tile> board, Grid<Tile> grid, Tile tile)
@@ -63,7 +54,7 @@ public class Game : IDrawable, IUpdatable
             Console.WriteLine($"Not player {player}'s turn");
             return;
         }
-        Board = (LargeGrid<Grid<Tile>, Tile>)Board.Place(grid, tile, ActivePlayer, true);
+        Board = (LargeGrid<Grid<Tile>, Tile>)Board.Place(grid, tile, ActivePlayer);
         ChangePlayer = true;
     }
     protected void DelayedPlayerStart(TimeSpan delay)
@@ -79,10 +70,10 @@ public class Game : IDrawable, IUpdatable
     public void Update()
     {
         Board.Update();
-        if (ChangePlayer && Board.Placeable)
+        if (ChangePlayer && Board.AnyPlaceable)
         {
-            NextPlayer();
             ChangePlayer = false;
+            NextPlayer();
         }
         ActivePlayer.Update();
         // Board currently in a transition
@@ -91,8 +82,10 @@ public class Game : IDrawable, IUpdatable
             return;
         }
         // Board won by a player or the board cannot be placed on
-        if (Board.Player != null || Board.Placeable == false)
+        if (Board.Player != null || Board.AnyPlaceable == false)
         {
+            ActivePlayer.PlayTurn -= HandlePlayerTurn;
+            InactivePlayer.PlayTurn -= HandlePlayerTurn;
             GameOver?.Invoke(this, Board.Player);
             return;
         }

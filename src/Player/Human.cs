@@ -28,7 +28,7 @@ public class Human : Player
     }
     private void HandleClickedBoard(ILargeBoard<Grid<Tile>, Tile> board, Grid<Tile> grid, Tile tile)
     {
-        if (tile.Placeable == false)
+        if (tile.Player != null || !((LargeGrid<Grid<Tile>, Tile>)board).Placeable[board.Location(tile).Item1])
         {
             return;
         }

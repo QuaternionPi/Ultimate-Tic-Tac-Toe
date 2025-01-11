@@ -8,21 +8,15 @@ public partial class Bot : Player
     public Bot(Symbol symbol, Color color, int score) : base(symbol, color, score)
     {
     }
-    protected LargeGrid<Grid<Tile>, Tile>? Board;
     public override void BeginTurn(LargeGrid<Grid<Tile>, Tile> board, Player opponent)
     {
-        Board = board;
-        List<(Grid<Tile>, Tile)> possibleMoves = PossibleMoves(board);
+        IEnumerable<(Grid<Tile>, Tile)> possibleMoves = PossibleMoves(board);
         var move = BestMove(board, possibleMoves, this, opponent);
-        MakeMove(move.Item1, move.Item2);
+        MakeMove(board, move.Item1, move.Item2);
     }
     public override void EndTurn()
     {
-        if (Board == null)
-        {
-            return;
-        }
-        Board = null;
+
     }
     public override void Update()
     {
@@ -53,14 +47,13 @@ public partial class Bot : Player
         }
 
         var evaluatedMoves =
-            from move in moves//.AsParallel()
+            from move in moves.AsParallel()
             select (move,
                 -Minimax(
                     (LargeGrid<Grid<Tile>, Tile>)board.Place(
                         move.Item1,
                         move.Item2,
-                        player,
-                        true),
+                        player),
                     depth,
                     -beta,
                     -alpha,
@@ -98,7 +91,7 @@ public partial class Bot : Player
         int minEvaluation = 10000;
         foreach (var move in possibleMoves)
         {
-            var placedBoard = (LargeGrid<Grid<Tile>, Tile>)board.Place(move.Item1, move.Item2, player, true);
+            var placedBoard = (LargeGrid<Grid<Tile>, Tile>)board.Place(move.Item1, move.Item2, player);
             var evaluation = -Minimax(placedBoard, depth - 1, -beta, -alpha, opponent, player);
             minEvaluation = Math.Min(minEvaluation, evaluation);
             beta = Math.Min(beta, evaluation);
@@ -148,26 +141,23 @@ public partial class Bot : Player
     {
         int count = 0;
         for (int i = 0; i < 9; i++)
-            if (board.Cells[i].Placeable)
+            if (board.Placeable[i] && board.Cells[i].Player == null)
                 for (int k = 0; k < 9; k++)
-                    if (board.Cells[i].Cells[k].Placeable)
+                    if (board.Cells[i].Cells[k].Player == null)
                         count++;
 
         return count;
     }
-    protected static List<(Grid<Tile>, Tile)> PossibleMoves(LargeGrid<Grid<Tile>, Tile> board)
+    protected static IEnumerable<(Grid<Tile>, Tile)> PossibleMoves(LargeGrid<Grid<Tile>, Tile> board)
     {
-        List<(Grid<Tile>, Tile)> possibleMoves = new();
         for (int i = 0; i < 9; i++)
-            if (board.Cells[i].Placeable)
+            if (board.Placeable[i])
                 for (int k = 0; k < 9; k++)
-                    if (board.Cells[i].Cells[k].Placeable)
-                        possibleMoves.Add((board.Cells[i], board.Cells[i].Cells[k]));
-        return possibleMoves;
+                    if (board.Cells[i].Cells[k].Player == null)
+                        yield return (board.Cells[i], board.Cells[i].Cells[k]);
     }
-    protected void MakeMove(Grid<Tile> grid, Tile tile)
+    protected void MakeMove(LargeGrid<Grid<Tile>, Tile> board, Grid<Tile> grid, Tile tile)
     {
-        Debug.Assert(Board != null, "Board can't be null when you're playing a move");
-        InvokePlayTurn(this, Board, grid, tile);
+        InvokePlayTurn(this, board, grid, tile);
     }
 }
