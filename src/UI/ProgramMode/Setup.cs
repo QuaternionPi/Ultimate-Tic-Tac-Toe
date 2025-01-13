@@ -100,43 +100,31 @@ public class Setup : IProgramMode
 
         var position = new Vector2(450, 350);
         var transform = new Transform2D(position, 0, 4);
-        LargeGrid<Grid<Tile>, Tile> board = EmptyBoard(transform);
+        LargeGrid<Grid<Tile>, Tile> board = EmptyBoard();
 
 
-        IProgramMode mode = new PlayGame(this, player1, player2, () => EmptyBoard(transform));
+        IProgramMode mode = new PlayGame(this, player1, player2, EmptyBoard);
         SwitchTo?.Invoke(this, mode);
     }
-    protected LargeGrid<Grid<Tile>, Tile> EmptyBoard(Transform2D transform)
+    protected LargeGrid<Grid<Tile>, Tile> EmptyBoard()
     {
         var cells = new Grid<Tile>[9];
         for (int i = 0; i < 9; i++)
         {
-            var address = PositionOfIndex(i);
-            var cellPosition = LargeGrid<Grid<Tile>, Tile>.PixelPosition(transform, (int)address.X, (int)address.Y);
-            var cellTransform = new Transform2D(cellPosition, 0, 1);
-
-            Grid<Tile> cell = EmptyGrid(cellTransform);
-            cells[i] = cell;
+            cells[i] = EmptyGrid();
         }
-        var victoryTileTransform = new Transform2D(transform.Position, 0, transform.Scale * 4);
-        var victoryTile = new Tile(null, victoryTileTransform, 0);
-        return new LargeGrid<Grid<Tile>, Tile>(cells, victoryTile, transform);
+        var victoryTile = new Tile(null);
+        return new LargeGrid<Grid<Tile>, Tile>(cells, victoryTile);
     }
-    protected Grid<Tile> EmptyGrid(Transform2D transform)
+    protected Grid<Tile> EmptyGrid()
     {
         var cells = new Tile[9];
         for (int i = 0; i < 9; i++)
         {
-            var address = PositionOfIndex(i);
-            var cellPosition = LargeGrid<Grid<Tile>, Tile>.PixelPosition(transform, (int)address.X, (int)address.Y);
-            var cellTransform = new Transform2D(cellPosition, 0, 1);
-
-            var cell = new Tile(null, cellTransform, 0);
-            cells[i] = cell;
+            cells[i] = new Tile(null);
         }
-        var victoryTileTransform = new Transform2D(transform.Position, 0, transform.Scale * 4);
-        var victoryTile = new Tile(null, victoryTileTransform, 0);
-        return new Grid<Tile>(cells, victoryTile, transform);
+        var victoryTile = new Tile(null);
+        return new Grid<Tile>(cells, victoryTile);
     }
     public Vector2 PositionOfIndex(int index)
     {

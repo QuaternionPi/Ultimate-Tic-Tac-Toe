@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using UltimateTicTacToe.Game;
-using UltimateTicTacToe.Player;
 using Raylib_cs;
 
 namespace UltimateTicTacToe.Player;

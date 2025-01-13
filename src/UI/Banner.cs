@@ -13,12 +13,12 @@ public class Banner : IDrawable
         Transform = transform;
         Active = active;
         Font = Graphics.Text.GetFontDefault();
-        Tile = new Game.Tile(Player, Transform, 0);
+        Cell = new Cell(Player, Transform, 0);
     }
     public Transform2D Transform { get; }
     public Player.Player Player { get; }
     public bool Active { get; }
-    protected Game.Tile Tile { get; }
+    protected Cell Cell { get; }
     protected Font Font { get; }
     public void Draw()
     {
@@ -27,7 +27,7 @@ public class Banner : IDrawable
             Graphics.Draw.OverrideDrawColor = true;
             Graphics.Draw.OverrideColor = Color.LIGHTGRAY;
         }
-        Tile.Draw();
+        Cell.Draw();
         Graphics.Draw.OverrideDrawColor = false;
         DrawScore();
     }

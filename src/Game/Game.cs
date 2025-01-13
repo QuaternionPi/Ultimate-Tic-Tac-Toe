@@ -1,3 +1,4 @@
+using System.Numerics;
 using System.Text.Json.Serialization;
 
 namespace UltimateTicTacToe.Game;
@@ -6,6 +7,9 @@ public class Game : IDrawable, IUpdatable
     public Game(Player.Player active, Player.Player inactive, LargeGrid<Grid<Tile>, Tile> board)
     {
         Board = board;
+        var position = new Vector2(450, 350);
+        var transform = new Transform2D(position, 0, 4);
+        BoardUI = new(board, transform);
         ActivePlayer = active;
         InactivePlayer = inactive;
         ActivePlayer.PlayTurn += HandlePlayerTurn;
@@ -20,6 +24,7 @@ public class Game : IDrawable, IUpdatable
     }
     [JsonInclude]
     public LargeGrid<Grid<Tile>, Tile> Board { get; protected set; }
+    public UI.LargeBoard<Grid<Tile>, Tile> BoardUI { get; protected set; }
     [JsonInclude]
     public Player.Player ActivePlayer { get; protected set; }
     [JsonInclude]
@@ -53,7 +58,10 @@ public class Game : IDrawable, IUpdatable
             Console.WriteLine($"Not player {player}'s turn");
             return;
         }
+        var position = new Vector2(450, 350);
+        var transform = new Transform2D(position, 0, 4);
         Board = (LargeGrid<Grid<Tile>, Tile>)Board.Place(grid, tile, ActivePlayer);
+        BoardUI = new UI.LargeBoard<Grid<Tile>, Tile>(board, transform);
         ChangePlayer = true;
     }
     protected void DelayedPlayerStart(TimeSpan delay)
@@ -63,12 +71,12 @@ public class Game : IDrawable, IUpdatable
     }
     public void Draw()
     {
-        Board.Draw();
+        BoardUI.Draw();
         BannerController.Draw();
     }
     public void Update()
     {
-        Board.Update();
+        BoardUI.Update();
         if (ChangePlayer && Board.AnyPlaceable)
         {
             ChangePlayer = false;
@@ -76,7 +84,7 @@ public class Game : IDrawable, IUpdatable
         }
         ActivePlayer.Update();
         // Board currently in a transition
-        if (Board.TransitionValue != 0)
+        if (BoardUI.TransitionValue != 0)
         {
             return;
         }

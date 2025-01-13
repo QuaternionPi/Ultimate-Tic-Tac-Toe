@@ -1,4 +1,3 @@
-using UltimateTicTacToe.Player;
 namespace UltimateTicTacToe.Game;
 /*
 The 3 by 3 objects that Ultimate Tic Tac Toe is played on
@@ -6,13 +5,12 @@ The 3 by 3 objects that Ultimate Tic Tac Toe is played on
 public interface IBoard<TCell> where TCell : ICell
 {
     public TCell[] Cells { get; }
+    public TCell WinningPlayerCell { get; }
     public Player.Player? Player { get; }
     public bool AnyPlaceable { get; }
     public IBoard<TCell> Place(TCell cell, Player.Player player);
     public int Location(TCell cell);
     public bool Contains(TCell cell);
-    Transform2D Transform { get; }
-    public event Action<IBoard<TCell>, TCell>? Clicked;
 }
 public static class BoardExtensions
 {

@@ -1,4 +1,3 @@
-using UltimateTicTacToe.Player;
 namespace UltimateTicTacToe.Game;
 /*
 The base object of Ultimate Tic Tac Toe
@@ -11,6 +10,4 @@ public interface ICell
 {
     public Player.Player? Player { get; }
     public ICell Place(Player.Player? player);
-    Transform2D Transform { get; }
-    public event Action<ICell>? Clicked;
 }
