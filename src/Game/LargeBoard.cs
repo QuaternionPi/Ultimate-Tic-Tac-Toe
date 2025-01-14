@@ -8,7 +8,7 @@ public interface ILargeBoard<TGrid, TCell> where TCell : ICell where TGrid : IBo
     public TCell WinningPlayerCell { get; }
     public Player.Player? Player { get; }
     public bool AnyPlaceable { get; }
-    public ILargeBoard<TGrid, TCell> Place(TGrid grid, TCell cell, Player.Player player);
+    public ILargeBoard<TGrid, TCell> Place(Player.Player player, int index, int innerIndex);
     public (int, int) Location(TCell cell);
     public bool Contains(TCell cell);
 }

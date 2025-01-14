@@ -4,34 +4,37 @@ using UltimateTicTacToe.Game;
 namespace UltimateTicTacToe.Player;
 public class Human : Player
 {
+    private UI.LargeBoard<Grid<Tile>, Tile>? BoardUI { get; set; }
     public Human(Symbol symbol, Color color, int score) : base(symbol, color, score)
     {
     }
     protected LargeGrid<Grid<Tile>, Tile>? Board;
-    public override void BeginTurn(LargeGrid<Grid<Tile>, Tile> board, Player opponent)
+    public override void BeginTurn(LargeGrid<Grid<Tile>, Tile> board, UI.LargeBoard<Grid<Tile>, Tile> boardUI, Player opponent)
     {
         Board = board;
-        Board.Clicked += HandleClickedBoard;
+        BoardUI = boardUI;
+        BoardUI.Clicked += HandleClickedBoard;
     }
     public override void EndTurn()
     {
-        if (Board == null)
-        {
-            return;
-        }
-        Board.Clicked -= HandleClickedBoard;
+        if (BoardUI != null)
+            BoardUI.Clicked -= HandleClickedBoard;
         Board = null;
     }
     public override void Update()
     {
 
     }
-    private void HandleClickedBoard(ILargeBoard<Grid<Tile>, Tile> board, Grid<Tile> grid, Tile tile)
+    private void HandleClickedBoard(UI.LargeBoard<Grid<Tile>, Tile> board, int index, int innerIndex)
     {
-        if (tile.Player != null || !((LargeGrid<Grid<Tile>, Tile>)board).Placeable[board.Location(tile).Item1])
+        if (Board == null)
         {
             return;
         }
-        InvokePlayTurn(this, (LargeGrid<Grid<Tile>, Tile>)board, grid, tile);
+        if (!Board.Placeable[index] && Board.Cells[innerIndex].Player == null)
+        {
+            return;
+        }
+        InvokePlayTurn(this, Board, index, innerIndex);
     }
 }

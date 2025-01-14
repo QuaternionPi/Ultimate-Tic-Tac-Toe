@@ -44,7 +44,7 @@ public class Board<TCell> where TCell : Game.ICell
             return max;
         }
     }
-    public event Action<Board<TCell>, Cell>? Clicked;
+    public event Action<Board<TCell>, int>? Clicked;
     public Board(Game.IBoard<TCell> board, Transform2D transform)
     {
         Cells = new Cell[9];
@@ -113,7 +113,8 @@ public class Board<TCell> where TCell : Game.ICell
     }
     public void HandleClickedCell(Cell cell)
     {
-        Clicked?.Invoke(this, cell);
+        var index = Array.IndexOf(Cells, cell);
+        Clicked?.Invoke(this, index);
     }
     public static Vector2 PixelPosition(Transform2D transform, int i, int j)
     {

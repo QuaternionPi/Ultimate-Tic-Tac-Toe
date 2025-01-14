@@ -11,9 +11,9 @@ where TCell : ICell
         Cells = cells.ToArray();
         WinningPlayerCell = winningPlayerCell;
     }
-    public Grid(Grid<TCell> original, TCell targetCell, Player.Player player)
+    public Grid(Grid<TCell> original, Player.Player player, int index)
     {
-        Debug.Assert(targetCell.Player == null, "You Cannot place on that cell");
+        Debug.Assert(original.Cells[index].Player == null, "You Cannot place on that cell");
         Transform = original.Transform;
         Cells = new TCell[9];
 
@@ -21,20 +21,20 @@ where TCell : ICell
         {
             TCell originalCell = original.Cells[i];
             TCell cell;
-            if (originalCell.Equals(targetCell))
+            if (i == index)
             {
                 cell = (TCell)originalCell.Place(player);
             }
             else
             {
-                cell = (TCell)originalCell.Place(originalCell.Player);
+                cell = originalCell;
             }
             Cells[i] = cell;
         }
 
         Player = this.Winner();
         Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
-        WinningPlayerCell = (TCell)original.WinningPlayerCell.Place(player);
+        WinningPlayerCell = (TCell)original.WinningPlayerCell.Place(Player);
     }
     [JsonInclude]
     public Transform2D Transform { get; }
@@ -53,12 +53,8 @@ where TCell : ICell
     {
         return Cells.Any((x) => x.Equals(cell));
     }
-    public IBoard<TCell> Place(TCell cell, Player.Player player)
+    public IBoard<TCell> Place(Player.Player player, int index)
     {
-        return new Grid<TCell>(this, cell, player);
-    }
-    public ICell Place(IEnumerable<ICell> TCelltrace, Player.Player player)
-    {
-        return (ICell)new Grid<TCell>(this, (TCell)TCelltrace.First(), player);
+        return new Grid<TCell>(this, player, index);
     }
 }

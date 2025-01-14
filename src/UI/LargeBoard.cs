@@ -44,7 +44,7 @@ public class LargeBoard<TGrid, TCell> where TCell : Game.ICell where TGrid : Gam
             return max;
         }
     }
-    public event Action<LargeBoard<TGrid, TCell>, Board<TCell>, Cell>? Clicked;
+    public event Action<LargeBoard<TGrid, TCell>, int, int>? Clicked;
     public LargeBoard(Game.ILargeBoard<TGrid, TCell> largeBoard, Transform2D transform)
     {
         Boards = new Board<TCell>[9];
@@ -111,9 +111,10 @@ public class LargeBoard<TGrid, TCell> where TCell : Game.ICell where TGrid : Gam
         Graphics.Draw.Rectangle(x - lineLength / 2, y - lineWidth / 2 + lineGap / 2, lineLength, lineWidth, color);
         Graphics.Draw.Rectangle(x - lineLength / 2, y - lineWidth / 2 - lineGap / 2, lineLength, lineWidth, color);
     }
-    public void HandleClickedCell(Board<TCell> board, Cell cell)
+    public void HandleClickedCell(Board<TCell> board, int innerIndex)
     {
-        Clicked?.Invoke(this, board, cell);
+        var index = Array.IndexOf(Boards, board);
+        Clicked?.Invoke(this, index, innerIndex);
     }
     public static Vector2 PixelPosition(Transform2D transform, int i, int j)
     {

@@ -51,7 +51,7 @@ public class Game : IDrawable, IUpdatable
         //ActivePlayer.BeginTurn(Board, InactivePlayer);
         TurnNumber++;
     }
-    protected void HandlePlayerTurn(Player.Player player, ILargeBoard<Grid<Tile>, Tile> board, Grid<Tile> grid, Tile tile)
+    protected void HandlePlayerTurn(Player.Player player, ILargeBoard<Grid<Tile>, Tile> board, int index, int innerIndex)
     {
         if (player != ActivePlayer)
         {
@@ -60,14 +60,14 @@ public class Game : IDrawable, IUpdatable
         }
         var position = new Vector2(450, 350);
         var transform = new Transform2D(position, 0, 4);
-        Board = (LargeGrid<Grid<Tile>, Tile>)Board.Place(grid, tile, ActivePlayer);
-        BoardUI = new UI.LargeBoard<Grid<Tile>, Tile>(board, transform);
+        Board = (LargeGrid<Grid<Tile>, Tile>)Board.Place(ActivePlayer, index, innerIndex);
+        BoardUI = new UI.LargeBoard<Grid<Tile>, Tile>(Board, transform);
         ChangePlayer = true;
     }
     protected void DelayedPlayerStart(TimeSpan delay)
     {
         Thread.Sleep(delay);
-        ActivePlayer.BeginTurn(Board, InactivePlayer);
+        ActivePlayer.BeginTurn(Board, BoardUI, InactivePlayer);
     }
     public void Draw()
     {

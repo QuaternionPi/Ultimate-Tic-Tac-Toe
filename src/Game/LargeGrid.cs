@@ -17,9 +17,9 @@ where TCell : ICell
         }
         WinningPlayerCell = winningPlayerCell;
     }
-    public LargeGrid(LargeGrid<TGrid, TCell> original, TGrid targetGrid, TCell targetCell, Player.Player player)
+    public LargeGrid(LargeGrid<TGrid, TCell> original, Player.Player player, int index, int innerIndex)
     {
-        Debug.Assert(original.Placeable[original.Location(targetCell).Item1], "You Cannot place on that cell");
+        Debug.Assert(original.Placeable[index], "You Cannot place on that cell");
         Transform = original.Transform;
         Cells = new TGrid[9];
 
@@ -27,13 +27,13 @@ where TCell : ICell
         {
             TGrid originalCell = original.Cells[i];
             TGrid cell;
-            if (originalCell.Equals(targetGrid))
+            if (i == index)
             {
-                cell = (TGrid)originalCell.Place(targetCell, player);
+                cell = (TGrid)originalCell.Place(player, innerIndex);
             }
             else
             {
-                cell = (TGrid)originalCell.Place(targetCell, originalCell.Player);
+                cell = originalCell;//(TGrid)originalCell.Place(originalCell.Player, innerIndex);
             }
             Cells[i] = cell;
         }
@@ -51,8 +51,7 @@ where TCell : ICell
             return;
         }
 
-        int nextPlayableAddress = original.Location(targetCell).Item2;
-        TGrid nextCell = Cells[nextPlayableAddress];
+        TGrid nextCell = Cells[innerIndex];
 
         if (nextCell.AnyPlaceable == false || nextCell.Player != null)
         {
@@ -74,7 +73,7 @@ where TCell : ICell
             {
                 Placeable[i] = false;
             }
-            Placeable[nextPlayableAddress] = true;
+            Placeable[innerIndex] = true;
         }
     }
     [JsonInclude]
@@ -93,7 +92,6 @@ where TCell : ICell
             return false;
         }
     }
-    public event Action<ILargeBoard<TGrid, TCell>, TGrid, TCell>? Clicked;
     [JsonInclude]
     //[JsonConverter(typeof(Json.Array2DConverter))]
     public TGrid[] Cells { get; }
@@ -115,8 +113,8 @@ where TCell : ICell
     {
         return Cells.Any((x) => x.Contains(cell));
     }
-    public ILargeBoard<TGrid, TCell> Place(TGrid grid, TCell cell, Player.Player player)
+    public ILargeBoard<TGrid, TCell> Place(Player.Player player, int index, int innerIndex)
     {
-        return new LargeGrid<TGrid, TCell>(this, grid, cell, player);
+        return new LargeGrid<TGrid, TCell>(this, player, index, innerIndex);
     }
 }

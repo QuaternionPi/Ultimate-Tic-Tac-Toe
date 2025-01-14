@@ -15,7 +15,6 @@ public class Tile : ICell
     }
     [JsonInclude]
     public Player.Player? Player { get; }
-    public event Action<ICell>? Clicked;
     public ICell Place(Player.Player? player)
     {
         return new Tile(player);
