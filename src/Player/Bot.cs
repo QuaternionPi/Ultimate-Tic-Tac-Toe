@@ -47,7 +47,7 @@ public partial class Bot : Player
         }
 
         var evaluatedMoves =
-            from move in moves//.AsParallel()
+            from move in moves.AsParallel()
             select (move,
                 -Minimax(
                     (LargeGrid<Grid<Tile>, Tile>)board.Place(

@@ -33,13 +33,12 @@ where TCell : ICell
             }
             else
             {
-                cell = originalCell;//(TGrid)originalCell.Place(originalCell.Player, innerIndex);
+                cell = originalCell;
             }
             Cells[i] = cell;
         }
 
         Player = this.Winner();
-        Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
         WinningPlayerCell = (TCell)original.WinningPlayerCell.Place(Player);
         Placeable = new bool[9];
         if (Player != null)
@@ -93,7 +92,6 @@ where TCell : ICell
         }
     }
     [JsonInclude]
-    //[JsonConverter(typeof(Json.Array2DConverter))]
     public TGrid[] Cells { get; }
     public TCell WinningPlayerCell { get; }
     public bool[] Placeable { get; }

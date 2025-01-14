@@ -33,7 +33,6 @@ where TCell : ICell
         }
 
         Player = this.Winner();
-        Transform2D victoryTileTransform = new(Transform.Position, 0, Transform.Scale * 4);
         WinningPlayerCell = (TCell)original.WinningPlayerCell.Place(Player);
     }
     [JsonInclude]

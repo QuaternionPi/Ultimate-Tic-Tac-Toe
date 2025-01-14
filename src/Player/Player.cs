@@ -7,14 +7,14 @@ using UltimateTicTacToe.UI;
 namespace UltimateTicTacToe.Player;
 public abstract class Player : IUpdatable
 {
-    public static readonly Color[] AllowedColors = {
+    public static readonly Color[] AllowedColors = [
         Color.RED,
         Color.BLUE,
         Color.GREEN,
         Color.MAROON,
         Color.DARKBLUE,
         Color.DARKGREEN,
-    };
+    ];
     public enum Symbol { X, O };
     public Player(Symbol symbol, Color color, int score)
     {

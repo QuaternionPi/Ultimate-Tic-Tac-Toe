@@ -11,13 +11,13 @@ public class Setup : IProgramMode
         Previous = previous;
         Player1 = new Human(Player.Player.Symbol.X, Color.RED, 0);
         Player2 = new Human(Player.Player.Symbol.O, Color.BLUE, 0);
-        UI = new UI.BannerController(Player1, Player2);
+        UI = new BannerController(Player1, Player2);
         UI.Activate(Player1);
         UI.Activate(Player2);
 
         var colors = Player.Player.AllowedColors;
-        RightColorPicker = new UI.ColorPicker(new Transform2D(new Vector2(900 - 135, 270)), colors, 3);
-        LeftColorPicker = new UI.ColorPicker(new Transform2D(new Vector2(35, 270)), colors, 3);
+        RightColorPicker = new ColorPicker(new Transform2D(new Vector2(900 - 135, 270)), colors, 3);
+        LeftColorPicker = new ColorPicker(new Transform2D(new Vector2(35, 270)), colors, 3);
 
         RightColorPicker.Clicked += SetPlayer1Color;
         LeftColorPicker.Clicked += SetPlayer2Color;
@@ -35,11 +35,11 @@ public class Setup : IProgramMode
         var backgroundColor = Color.LIGHTGRAY;
         var borderColor = backgroundColor;
 
-        var playButton = new UI.Button(playButtonTransform, new Vector2(400, 70), "Play", textColor, backgroundColor, borderColor);
-        var rightHumanButton = new UI.Button(rightHumanButtonTransform, new Vector2(150, 70), "Human", textColor, backgroundColor, borderColor);
-        var leftHumanButton = new UI.Button(leftHumanButtonTransform, new Vector2(150, 70), "Human", textColor, backgroundColor, borderColor);
-        var rightBotButton = new UI.Button(rightBotButtonTransform, new Vector2(150, 70), "Bot", textColor, backgroundColor, borderColor);
-        var leftBotButton = new UI.Button(leftBotButtonTransform, new Vector2(150, 70), "Bot", textColor, backgroundColor, borderColor);
+        var playButton = new Button(playButtonTransform, new Vector2(400, 70), "Play", textColor, backgroundColor, borderColor);
+        var rightHumanButton = new Button(rightHumanButtonTransform, new Vector2(150, 70), "Human", textColor, backgroundColor, borderColor);
+        var leftHumanButton = new Button(leftHumanButtonTransform, new Vector2(150, 70), "Human", textColor, backgroundColor, borderColor);
+        var rightBotButton = new Button(rightBotButtonTransform, new Vector2(150, 70), "Bot", textColor, backgroundColor, borderColor);
+        var leftBotButton = new Button(leftBotButtonTransform, new Vector2(150, 70), "Bot", textColor, backgroundColor, borderColor);
 
         playButton.Clicked += SetupGame;
         rightHumanButton.Clicked += SetPlayer1Human;
@@ -47,7 +47,7 @@ public class Setup : IProgramMode
         rightBotButton.Clicked += SetPlayer1Bot;
         leftBotButton.Clicked += SetPlayer2Bot;
 
-        Buttons = new List<UI.Button>(){
+        Buttons = new List<Button>(){
                         playButton,
                         rightHumanButton,
                         leftHumanButton,
@@ -58,14 +58,14 @@ public class Setup : IProgramMode
         SetPlayer1Bot();
         SetPlayer2Bot();
     }
-    protected List<UI.Button> Buttons;
+    protected List<Button> Buttons;
     public bool InTransition { get; }
     public float TransitionValue { get; }
     public event Action<IProgramMode, IProgramMode>? SwitchTo;
     public IProgramMode? Previous { get; }
-    protected UI.BannerController UI { get; }
-    protected UI.ColorPicker RightColorPicker { get; }
-    protected UI.ColorPicker LeftColorPicker { get; }
+    protected BannerController UI { get; }
+    protected ColorPicker RightColorPicker { get; }
+    protected ColorPicker LeftColorPicker { get; }
     protected Player.Player Player1;
     protected Player.Player Player2;
     protected string Player1Type;
@@ -125,12 +125,6 @@ public class Setup : IProgramMode
         }
         var victoryTile = new Tile(null);
         return new Grid<Tile>(cells, victoryTile);
-    }
-    public Vector2 PositionOfIndex(int index)
-    {
-        int x = index / 3;
-        int y = index % 3;
-        return new Vector2(x, y);
     }
     protected void SetPlayer1Color(Color color) => Player1.Color = color;
     protected void SetPlayer2Color(Color color) => Player2.Color = color;

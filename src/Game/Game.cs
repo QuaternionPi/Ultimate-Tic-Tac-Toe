@@ -20,7 +20,6 @@ public class Game : IDrawable, IUpdatable
         TimeSpan delay = new(0, 0, 0, 0, 300);
         Thread thread = new(() => DelayedPlayerStart(delay));
         thread.Start();
-        //ActivePlayer.BeginTurn(Board, InactivePlayer);
     }
     [JsonInclude]
     public LargeGrid<Grid<Tile>, Tile> Board { get; protected set; }
@@ -48,7 +47,6 @@ public class Game : IDrawable, IUpdatable
         TimeSpan delay = new(0, 0, 0, 0, 100);
         Thread thread = new(() => DelayedPlayerStart(delay));
         thread.Start();
-        //ActivePlayer.BeginTurn(Board, InactivePlayer);
         TurnNumber++;
     }
     protected void HandlePlayerTurn(Player.Player player, ILargeBoard<Grid<Tile>, Tile> board, int index, int innerIndex)
