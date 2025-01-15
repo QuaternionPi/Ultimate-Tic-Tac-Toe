@@ -24,7 +24,7 @@ where TCell : ICell
         Placeable = new bool[Grids.Length];
         for (int i = 0; i < 9; i++)
         {
-            Placeable[i] = true;
+            Placeable[i] = Grids[i].AnyPlaceable;
         }
         Player = this.Winner();
         AnyPlaceable = Player == null && Grids.Any((x) => x.AnyPlaceable);
@@ -45,31 +45,15 @@ where TCell : ICell
         for (int i = 0; i < 9; i++)
         {
             TGrid originalGrid = original.Grids[i];
-            TGrid grid;
-            if (i == index)
-            {
-                grid = (TGrid)originalGrid.Place(player, innerIndex);
-            }
-            else
-            {
-                grid = originalGrid;
-            }
-            Grids[i] = grid;
+            Grids[i] = i == index ? (TGrid)originalGrid.Place(player, innerIndex) : originalGrid;
         }
         Placeable = new bool[9];
         TGrid nextGrid = Grids[innerIndex];
-        if (nextGrid.AnyPlaceable == false || nextGrid.Player != null)
+        if (!nextGrid.AnyPlaceable)
         {
             for (int i = 0; i < 9; i++)
             {
-                if (Grids[i].AnyPlaceable == false)
-                {
-                    Placeable[i] = false;
-                }
-                else
-                {
-                    Placeable[i] = true;
-                }
+                Placeable[i] = Grids[i].AnyPlaceable;
             }
         }
         else

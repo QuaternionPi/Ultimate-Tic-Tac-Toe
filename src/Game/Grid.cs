@@ -37,16 +37,7 @@ where TCell : ICell
         for (int i = 0; i < 9; i++)
         {
             TCell originalCell = original.Cells[i];
-            TCell cell;
-            if (i == index)
-            {
-                cell = (TCell)originalCell.Place(player);
-            }
-            else
-            {
-                cell = originalCell;
-            }
-            Cells[i] = cell;
+            Cells[i] = i == index ? (TCell)originalCell.Place(player) : originalCell;
         }
 
         Player = this.Winner();
