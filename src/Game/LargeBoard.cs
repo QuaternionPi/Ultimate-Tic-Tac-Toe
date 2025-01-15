@@ -4,13 +4,11 @@ The 3 by 3 objects that Ultimate Tic Tac Toe is played on
 */
 public interface ILargeBoard<TGrid, TCell> where TCell : ICell where TGrid : IBoard<TCell>
 {
-    public TGrid[] Cells { get; }
+    public TGrid[] Grids { get; }
     public TCell WinningPlayerCell { get; }
     public Player.Player? Player { get; }
     public bool AnyPlaceable { get; }
     public ILargeBoard<TGrid, TCell> Place(Player.Player player, int index, int innerIndex);
-    public (int, int) Location(TCell cell);
-    public bool Contains(TCell cell);
 }
 public static class LargeBoardExtensions
 {
@@ -21,7 +19,7 @@ public static class LargeBoardExtensions
         Player.Player?[] cellWinners = new Player.Player?[9];
         for (int i = 0; i < 9; i++)
         {
-            cellWinners[i] = board.Cells[i]?.Player;
+            cellWinners[i] = board.Grids[i]?.Player;
         }
 
         Player.Player? topLeft = cellWinners[0];
@@ -81,7 +79,7 @@ public static class LargeBoardExtensions
         Player.Player?[] cellWinners = new Player.Player?[9];
         for (int i = 0; i < 9; i++)
         {
-            cellWinners[i] = board.Cells[i]?.Player;
+            cellWinners[i] = board.Grids[i]?.Player;
         }
 
         Player.Player? topLeft = cellWinners[0];

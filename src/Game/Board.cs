@@ -9,8 +9,6 @@ public interface IBoard<TCell> where TCell : ICell
     public Player.Player? Player { get; }
     public bool AnyPlaceable { get; }
     public IBoard<TCell> Place(Player.Player player, int index);
-    public int Location(TCell cell);
-    public bool Contains(TCell cell);
 }
 public static class BoardExtensions
 {

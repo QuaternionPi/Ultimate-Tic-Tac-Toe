@@ -6,6 +6,18 @@ namespace UltimateTicTacToe.Game;
 public class Grid<TCell> : IBoard<TCell>
 where TCell : ICell
 {
+    [JsonInclude]
+    public Transform2D Transform { get; }
+    [JsonInclude]
+    public Player.Player? Player { get; }
+    public bool AnyPlaceable { get; }
+    [JsonInclude]
+    public TCell[] Cells { get; }
+    public TCell WinningPlayerCell { get; }
+    public IBoard<TCell> Place(Player.Player player, int index)
+    {
+        return new Grid<TCell>(this, player, index);
+    }
     public Grid(IEnumerable<TCell> cells, TCell winningPlayerCell)
     {
         Cells = cells.ToArray();
@@ -39,26 +51,5 @@ where TCell : ICell
         Player = this.Winner();
         AnyPlaceable = Player == null && Cells.Any((x) => x.Placeable);
         WinningPlayerCell = (TCell)original.WinningPlayerCell.Place(Player);
-    }
-    [JsonInclude]
-    public Transform2D Transform { get; }
-    [JsonInclude]
-    public Player.Player? Player { get; }
-    public bool AnyPlaceable { get; }
-    [JsonInclude]
-    //[JsonConverter(typeof(Json.Array2DConverter))]
-    public TCell[] Cells { get; }
-    public TCell WinningPlayerCell { get; }
-    public int Location(TCell cell)
-    {
-        return Array.IndexOf(Cells, cell);
-    }
-    public bool Contains(TCell cell)
-    {
-        return Cells.Any((x) => x.Equals(cell));
-    }
-    public IBoard<TCell> Place(Player.Player player, int index)
-    {
-        return new Grid<TCell>(this, player, index);
     }
 }

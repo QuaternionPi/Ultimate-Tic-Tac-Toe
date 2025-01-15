@@ -122,7 +122,7 @@ public partial class Bot : Player
         evaluation -= NumPossibleMoves(board);
         for (int i = 0; i < 9; i++)
         {
-            var grid = board.Cells[i];
+            var grid = board.Grids[i];
             evaluation += Award(100, grid.Player, player, opponent);
             evaluation += Award(10, grid.Cells[4].Player, player, opponent);
             evaluation += Award(5, grid.Cells[0].Player, player, opponent);
@@ -130,20 +130,20 @@ public partial class Bot : Player
             evaluation += Award(5, grid.Cells[6].Player, player, opponent);
             evaluation += Award(5, grid.Cells[8].Player, player, opponent);
         }
-        evaluation += Award(50, board.Cells[4].Player, player, opponent);
-        evaluation += Award(25, board.Cells[0].Player, player, opponent);
-        evaluation += Award(25, board.Cells[2].Player, player, opponent);
-        evaluation += Award(25, board.Cells[6].Player, player, opponent);
-        evaluation += Award(25, board.Cells[8].Player, player, opponent);
+        evaluation += Award(50, board.Grids[4].Player, player, opponent);
+        evaluation += Award(25, board.Grids[0].Player, player, opponent);
+        evaluation += Award(25, board.Grids[2].Player, player, opponent);
+        evaluation += Award(25, board.Grids[6].Player, player, opponent);
+        evaluation += Award(25, board.Grids[8].Player, player, opponent);
         return evaluation;
     }
     protected static int NumPossibleMoves(LargeGrid<Grid<Tile>, Tile> board)
     {
         int count = 0;
         for (int i = 0; i < 9; i++)
-            if (board.Placeable[i] && board.Cells[i].AnyPlaceable)
+            if (board.Placeable[i] && board.Grids[i].AnyPlaceable)
                 for (int k = 0; k < 9; k++)
-                    if (board.Cells[i].Cells[k].Placeable)
+                    if (board.Grids[i].Cells[k].Placeable)
                         count++;
 
         return count;
@@ -154,7 +154,7 @@ public partial class Bot : Player
         for (int i = 0; i < 9; i++)
             if (board.Placeable[i])
                 for (int k = 0; k < 9; k++)
-                    if (board.Cells[i].Cells[k].Placeable)
+                    if (board.Grids[i].Cells[k].Placeable)
                         results.Add((i, k));
         return results;
     }

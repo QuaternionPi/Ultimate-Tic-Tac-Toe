@@ -52,7 +52,7 @@ public class LargeBoard<TGrid, TCell> where TCell : Game.ICell where TGrid : Gam
         Transform = transform;
         for (int i = 0; i < 9; i++)
         {
-            var board = largeBoard.Cells[i];
+            var board = largeBoard.Grids[i];
             var address = PositionOfIndex(i);
             var position = PixelPosition(transform, (int)address.X, (int)address.Y);
             var cellTransform = new Transform2D(position, 0, 1);

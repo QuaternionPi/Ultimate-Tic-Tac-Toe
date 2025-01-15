@@ -32,7 +32,7 @@ public class Human : Player
         {
             return;
         }
-        if (!Board.Placeable[index] && Board.Cells[innerIndex].AnyPlaceable)
+        if (!Board.Placeable[index] && Board.Grids[innerIndex].AnyPlaceable)
         {
             return;
         }

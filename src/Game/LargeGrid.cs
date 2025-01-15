@@ -7,11 +7,20 @@ public class LargeGrid<TGrid, TCell> : ILargeBoard<TGrid, TCell>
 where TGrid : IBoard<TCell>
 where TCell : ICell
 {
-    public LargeGrid(IEnumerable<TGrid> cells, TCell winningPlayerCell)
+    [JsonInclude]
+    public Transform2D Transform { get; }
+    [JsonInclude]
+    public Player.Player? Player { get; }
+    public bool AnyPlaceable { get; }
+    [JsonInclude]
+    public TGrid[] Grids { get; }
+    public TCell WinningPlayerCell { get; }
+    public bool[] Placeable { get; }
+    public LargeGrid(IEnumerable<TGrid> grids, TCell winningPlayerCell)
     {
-        Cells = cells.ToArray();
-        Debug.Assert(Cells.Length == 9);
-        Placeable = new bool[Cells.Length];
+        Grids = grids.ToArray();
+        Debug.Assert(Grids.Length == 9);
+        Placeable = new bool[Grids.Length];
         for (int i = 0; i < 9; i++)
         {
             Placeable[i] = true;
@@ -22,25 +31,25 @@ where TCell : ICell
     {
         Debug.Assert(original.Placeable[index], "You Cannot place on that cell");
         Transform = original.Transform;
-        Cells = new TGrid[9];
+        Grids = new TGrid[9];
 
         for (int i = 0; i < 9; i++)
         {
-            TGrid originalCell = original.Cells[i];
-            TGrid cell;
+            TGrid originalGrid = original.Grids[i];
+            TGrid grid;
             if (i == index)
             {
-                cell = (TGrid)originalCell.Place(player, innerIndex);
+                grid = (TGrid)originalGrid.Place(player, innerIndex);
             }
             else
             {
-                cell = originalCell;
+                grid = originalGrid;
             }
-            Cells[i] = cell;
+            Grids[i] = grid;
         }
 
         Player = this.Winner();
-        AnyPlaceable = Player == null && Cells.Any((x) => x.AnyPlaceable);
+        AnyPlaceable = Player == null && Grids.Any((x) => x.AnyPlaceable);
         WinningPlayerCell = (TCell)original.WinningPlayerCell.Place(Player);
         Placeable = new bool[9];
         if (Player != null)
@@ -52,12 +61,12 @@ where TCell : ICell
             return;
         }
 
-        TGrid nextCell = Cells[innerIndex];
-        if (nextCell.AnyPlaceable == false || nextCell.Player != null)
+        TGrid nextGrid = Grids[innerIndex];
+        if (nextGrid.AnyPlaceable == false || nextGrid.Player != null)
         {
             for (int i = 0; i < 9; i++)
             {
-                if (Cells[i].AnyPlaceable == false)
+                if (Grids[i].AnyPlaceable == false)
                 {
                     Placeable[i] = false;
                 }
@@ -75,31 +84,6 @@ where TCell : ICell
             }
             Placeable[innerIndex] = true;
         }
-    }
-    [JsonInclude]
-    public Transform2D Transform { get; }
-    [JsonInclude]
-    public Player.Player? Player { get; }
-    public bool AnyPlaceable { get; }
-    [JsonInclude]
-    public TGrid[] Cells { get; }
-    public TCell WinningPlayerCell { get; }
-    public bool[] Placeable { get; }
-    public (int, int) Location(TCell cell)
-    {
-        for (int i = 0; i < 9; i++)
-        {
-            if (Cells[i].Contains(cell))
-            {
-                int innerAddress = Cells[i].Location(cell);
-                return (i, innerAddress);
-            }
-        }
-        throw new Exception($"Cell: {cell} was not found");
-    }
-    public bool Contains(TCell cell)
-    {
-        return Cells.Any((x) => x.Contains(cell));
     }
     public ILargeBoard<TGrid, TCell> Place(Player.Player player, int index, int innerIndex)
     {
