@@ -10,6 +10,7 @@ where TCell : ICell
     public LargeGrid(IEnumerable<TGrid> cells, TCell winningPlayerCell)
     {
         Cells = cells.ToArray();
+        Debug.Assert(Cells.Length == 9);
         Placeable = new bool[Cells.Length];
         for (int i = 0; i < 9; i++)
         {

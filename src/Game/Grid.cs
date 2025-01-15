@@ -9,6 +9,7 @@ where TCell : ICell
     public Grid(IEnumerable<TCell> cells, TCell winningPlayerCell)
     {
         Cells = cells.ToArray();
+        Debug.Assert(Cells.Length == 9);
         WinningPlayerCell = winningPlayerCell;
     }
     public Grid(Grid<TCell> original, Player.Player player, int index)
@@ -46,7 +47,7 @@ where TCell : ICell
     public TCell WinningPlayerCell { get; }
     public int Location(TCell cell)
     {
-        return Cells.ToList().IndexOf(cell);
+        return Array.IndexOf(Cells, cell);
     }
     public bool Contains(TCell cell)
     {
