@@ -8,6 +8,7 @@ public interface IBoard<TCell> where TCell : ICell
     public TCell WinningPlayerCell { get; }
     public Player.Player? Player { get; }
     public bool AnyPlaceable { get; }
+    public IEnumerable<int> PlayableIndices { get; }
     public IBoard<TCell> Place(Player.Player player, int index);
 }
 public static class BoardExtensions

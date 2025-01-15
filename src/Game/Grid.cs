@@ -1,23 +1,19 @@
 using System.Diagnostics;
 using System.Text.Json.Serialization;
+using System.Linq;
 
 namespace UltimateTicTacToe.Game;
 
 public class Grid<TCell> : IBoard<TCell>
 where TCell : ICell
 {
-    [JsonInclude]
     public Transform2D Transform { get; }
-    [JsonInclude]
-    public Player.Player? Player { get; }
-    public bool AnyPlaceable { get; }
     [JsonInclude]
     public TCell[] Cells { get; }
     public TCell WinningPlayerCell { get; }
-    public IBoard<TCell> Place(Player.Player player, int index)
-    {
-        return new Grid<TCell>(this, player, index);
-    }
+    public Player.Player? Player { get; }
+    public bool AnyPlaceable { get; }
+    public IEnumerable<int> PlayableIndices { get; }
     public Grid(IEnumerable<TCell> cells, TCell winningPlayerCell)
     {
         Cells = cells.ToArray();
@@ -25,6 +21,11 @@ where TCell : ICell
 
         Player = this.Winner();
         AnyPlaceable = Player == null && Cells.Any((x) => x.Placeable);
+        PlayableIndices =
+            from i in Enumerable.Range(0, 9)
+            where Cells[i].Placeable
+            select i;
+
         WinningPlayerCell = winningPlayerCell;
     }
     public Grid(Grid<TCell> original, Player.Player player, int index)
@@ -50,6 +51,15 @@ where TCell : ICell
 
         Player = this.Winner();
         AnyPlaceable = Player == null && Cells.Any((x) => x.Placeable);
+        PlayableIndices =
+            from i in Enumerable.Range(0, 9)
+            where Cells[i].Placeable
+            select i;
+
         WinningPlayerCell = (TCell)original.WinningPlayerCell.Place(Player);
+    }
+    public IBoard<TCell> Place(Player.Player player, int index)
+    {
+        return new Grid<TCell>(this, player, index);
     }
 }

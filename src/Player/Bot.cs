@@ -10,7 +10,7 @@ public partial class Bot : Player
     }
     public override void BeginTurn(LargeGrid<Grid<Tile>, Tile> board, UI.LargeBoard<Grid<Tile>, Tile> largeBoard, Player opponent)
     {
-        IEnumerable<(int, int)> possibleMoves = PossibleMoves(board);
+        var possibleMoves = board.PlayableIndices;
         var move = BestMove(board, possibleMoves, this, opponent);
         MakeMove(board, move.Item1, move.Item2);
     }
@@ -87,7 +87,7 @@ public partial class Bot : Player
             return Evaluate(board, opponent, player);
         }
 
-        var possibleMoves = PossibleMoves(board);
+        var possibleMoves = board.PlayableIndices;
         int minEvaluation = 10000;
         foreach (var move in possibleMoves)
         {
@@ -119,7 +119,7 @@ public partial class Bot : Player
             return -1000;
         }
         int evaluation = 0;
-        evaluation -= NumPossibleMoves(board);
+        evaluation -= board.PlayableIndices.Count();
         for (int i = 0; i < 9; i++)
         {
             var grid = board.Grids[i];
@@ -136,27 +136,6 @@ public partial class Bot : Player
         evaluation += Award(25, board.Grids[6].Player, player, opponent);
         evaluation += Award(25, board.Grids[8].Player, player, opponent);
         return evaluation;
-    }
-    protected static int NumPossibleMoves(LargeGrid<Grid<Tile>, Tile> board)
-    {
-        int count = 0;
-        for (int i = 0; i < 9; i++)
-            if (board.Placeable[i] && board.Grids[i].AnyPlaceable)
-                for (int k = 0; k < 9; k++)
-                    if (board.Grids[i].Cells[k].Placeable)
-                        count++;
-
-        return count;
-    }
-    protected static IEnumerable<(int, int)> PossibleMoves(LargeGrid<Grid<Tile>, Tile> board)
-    {
-        List<(int, int)> results = [];
-        for (int i = 0; i < 9; i++)
-            if (board.Placeable[i])
-                for (int k = 0; k < 9; k++)
-                    if (board.Grids[i].Cells[k].Placeable)
-                        results.Add((i, k));
-        return results;
     }
     protected void MakeMove(LargeGrid<Grid<Tile>, Tile> board, int index, int innerIndex)
     {
