@@ -4,7 +4,7 @@ namespace UltimateTicTacToe.UI;
 
 public class Cell
 {
-    private Player.Player? Player { get; }
+    public Player.Player? Player { get; }
     public Transform2D Transform { get; }
     public bool InTransition { get { return TransitionValue != 0; } }
     public float TransitionValue { get; protected set; }
@@ -35,15 +35,15 @@ public class Cell
     }
     public void Draw()
     {
-        if (false)
-        {
-            int width = 20;
-            Graphics.Draw.Rectangle((int)Transform.Position.X - width / 2, (int)Transform.Position.Y - width / 2, width, width, Color.LIGHTGRAY);
-        }
         if (Player == null)
         {
             return;
         }
         Player.DrawSymbol(Transform, TransitionValue);
+    }
+    public void DrawPlaceableIndicator()
+    {
+        int width = 20;
+        Graphics.Draw.Rectangle((int)Transform.Position.X - width / 2, (int)Transform.Position.Y - width / 2, width, width, Color.LIGHTGRAY);
     }
 }

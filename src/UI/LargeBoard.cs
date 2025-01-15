@@ -81,9 +81,9 @@ public class LargeBoard<TGrid, TCell> where TCell : Game.ICell where TGrid : Gam
     public void Draw()
     {
         bool gridCellInTransition = false;
-        for (int i = 0; i < 9; i++)
+        foreach (var board in Boards)
         {
-            gridCellInTransition |= Boards[i].InTransition;
+            gridCellInTransition |= board.InTransition;
         }
         if (Player != null && gridCellInTransition == false)
         {

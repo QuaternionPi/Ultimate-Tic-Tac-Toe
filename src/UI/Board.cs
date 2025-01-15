@@ -111,6 +111,16 @@ public class Board<TCell> where TCell : Game.ICell
         Graphics.Draw.Rectangle(x - lineLength / 2, y - lineWidth / 2 + lineGap / 2, lineLength, lineWidth, color);
         Graphics.Draw.Rectangle(x - lineLength / 2, y - lineWidth / 2 - lineGap / 2, lineLength, lineWidth, color);
     }
+    public void DrawPlaceableIndicator()
+    {
+        foreach (var cell in Cells)
+        {
+            if (cell.Player == null)
+            {
+                cell.DrawPlaceableIndicator();
+            }
+        }
+    }
     public void HandleClickedCell(Cell cell)
     {
         var index = Array.IndexOf(Cells, cell);
