@@ -10,6 +10,9 @@ where TCell : ICell
     {
         Cells = cells.ToArray();
         Debug.Assert(Cells.Length == 9);
+
+        Player = this.Winner();
+        AnyPlaceable = Player == null && Cells.Any((x) => x.Placeable);
         WinningPlayerCell = winningPlayerCell;
     }
     public Grid(Grid<TCell> original, Player.Player player, int index)
@@ -34,13 +37,14 @@ where TCell : ICell
         }
 
         Player = this.Winner();
+        AnyPlaceable = Player == null && Cells.Any((x) => x.Placeable);
         WinningPlayerCell = (TCell)original.WinningPlayerCell.Place(Player);
     }
     [JsonInclude]
     public Transform2D Transform { get; }
     [JsonInclude]
     public Player.Player? Player { get; }
-    public bool AnyPlaceable { get { return Player == null && Cells.Any((x) => x.Placeable); } }
+    public bool AnyPlaceable { get; }
     [JsonInclude]
     //[JsonConverter(typeof(Json.Array2DConverter))]
     public TCell[] Cells { get; }

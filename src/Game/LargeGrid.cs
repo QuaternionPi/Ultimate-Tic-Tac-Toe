@@ -40,6 +40,7 @@ where TCell : ICell
         }
 
         Player = this.Winner();
+        AnyPlaceable = Player == null && Cells.Any((x) => x.AnyPlaceable);
         WinningPlayerCell = (TCell)original.WinningPlayerCell.Place(Player);
         Placeable = new bool[9];
         if (Player != null)
@@ -52,7 +53,6 @@ where TCell : ICell
         }
 
         TGrid nextCell = Cells[innerIndex];
-
         if (nextCell.AnyPlaceable == false || nextCell.Player != null)
         {
             for (int i = 0; i < 9; i++)
@@ -80,7 +80,7 @@ where TCell : ICell
     public Transform2D Transform { get; }
     [JsonInclude]
     public Player.Player? Player { get; }
-    public bool AnyPlaceable { get { return Player == null && Cells.Any((x) => x.AnyPlaceable); } }
+    public bool AnyPlaceable { get; }
     [JsonInclude]
     public TGrid[] Cells { get; }
     public TCell WinningPlayerCell { get; }
