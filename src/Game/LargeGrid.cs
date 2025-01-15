@@ -79,18 +79,7 @@ where TCell : ICell
     public Transform2D Transform { get; }
     [JsonInclude]
     public Player.Player? Player { get; }
-    public bool AnyPlaceable
-    {
-        get
-        {
-            if (Player != null)
-                return false;
-            for (int i = 0; i < 9; i++)
-                if (Cells[i].AnyPlaceable == true)
-                    return true;
-            return false;
-        }
-    }
+    public bool AnyPlaceable { get { return Player == null && Cells.Any((x) => x.AnyPlaceable); } }
     [JsonInclude]
     public TGrid[] Cells { get; }
     public TCell WinningPlayerCell { get; }

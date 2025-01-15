@@ -39,7 +39,7 @@ where TCell : ICell
     public Transform2D Transform { get; }
     [JsonInclude]
     public Player.Player? Player { get; }
-    public bool AnyPlaceable { get { return Cells.Any((x) => x.Player == null); } }
+    public bool AnyPlaceable { get { return Player == null && Cells.Any((x) => x.Player == null); } }
     [JsonInclude]
     //[JsonConverter(typeof(Json.Array2DConverter))]
     public TCell[] Cells { get; }
