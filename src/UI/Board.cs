@@ -4,9 +4,9 @@ namespace UltimateTicTacToe.UI;
 
 public class Board<TCell> where TCell : Game.ICell
 {
-    private Player.Player? Player { get; }
-    private Cell[] Cells { get; }
-    private Cell WinningPlayerCell { get; }
+    public Player.Player? Player { get; }
+    public Cell[] Cells { get; }
+    public Cell WinningPlayerCell { get; }
     public Transform2D Transform { get; }
     public bool InTransition
     {

@@ -6,6 +6,7 @@ public class LargeBoard<TGrid, TCell> where TCell : Game.ICell where TGrid : Gam
 {
     private Player.Player? Player { get; }
     private Board<TCell>[] Boards { get; }
+    private IEnumerable<(int, int)> Moves { get; }
     private Cell WinningPlayerCell { get; }
     public Transform2D Transform { get; }
     public bool InTransition
@@ -62,6 +63,7 @@ public class LargeBoard<TGrid, TCell> where TCell : Game.ICell where TGrid : Gam
         {
             cell.Clicked += HandleClickedCell;
         }
+        Moves = largeBoard.PlayableIndices;
         WinningPlayerCell = new Cell(largeBoard.WinningPlayerCell, new Transform2D(transform.Position, 1, transform.Scale * 4));
     }
     public void Update()
@@ -94,6 +96,10 @@ public class LargeBoard<TGrid, TCell> where TCell : Game.ICell where TGrid : Gam
         for (int i = 0; i < 9; i++)
         {
             Boards[i].Draw();
+        }
+        foreach ((int i, int j) in Moves)
+        {
+            Boards[i].Cells[j].DrawPlaceableIndicator();
         }
     }
     public void DrawGrid()
