@@ -9,5 +9,6 @@ Cells store which player won them and weather or not they are placable
 public interface ICell
 {
     public Player.Player? Player { get; }
+    public bool Placeable { get; }
     public ICell Place(Player.Player? player);
 }

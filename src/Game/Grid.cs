@@ -14,7 +14,7 @@ where TCell : ICell
     }
     public Grid(Grid<TCell> original, Player.Player player, int index)
     {
-        Debug.Assert(original.Cells[index].Player == null, "You Cannot place on that cell");
+        Debug.Assert(original.Cells[index].Placeable, "You Cannot place on that cell");
         Transform = original.Transform;
         Cells = new TCell[9];
 
@@ -40,7 +40,7 @@ where TCell : ICell
     public Transform2D Transform { get; }
     [JsonInclude]
     public Player.Player? Player { get; }
-    public bool AnyPlaceable { get { return Player == null && Cells.Any((x) => x.Player == null); } }
+    public bool AnyPlaceable { get { return Player == null && Cells.Any((x) => x.Placeable); } }
     [JsonInclude]
     //[JsonConverter(typeof(Json.Array2DConverter))]
     public TCell[] Cells { get; }

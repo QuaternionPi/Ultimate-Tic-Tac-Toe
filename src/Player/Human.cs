@@ -20,6 +20,7 @@ public class Human : Player
         if (BoardUI != null)
             BoardUI.Clicked -= HandleClickedBoard;
         Board = null;
+        BoardUI = null;
     }
     public override void Update()
     {
@@ -31,7 +32,7 @@ public class Human : Player
         {
             return;
         }
-        if (!Board.Placeable[index] && Board.Cells[innerIndex].Player == null)
+        if (!Board.Placeable[index] && Board.Cells[innerIndex].AnyPlaceable)
         {
             return;
         }

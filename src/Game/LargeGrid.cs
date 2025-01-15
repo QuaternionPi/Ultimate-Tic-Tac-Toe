@@ -57,7 +57,7 @@ where TCell : ICell
         {
             for (int i = 0; i < 9; i++)
             {
-                if (Cells[i].AnyPlaceable == false || Cells[i].Player != null)
+                if (Cells[i].AnyPlaceable == false)
                 {
                     Placeable[i] = false;
                 }

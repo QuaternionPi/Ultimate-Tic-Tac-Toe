@@ -82,7 +82,7 @@ public partial class Bot : Player
         Player opponent)
     {
         // The base case of the recursion or board is winning position
-        if (depth == 0 || board.Player != null)
+        if (depth == 0 || !board.AnyPlaceable)
         {
             return Evaluate(board, opponent, player);
         }
@@ -141,9 +141,9 @@ public partial class Bot : Player
     {
         int count = 0;
         for (int i = 0; i < 9; i++)
-            if (board.Placeable[i] && board.Cells[i].Player == null)
+            if (board.Placeable[i] && board.Cells[i].AnyPlaceable)
                 for (int k = 0; k < 9; k++)
-                    if (board.Cells[i].Cells[k].Player == null)
+                    if (board.Cells[i].Cells[k].Placeable)
                         count++;
 
         return count;
@@ -154,7 +154,7 @@ public partial class Bot : Player
         for (int i = 0; i < 9; i++)
             if (board.Placeable[i])
                 for (int k = 0; k < 9; k++)
-                    if (board.Cells[i].Cells[k].Player == null)
+                    if (board.Cells[i].Cells[k].Placeable)
                         results.Add((i, k));
         return results;
     }
