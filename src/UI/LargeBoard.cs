@@ -13,7 +13,7 @@ public class LargeBoard<TGrid, TCell> where TCell : Game.ICell where TGrid : Gam
     {
         get
         {
-            return (WinningPlayerCell.Player != null && WinningPlayerCell.InTransition) || Boards.Where((x) => x.Player != null).Any((x) => x.InTransition);
+            return WinningPlayerCell.InTransition || Boards.Any((x) => x.InTransition);
         }
     }
     public float TransitionValue
@@ -34,19 +34,20 @@ public class LargeBoard<TGrid, TCell> where TCell : Game.ICell where TGrid : Gam
         Boards = new Board<TCell>[9];
         Player = largeBoard.Player;
         Transform = transform;
+        Moves = largeBoard.PlayableIndices;
         for (int i = 0; i < 9; i++)
         {
             var board = largeBoard.Grids[i];
             var address = PositionOfIndex(i);
             var position = PixelPosition(transform, (int)address.X, (int)address.Y);
             var cellTransform = new Transform2D(position, 0, 1);
+            var moves = from move in Moves where move.Item1 == i select move.Item2;
             Boards[i] = new Board<TCell>(board, cellTransform);
         }
         foreach (var cell in Boards)
         {
             cell.Clicked += HandleClickedCell;
         }
-        Moves = largeBoard.PlayableIndices;
         WinningPlayerCell = new Cell(largeBoard.WinningPlayerCell, new Transform2D(transform.Position, 1, transform.Scale * 4));
     }
     public void UpdateLargeBoard(Game.ILargeBoard<TGrid, TCell> largeBoard)
@@ -54,8 +55,9 @@ public class LargeBoard<TGrid, TCell> where TCell : Game.ICell where TGrid : Gam
         Player = largeBoard.Player;
         for (int i = 0; i < 9; i++)
         {
+            var moves = from move in Moves where move.Item1 == i select move.Item2;
             var board = largeBoard.Grids[i];
-            Boards[i].UpdateBoard(board);
+            Boards[i].UpdateBoard(board, moves);
         }
         foreach (var cell in Boards)
         {
@@ -70,13 +72,13 @@ public class LargeBoard<TGrid, TCell> where TCell : Game.ICell where TGrid : Gam
         {
             Boards[i].Update();
         }
-        bool gridCellInTransition = Boards.Where((x) => x.Player != null).Any((x) => x.InTransition);
+        bool gridCellInTransition = Boards.Any((x) => x.InTransition);
         if (gridCellInTransition == false)
             WinningPlayerCell.Update();
     }
     public void Draw()
     {
-        bool gridCellInTransition = Boards.Where((x) => x.Player != null).Any((x) => x.InTransition);
+        bool gridCellInTransition = Boards.Any((x) => x.InTransition);
         if (Player != null && gridCellInTransition == false)
         {
             WinningPlayerCell.Draw();
@@ -89,7 +91,7 @@ public class LargeBoard<TGrid, TCell> where TCell : Game.ICell where TGrid : Gam
         }
         foreach ((int i, int j) in Moves)
         {
-            Boards[i].Cells[j].DrawPlaceableIndicator();
+            Boards[i].DrawPlaceableIndicator();
         }
     }
     public void DrawGrid()

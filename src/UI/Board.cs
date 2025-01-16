@@ -1,20 +1,20 @@
 using Raylib_cs;
 using System.Numerics;
-using System.Security.Cryptography.X509Certificates;
 using UltimateTicTacToe.Game;
 namespace UltimateTicTacToe.UI;
 
 public class Board<TCell> where TCell : Game.ICell
 {
     public Player.Player? Player { get; set; }
-    public Cell[] Cells { get; set; }
-    public Cell WinningPlayerCell { get; set; }
-    public Transform2D Transform { get; }
+    private Cell[] Cells { get; set; }
+    private IEnumerable<int> Moves { get; set; }
+    private Cell WinningPlayerCell { get; set; }
+    private Transform2D Transform { get; }
     public bool InTransition
     {
         get
         {
-            return (WinningPlayerCell.Player != null && WinningPlayerCell.InTransition) || Cells.Where((x) => x.Player != null).Any((x) => x.InTransition);
+            return WinningPlayerCell.InTransition || Cells.Any((x) => x.InTransition);
         }
     }
     public float TransitionValue
@@ -30,11 +30,12 @@ public class Board<TCell> where TCell : Game.ICell
         }
     }
     public event Action<Board<TCell>, int>? Clicked;
-    public Board(IBoard<TCell> board, Transform2D transform)
+    public Board(IBoard<TCell> board, Transform2D transform, IEnumerable<int>? moves = null)
     {
         Cells = new Cell[9];
         Player = board.Player;
         Transform = transform;
+        Moves = moves ?? board.PlayableIndices;
         for (int i = 0; i < 9; i++)
         {
             var cell = board.Cells[i];
@@ -49,9 +50,10 @@ public class Board<TCell> where TCell : Game.ICell
         }
         WinningPlayerCell = new Cell(board.WinningPlayerCell, new Transform2D(transform.Position, 0, transform.Scale * 4));
     }
-    public void UpdateBoard(IBoard<TCell> board)
+    public void UpdateBoard(IBoard<TCell> board, IEnumerable<int>? moves = null)
     {
         Player = board.Player;
+        Moves = moves ?? board.PlayableIndices;
         for (int i = 0; i < 9; i++)
         {
             var cell = board.Cells[i];
@@ -69,13 +71,13 @@ public class Board<TCell> where TCell : Game.ICell
         {
             Cells[i].Update();
         }
-        bool gridCellInTransition = Cells.Where((x) => x.Player != null).Any((x) => x.InTransition);
+        bool gridCellInTransition = Cells.Any((x) => x.InTransition);
         if (gridCellInTransition == false)
             WinningPlayerCell.Update();
     }
     public void Draw()
     {
-        bool gridCellInTransition = Cells.Where((x) => x.Player != null).Any((x) => x.InTransition);
+        bool gridCellInTransition = Cells.Any((x) => x.InTransition);
         if (Player != null && gridCellInTransition == false)
         {
             WinningPlayerCell.Draw();
