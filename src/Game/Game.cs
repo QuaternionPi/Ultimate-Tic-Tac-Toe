@@ -4,6 +4,19 @@ using System.Text.Json.Serialization;
 namespace UltimateTicTacToe.Game;
 public class Game : IDrawable, IUpdatable
 {
+    [JsonInclude]
+    private LargeGrid<Grid<Tile>, Tile> Board { get; set; }
+    private UI.LargeBoard<Grid<Tile>, Tile> BoardUI { get; set; }
+    [JsonInclude]
+    public Player.Player ActivePlayer { get; protected set; }
+    [JsonInclude]
+    public Player.Player InactivePlayer { get; protected set; }
+    private bool ChangePlayer;
+    [JsonInclude]
+    private UI.BannerController BannerController { get; set; }
+    [JsonInclude]
+    public int TurnNumber { get; protected set; }
+    public event Action<Game, Player.Player>? GameOver;
     public Game(Player.Player active, Player.Player inactive, LargeGrid<Grid<Tile>, Tile> board)
     {
         Board = board;
@@ -21,20 +34,6 @@ public class Game : IDrawable, IUpdatable
         Thread thread = new(() => DelayedPlayerStart(delay));
         thread.Start();
     }
-    [JsonInclude]
-    public LargeGrid<Grid<Tile>, Tile> Board { get; protected set; }
-    public UI.LargeBoard<Grid<Tile>, Tile> BoardUI { get; protected set; }
-    [JsonInclude]
-    public Player.Player ActivePlayer { get; protected set; }
-    [JsonInclude]
-    public Player.Player InactivePlayer { get; protected set; }
-    protected bool ChangePlayer;
-    [JsonInclude]
-    public UI.BannerController BannerController { get; protected set; }
-    [JsonInclude]
-    public int TurnNumber { get; protected set; }
-    public delegate void GameOverDel(Game sender, Player.Player? winner);
-    public event GameOverDel? GameOver;
     protected void NextPlayer()
     {
         Player.Player temp;

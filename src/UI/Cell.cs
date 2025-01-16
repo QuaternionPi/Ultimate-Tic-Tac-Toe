@@ -5,7 +5,7 @@ namespace UltimateTicTacToe.UI;
 
 public class Cell
 {
-    public Player.Player? Player { get; set; }
+    private Player.Player? Player { get; set; }
     private Transform2D Transform { get; }
     public bool InTransition { get { return TransitionValue != 0; } }
     public float TransitionValue { get; protected set; }

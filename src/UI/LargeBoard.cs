@@ -8,7 +8,7 @@ public class LargeBoard<TGrid, TCell> where TCell : Game.ICell where TGrid : Gam
     private Board<TCell>[] Boards { get; set; }
     private IEnumerable<(int, int)> Moves { get; set; }
     private Cell WinningPlayerCell { get; set; }
-    public Transform2D Transform { get; }
+    private Transform2D Transform { get; }
     public bool InTransition
     {
         get
