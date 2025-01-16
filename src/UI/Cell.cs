@@ -1,10 +1,11 @@
 using System.Numerics;
 using Raylib_cs;
+using UltimateTicTacToe.Game;
 namespace UltimateTicTacToe.UI;
 
 public class Cell
 {
-    public Player.Player? Player { get; }
+    public Player.Player? Player { get; set; }
     public Transform2D Transform { get; }
     public bool InTransition { get { return TransitionValue != 0; } }
     public float TransitionValue { get; protected set; }
@@ -21,9 +22,14 @@ public class Cell
         Transform = transform;
         TransitionValue = transitionValue;
     }
+    public void UpdateCell(ICell cell)
+    {
+        Player = cell.Player;
+    }
     public void Update()
     {
-        TransitionValue = Math.Max(0, TransitionValue - 0.07f / MathF.Sqrt(Transform.Scale));
+        if (Player != null)
+            TransitionValue = Math.Max(0, TransitionValue - 0.07f / MathF.Sqrt(Transform.Scale));
         bool leftMouse = Mouse.IsMouseButtonReleased(0);
         Vector2 mousePosition = Mouse.GetMousePosition();
         Rectangle rectangle = new Rectangle(Transform.Position.X - 25, Transform.Position.Y - 25, 50, 50);

@@ -56,10 +56,8 @@ public class Game : IDrawable, IUpdatable
             Console.WriteLine($"Not player {player}'s turn");
             return;
         }
-        var position = new Vector2(450, 350);
-        var transform = new Transform2D(position, 0, 4);
         Board = (LargeGrid<Grid<Tile>, Tile>)Board.Place(ActivePlayer, index, innerIndex);
-        BoardUI = new UI.LargeBoard<Grid<Tile>, Tile>(Board, transform);
+        BoardUI.UpdateLargeBoard(Board);
         ChangePlayer = true;
     }
     protected void DelayedPlayerStart(TimeSpan delay)
@@ -82,7 +80,7 @@ public class Game : IDrawable, IUpdatable
         }
         ActivePlayer.Update();
         // Board currently in a transition
-        if (BoardUI.TransitionValue != 0)
+        if (BoardUI.InTransition)
         {
             return;
         }

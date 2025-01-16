@@ -1,62 +1,47 @@
 using Raylib_cs;
 using System.Numerics;
+using System.Security.Cryptography.X509Certificates;
+using UltimateTicTacToe.Game;
 namespace UltimateTicTacToe.UI;
 
 public class Board<TCell> where TCell : Game.ICell
 {
-    public Player.Player? Player { get; }
-    public Cell[] Cells { get; }
-    public Cell WinningPlayerCell { get; }
+    public Player.Player? Player { get; set; }
+    public Cell[] Cells { get; set; }
+    public Cell WinningPlayerCell { get; set; }
     public Transform2D Transform { get; }
     public bool InTransition
     {
         get
         {
-            if (WinningPlayerCell.InTransition)
-            {
-                return true;
-            }
-            for (int i = 0; i < 9; i++)
-            {
-                if (Cells[i].InTransition)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return (WinningPlayerCell.Player != null && WinningPlayerCell.InTransition) || Cells.Where((x) => x.Player != null).Any((x) => x.InTransition);
         }
     }
     public float TransitionValue
     {
         get
         {
-            var values = new float[9];
+            float max = WinningPlayerCell.TransitionValue;
             for (int i = 0; i < 9; i++)
             {
-                values[i] = Cells[i].TransitionValue;
+                max = Math.Max(Cells[i].TransitionValue, max);
             }
-            float max = values[0];
-            foreach (var value in values)
-            {
-                max = Math.Max(value, max);
-            }
-            max = Math.Max(max, WinningPlayerCell.TransitionValue);
             return max;
         }
     }
     public event Action<Board<TCell>, int>? Clicked;
-    public Board(Game.IBoard<TCell> board, Transform2D transform)
+    public Board(IBoard<TCell> board, Transform2D transform)
     {
         Cells = new Cell[9];
         Player = board.Player;
         Transform = transform;
         for (int i = 0; i < 9; i++)
         {
-            var boardCell = board.Cells[i];
+            var cell = board.Cells[i];
             var address = PositionOfIndex(i);
             var position = PixelPosition(transform, (int)address.X, (int)address.Y);
             var cellTransform = new Transform2D(position, 0, 1);
-            Cells[i] = new Cell(boardCell, cellTransform);
+            Cells[i] = new Cell(cell, cellTransform);
         }
         foreach (var cell in Cells)
         {
@@ -64,27 +49,33 @@ public class Board<TCell> where TCell : Game.ICell
         }
         WinningPlayerCell = new Cell(board.WinningPlayerCell, new Transform2D(transform.Position, 0, transform.Scale * 4));
     }
+    public void UpdateBoard(IBoard<TCell> board)
+    {
+        Player = board.Player;
+        for (int i = 0; i < 9; i++)
+        {
+            var cell = board.Cells[i];
+            Cells[i].UpdateCell(cell);
+        }
+        foreach (var cell in Cells)
+        {
+            cell.Clicked += HandleClickedCell;
+        }
+        WinningPlayerCell.UpdateCell(board.WinningPlayerCell);
+    }
     public void Update()
     {
         for (int i = 0; i < 9; i++)
         {
             Cells[i].Update();
         }
-        bool gridCellInTransition = false;
-        for (int i = 0; i < 9; i++)
-        {
-            gridCellInTransition |= Cells[i].InTransition;
-        }
+        bool gridCellInTransition = Cells.Where((x) => x.Player != null).Any((x) => x.InTransition);
         if (gridCellInTransition == false)
             WinningPlayerCell.Update();
     }
     public void Draw()
     {
-        bool gridCellInTransition = false;
-        for (int i = 0; i < 9; i++)
-        {
-            gridCellInTransition |= Cells[i].InTransition;
-        }
+        bool gridCellInTransition = Cells.Where((x) => x.Player != null).Any((x) => x.InTransition);
         if (Player != null && gridCellInTransition == false)
         {
             WinningPlayerCell.Draw();

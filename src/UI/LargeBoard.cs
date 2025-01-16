@@ -4,44 +4,27 @@ namespace UltimateTicTacToe.UI;
 
 public class LargeBoard<TGrid, TCell> where TCell : Game.ICell where TGrid : Game.IBoard<TCell>
 {
-    private Player.Player? Player { get; }
-    private Board<TCell>[] Boards { get; }
-    private IEnumerable<(int, int)> Moves { get; }
-    private Cell WinningPlayerCell { get; }
+    private Player.Player? Player { get; set; }
+    private Board<TCell>[] Boards { get; set; }
+    private IEnumerable<(int, int)> Moves { get; set; }
+    private Cell WinningPlayerCell { get; set; }
     public Transform2D Transform { get; }
     public bool InTransition
     {
         get
         {
-            if (WinningPlayerCell.InTransition)
-            {
-                return true;
-            }
-            for (int i = 0; i < 9; i++)
-            {
-                if (Boards[i].InTransition)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return (WinningPlayerCell.Player != null && WinningPlayerCell.InTransition) || Boards.Where((x) => x.Player != null).Any((x) => x.InTransition);
         }
     }
     public float TransitionValue
     {
         get
         {
-            var values = new float[9];
+            float max = WinningPlayerCell.TransitionValue;
             for (int i = 0; i < 9; i++)
             {
-                values[i] = Boards[i].TransitionValue;
+                max = Math.Max(max, Boards[i].TransitionValue);
             }
-            float max = values[0];
-            foreach (var value in values)
-            {
-                max = Math.Max(value, max);
-            }
-            max = Math.Max(max, WinningPlayerCell.TransitionValue);
             return max;
         }
     }
@@ -66,27 +49,34 @@ public class LargeBoard<TGrid, TCell> where TCell : Game.ICell where TGrid : Gam
         Moves = largeBoard.PlayableIndices;
         WinningPlayerCell = new Cell(largeBoard.WinningPlayerCell, new Transform2D(transform.Position, 1, transform.Scale * 4));
     }
+    public void UpdateLargeBoard(Game.ILargeBoard<TGrid, TCell> largeBoard)
+    {
+        Player = largeBoard.Player;
+        for (int i = 0; i < 9; i++)
+        {
+            var board = largeBoard.Grids[i];
+            Boards[i].UpdateBoard(board);
+        }
+        foreach (var cell in Boards)
+        {
+            cell.Clicked += HandleClickedCell;
+        }
+        Moves = largeBoard.PlayableIndices;
+        WinningPlayerCell.UpdateCell(largeBoard.WinningPlayerCell);
+    }
     public void Update()
     {
         for (int i = 0; i < 9; i++)
         {
             Boards[i].Update();
         }
-        bool gridCellInTransition = false;
-        for (int i = 0; i < 9; i++)
-        {
-            gridCellInTransition |= Boards[i].InTransition;
-        }
+        bool gridCellInTransition = Boards.Where((x) => x.Player != null).Any((x) => x.InTransition);
         if (gridCellInTransition == false)
             WinningPlayerCell.Update();
     }
     public void Draw()
     {
-        bool gridCellInTransition = false;
-        foreach (var board in Boards)
-        {
-            gridCellInTransition |= board.InTransition;
-        }
+        bool gridCellInTransition = Boards.Where((x) => x.Player != null).Any((x) => x.InTransition);
         if (Player != null && gridCellInTransition == false)
         {
             WinningPlayerCell.Draw();
