@@ -51,6 +51,7 @@ public class Cell
     }
     public void DrawPlaceableIndicator()
     {
-        Graphics.Draw.RectangleRec(PlacementIndicator, Color.LIGHTGRAY);
+        if (Player == null)
+            Graphics.Draw.RectangleRec(PlacementIndicator, Color.LIGHTGRAY);
     }
 }

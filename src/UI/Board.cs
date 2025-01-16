@@ -5,7 +5,7 @@ namespace UltimateTicTacToe.UI;
 
 public class Board<TCell> where TCell : Game.ICell
 {
-    public Player.Player? Player { get; set; }
+    private Player.Player? Player { get; set; }
     private Cell[] Cells { get; set; }
     private IEnumerable<int> Moves { get; set; }
     private Cell WinningPlayerCell { get; set; }
@@ -108,10 +108,7 @@ public class Board<TCell> where TCell : Game.ICell
     {
         foreach (var cell in Cells)
         {
-            if (cell.Player == null)
-            {
-                cell.DrawPlaceableIndicator();
-            }
+            cell.DrawPlaceableIndicator();
         }
     }
     public void HandleClickedCell(Cell cell)
