@@ -1,7 +1,6 @@
 using System.Numerics;
 using Raylib_cs;
 using UltimateTicTacToe.Game;
-using UltimateTicTacToe.Game;
 
 namespace UltimateTicTacToe.UI.ProgramMode;
 public class Setup : IProgramMode
@@ -9,13 +8,13 @@ public class Setup : IProgramMode
     public Setup(IProgramMode? previous = null)
     {
         Previous = previous;
-        Player1 = new Human(Game.Player.Symbol.X, Color.RED, 0);
-        Player2 = new Human(Game.Player.Symbol.O, Color.BLUE, 0);
+        Player1 = new Human(Player.Symbol.X, Color.RED, 0);
+        Player2 = new Human(Player.Symbol.O, Color.BLUE, 0);
         UI = new BannerController(Player1, Player2);
         UI.Activate(Player1);
         UI.Activate(Player2);
 
-        var colors = Game.Player.AllowedColors;
+        var colors = Player.AllowedColors;
         RightColorPicker = new ColorPicker(new Transform2D(new Vector2(900 - 135, 270)), colors, 3);
         LeftColorPicker = new ColorPicker(new Transform2D(new Vector2(35, 270)), colors, 3);
 
@@ -66,8 +65,8 @@ public class Setup : IProgramMode
     protected BannerController UI { get; }
     protected ColorPicker RightColorPicker { get; }
     protected ColorPicker LeftColorPicker { get; }
-    protected Game.Player Player1;
-    protected Game.Player Player2;
+    protected Player Player1;
+    protected Player Player2;
     protected string Player1Type;
     protected string Player2Type;
     public void Draw()
@@ -85,17 +84,21 @@ public class Setup : IProgramMode
     }
     protected void SetupGame()
     {
-        Game.Player player1;
-        Game.Player player2;
+        var centre = new BoardEvaluator(80, 20, 40, 100);
+        var edge = new BoardEvaluator(20, 5, 10, 25);
+        var corner = new BoardEvaluator(40, 10, 20, 50);
+        var evaluator = new LargeBoardEvaluator(centre, edge, corner, 1000);
+        Player player1;
+        Player player2;
         if (Player1Type == "Human")
             player1 = new Human(Player1.Shape, Player1.Color, 0);
         else
-            player1 = new Bot(Player1.Shape, Player1.Color, 0);
+            player1 = new Bot(evaluator.Evaluate, Player1.Shape, Player1.Color, 0);
 
         if (Player2Type == "Human")
             player2 = new Human(Player2.Shape, Player2.Color, 0);
         else
-            player2 = new Bot(Player2.Shape, Player2.Color, 0);
+            player2 = new Bot(evaluator.Evaluate, Player2.Shape, Player2.Color, 0);
 
 
         var position = new Vector2(450, 350);

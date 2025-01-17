@@ -4,8 +4,10 @@ using Raylib_cs;
 namespace UltimateTicTacToe.Game;
 public class Bot : Player
 {
-    public Bot(Symbol symbol, Color color, int score) : base(symbol, color, score)
+    private Func<LargeGrid<Grid<Tile>, Tile>, Player, Player, float> Evaluate { get; }
+    public Bot(Func<LargeGrid<Grid<Tile>, Tile>, Player, Player, float> evaluate, Symbol symbol, Color color, int score) : base(symbol, color, score)
     {
+        Evaluate = evaluate;
     }
     public override void BeginTurn(LargeGrid<Grid<Tile>, Tile> board, UI.LargeBoard<Grid<Tile>, Tile> largeBoard, Player opponent)
     {
@@ -21,7 +23,7 @@ public class Bot : Player
     {
 
     }
-    protected static (int, int) BestMove(
+    protected (int, int) BestMove(
         LargeGrid<Grid<Tile>, Tile> board,
         IEnumerable<(int, int)> moves,
         Player player,
@@ -29,8 +31,8 @@ public class Bot : Player
         )
     {
         Debug.Assert(moves.Any() != false, "Cannot choose best move from no moves");
-        int alpha = -100000;
-        int beta = 100000;
+        float alpha = -100000;
+        float beta = 100000;
         int depth;
         if (moves.Count() < 7)
         {
@@ -59,7 +61,7 @@ public class Bot : Player
                     opponent,
                     player));
 
-        int minEvaluation = 10000;
+        float minEvaluation = 10000;
         (int, int) bestMove = moves.First();
 
         foreach (var (move, evaluation) in evaluatedMoves)
@@ -72,11 +74,11 @@ public class Bot : Player
         }
         return bestMove;
     }
-    protected static int Minimax(
+    protected float Minimax(
         LargeGrid<Grid<Tile>, Tile> board,
-        int depth,
-        int alpha,
-        int beta,
+        float depth,
+        float alpha,
+        float beta,
         Player player,
         Player opponent)
     {
@@ -87,7 +89,7 @@ public class Bot : Player
         }
 
         var possibleMoves = board.PlayableIndices;
-        int minEvaluation = 10000;
+        float minEvaluation = 10000;
         foreach (var move in possibleMoves)
         {
             var placedBoard = (LargeGrid<Grid<Tile>, Tile>)board.Place(player, move.Item1, move.Item2);
@@ -98,43 +100,6 @@ public class Bot : Player
                 break;
         }
         return minEvaluation;
-    }
-    protected static int Award<T>(int amount, T? compare, T positive, T negative) where T : class
-    {
-        if (positive.Equals(compare))
-            return amount;
-        if (negative.Equals(compare))
-            return -amount;
-        return 0;
-    }
-    protected static int Evaluate(LargeGrid<Grid<Tile>, Tile> board, Player player, Player opponent)
-    {
-        if (board.Player == player)
-        {
-            return 1000;
-        }
-        else if (board.Player == opponent)
-        {
-            return -1000;
-        }
-        int evaluation = 0;
-        evaluation -= board.PlayableIndices.Count();
-        for (int i = 0; i < 9; i++)
-        {
-            var grid = board.Grids[i];
-            evaluation += Award(100, grid.Player, player, opponent);
-            evaluation += Award(10, grid.Cells[4].Player, player, opponent);
-            evaluation += Award(5, grid.Cells[0].Player, player, opponent);
-            evaluation += Award(5, grid.Cells[2].Player, player, opponent);
-            evaluation += Award(5, grid.Cells[6].Player, player, opponent);
-            evaluation += Award(5, grid.Cells[8].Player, player, opponent);
-        }
-        evaluation += Award(50, board.Grids[4].Player, player, opponent);
-        evaluation += Award(25, board.Grids[0].Player, player, opponent);
-        evaluation += Award(25, board.Grids[2].Player, player, opponent);
-        evaluation += Award(25, board.Grids[6].Player, player, opponent);
-        evaluation += Award(25, board.Grids[8].Player, player, opponent);
-        return evaluation;
     }
     protected void MakeMove(LargeGrid<Grid<Tile>, Tile> board, int index, int innerIndex)
     {
