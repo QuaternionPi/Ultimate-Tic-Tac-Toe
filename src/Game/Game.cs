@@ -8,16 +8,16 @@ public class Game : IDrawable, IUpdatable
     private LargeGrid<Grid<Tile>, Tile> Board { get; set; }
     private UI.LargeBoard<Grid<Tile>, Tile> BoardUI { get; set; }
     [JsonInclude]
-    public Player.Player ActivePlayer { get; protected set; }
+    public Player ActivePlayer { get; protected set; }
     [JsonInclude]
-    public Player.Player InactivePlayer { get; protected set; }
+    public Player InactivePlayer { get; protected set; }
     private bool ChangePlayer;
     [JsonInclude]
     private UI.BannerController BannerController { get; set; }
     [JsonInclude]
     public int TurnNumber { get; protected set; }
-    public event Action<Game, Player.Player>? GameOver;
-    public Game(Player.Player active, Player.Player inactive, LargeGrid<Grid<Tile>, Tile> board)
+    public event Action<Game, Player?>? GameOver;
+    public Game(Player active, Player inactive, LargeGrid<Grid<Tile>, Tile> board)
     {
         Board = board;
         var position = new Vector2(450, 350);
@@ -36,7 +36,7 @@ public class Game : IDrawable, IUpdatable
     }
     protected void NextPlayer()
     {
-        Player.Player temp;
+        Player temp;
         ActivePlayer.EndTurn();
 
         temp = ActivePlayer;
@@ -48,7 +48,7 @@ public class Game : IDrawable, IUpdatable
         thread.Start();
         TurnNumber++;
     }
-    protected void HandlePlayerTurn(Player.Player player, ILargeBoard<Grid<Tile>, Tile> board, int index, int innerIndex)
+    protected void HandlePlayerTurn(Player player, ILargeBoard<Grid<Tile>, Tile> board, int index, int innerIndex)
     {
         if (player != ActivePlayer)
         {

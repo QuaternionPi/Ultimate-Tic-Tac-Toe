@@ -1,10 +1,9 @@
 using System.Numerics;
 using System.Text.Json.Serialization;
 using Raylib_cs;
-using UltimateTicTacToe.Game;
 using UltimateTicTacToe.UI;
 
-namespace UltimateTicTacToe.Player;
+namespace UltimateTicTacToe.Game;
 public abstract class Player : IUpdatable
 {
     public static readonly Color[] AllowedColors = [

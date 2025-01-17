@@ -14,7 +14,7 @@ where TCell : ICell
     public TGrid[] Grids { get; }
     public TCell WinningPlayerCell { get; }
     [JsonInclude]
-    public Player.Player? Player { get; }
+    public Player? Player { get; }
     public bool AnyPlaceable { get; }
     public IEnumerable<(int, int)> PlayableIndices { get; }
     public LargeGrid(IEnumerable<TGrid> grids, TCell winningPlayerCell)
@@ -36,7 +36,7 @@ where TCell : ICell
 
         WinningPlayerCell = winningPlayerCell;
     }
-    public LargeGrid(LargeGrid<TGrid, TCell> original, Player.Player player, int index, int innerIndex)
+    public LargeGrid(LargeGrid<TGrid, TCell> original, Player player, int index, int innerIndex)
     {
         Debug.Assert(original.Placeable[index], "You Cannot place on that cell");
         Transform = original.Transform;
@@ -74,7 +74,7 @@ where TCell : ICell
 
         WinningPlayerCell = (TCell)original.WinningPlayerCell.Place(Player);
     }
-    public ILargeBoard<TGrid, TCell> Place(Player.Player player, int index, int innerIndex)
+    public ILargeBoard<TGrid, TCell> Place(Player player, int index, int innerIndex)
     {
         return new LargeGrid<TGrid, TCell>(this, player, index, innerIndex);
     }

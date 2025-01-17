@@ -8,7 +8,7 @@ Cells store which player won them and weather or not they are placable
 //[JsonDerivedType(typeof(Game.Grid<Game.Grid<Game.Tile>>), 3)]
 public interface ICell
 {
-    public Player.Player? Player { get; }
+    public Player? Player { get; }
     public bool Placeable { get; }
-    public ICell Place(Player.Player? player);
+    public ICell Place(Player? player);
 }

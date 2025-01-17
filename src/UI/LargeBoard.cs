@@ -4,7 +4,7 @@ namespace UltimateTicTacToe.UI;
 
 public class LargeBoard<TGrid, TCell> where TCell : Game.ICell where TGrid : Game.IBoard<TCell>
 {
-    private Player.Player? Player { get; set; }
+    private Game.Player? Player { get; set; }
     private Board<TCell>[] Boards { get; set; }
     private IEnumerable<(int, int)> Moves { get; set; }
     private Cell WinningPlayerCell { get; set; }

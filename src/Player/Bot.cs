@@ -1,9 +1,8 @@
 using System.Diagnostics;
-using UltimateTicTacToe.Game;
 using Raylib_cs;
 
-namespace UltimateTicTacToe.Player;
-public partial class Bot : Player
+namespace UltimateTicTacToe.Game;
+public class Bot : Player
 {
     public Bot(Symbol symbol, Color color, int score) : base(symbol, color, score)
     {

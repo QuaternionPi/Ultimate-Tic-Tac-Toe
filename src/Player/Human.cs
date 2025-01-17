@@ -1,7 +1,6 @@
 using Raylib_cs;
-using UltimateTicTacToe.Game;
 
-namespace UltimateTicTacToe.Player;
+namespace UltimateTicTacToe.Game;
 public class Human : Player
 {
     private UI.LargeBoard<Grid<Tile>, Tile>? BoardUI { get; set; }

@@ -6,10 +6,10 @@ public interface ILargeBoard<TGrid, TCell> where TCell : ICell where TGrid : IBo
 {
     public TGrid[] Grids { get; }
     public TCell WinningPlayerCell { get; }
-    public Player.Player? Player { get; }
+    public Player? Player { get; }
     public bool AnyPlaceable { get; }
     public IEnumerable<(int, int)> PlayableIndices { get; }
-    public ILargeBoard<TGrid, TCell> Place(Player.Player player, int index, int innerIndex);
+    public ILargeBoard<TGrid, TCell> Place(Player player, int index, int innerIndex);
 }
 public static class LargeBoardExtensions
 {
@@ -17,23 +17,23 @@ public static class LargeBoardExtensions
     {
         bool hasWinner = false;
 
-        Player.Player?[] cellWinners = new Player.Player?[9];
+        Player?[] cellWinners = new Player?[9];
         for (int i = 0; i < 9; i++)
         {
             cellWinners[i] = board.Grids[i]?.Player;
         }
 
-        Player.Player? topLeft = cellWinners[0];
-        Player.Player? topCenter = cellWinners[1];
-        Player.Player? topRight = cellWinners[2];
+        Player? topLeft = cellWinners[0];
+        Player? topCenter = cellWinners[1];
+        Player? topRight = cellWinners[2];
 
-        Player.Player? leftCenter = cellWinners[3];
-        Player.Player? trueCenter = cellWinners[4];
-        Player.Player? rightCenter = cellWinners[5];
+        Player? leftCenter = cellWinners[3];
+        Player? trueCenter = cellWinners[4];
+        Player? rightCenter = cellWinners[5];
 
-        Player.Player? bottomLeft = cellWinners[6];
-        Player.Player? bottomCenter = cellWinners[7];
-        Player.Player? bottomRight = cellWinners[8];
+        Player? bottomLeft = cellWinners[6];
+        Player? bottomCenter = cellWinners[7];
+        Player? bottomRight = cellWinners[8];
 
         // Diagonals
         hasWinner |= trueCenter != null
@@ -70,30 +70,30 @@ public static class LargeBoardExtensions
             && rightCenter == bottomRight;
         return hasWinner;
     }
-    public static Player.Player? Winner<TGrid, TCell>(this ILargeBoard<TGrid, TCell> board) where TCell : ICell where TGrid : IBoard<TCell>
+    public static Player? Winner<TGrid, TCell>(this ILargeBoard<TGrid, TCell> board) where TCell : ICell where TGrid : IBoard<TCell>
     {
         if (board.HasWinner() == false)
         {
             return null;
         }
 
-        Player.Player?[] cellWinners = new Player.Player?[9];
+        Player?[] cellWinners = new Player?[9];
         for (int i = 0; i < 9; i++)
         {
             cellWinners[i] = board.Grids[i]?.Player;
         }
 
-        Player.Player? topLeft = cellWinners[0];
-        Player.Player? topCenter = cellWinners[1];
-        Player.Player? topRight = cellWinners[2];
+        Player? topLeft = cellWinners[0];
+        Player? topCenter = cellWinners[1];
+        Player? topRight = cellWinners[2];
 
-        Player.Player? leftCenter = cellWinners[3];
-        Player.Player? trueCenter = cellWinners[4];
-        Player.Player? rightCenter = cellWinners[5];
+        Player? leftCenter = cellWinners[3];
+        Player? trueCenter = cellWinners[4];
+        Player? rightCenter = cellWinners[5];
 
-        Player.Player? bottomLeft = cellWinners[6];
-        Player.Player? bottomCenter = cellWinners[7];
-        Player.Player? bottomRight = cellWinners[8];
+        Player? bottomLeft = cellWinners[6];
+        Player? bottomCenter = cellWinners[7];
+        Player? bottomRight = cellWinners[8];
 
         if (trueCenter != null)
         {
