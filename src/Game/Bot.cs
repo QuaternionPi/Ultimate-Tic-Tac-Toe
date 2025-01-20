@@ -31,47 +31,27 @@ public class Bot : Player
         )
     {
         Debug.Assert(moves.Any() != false, "Cannot choose best move from no moves");
-        float alpha = -100000;
-        float beta = 100000;
-        int depth;
-        if (moves.Count() < 7)
-        {
-            depth = 6;
-        }
-        else if (moves.Count() < 30)
-        {
-            depth = 5;
-        }
-        else
-        {
-            depth = 4;
-        }
+        float alpha = float.NegativeInfinity;
+        float beta = float.PositiveInfinity;
+        int depth = moves.Count() < 7 ? 6 : moves.Count() < 30 ? 5 : 4;
 
         var evaluatedMoves =
             from move in moves.AsParallel()
-            select (move,
-                -Minimax(
-                    (LargeGrid<Grid<Tile>, Tile>)board.Place(
+            let placedBoard = (LargeGrid<Grid<Tile>, Tile>)board.Place(
                         player,
                         move.Item1,
-                        move.Item2),
+                        move.Item2)
+            let score = Minimax(
+                    placedBoard,
                     depth,
                     -beta,
                     -alpha,
                     opponent,
-                    player));
+                    player)
+            orderby score descending
+            select (move, score);
 
-        float minEvaluation = 10000;
-        (int, int) bestMove = moves.First();
-
-        foreach (var (move, evaluation) in evaluatedMoves)
-        {
-            if (minEvaluation > evaluation)
-            {
-                minEvaluation = evaluation;
-                bestMove = move;
-            }
-        }
+        var bestMove = evaluatedMoves.First().move;
         return bestMove;
     }
     protected float Minimax(
@@ -89,7 +69,7 @@ public class Bot : Player
         }
 
         var possibleMoves = board.PlayableIndices;
-        float minEvaluation = 10000;
+        float minEvaluation = float.PositiveInfinity;
         foreach (var move in possibleMoves)
         {
             var placedBoard = (LargeGrid<Grid<Tile>, Tile>)board.Place(player, move.Item1, move.Item2);
