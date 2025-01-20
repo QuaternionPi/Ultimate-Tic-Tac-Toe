@@ -4,8 +4,10 @@ namespace UltimateTicTacToe.Game;
 public class Human : Player
 {
     private UI.LargeBoard<Grid<Tile>, Tile>? BoardUI { get; set; }
+    private bool MoveMade { get; set; }
     public Human(Symbol symbol, Color color, int score) : base(symbol, color, score)
     {
+        MoveMade = false;
     }
     protected LargeGrid<Grid<Tile>, Tile>? Board;
     public override void BeginTurn(LargeGrid<Grid<Tile>, Tile> board, UI.LargeBoard<Grid<Tile>, Tile> boardUI, Player opponent)
@@ -20,6 +22,7 @@ public class Human : Player
             BoardUI.Clicked -= HandleClickedBoard;
         Board = null;
         BoardUI = null;
+        MoveMade = false;
     }
     public override void Update()
     {
@@ -31,10 +34,12 @@ public class Human : Player
         {
             return;
         }
-        if (!Board.Placeable[index] && Board.Grids[innerIndex].AnyPlaceable)
+        bool placeable = Board.Placeable[index] && Board.Grids[index].AnyPlaceable;
+        if (!placeable || MoveMade)
         {
             return;
         }
+        MoveMade = true;
         InvokePlayTurn(this, Board, index, innerIndex);
     }
 }

@@ -88,6 +88,7 @@ public class Game : IDrawable, IUpdatable
         {
             ActivePlayer.PlayTurn -= HandlePlayerTurn;
             InactivePlayer.PlayTurn -= HandlePlayerTurn;
+            ActivePlayer.EndTurn();
             GameOver?.Invoke(this, Board.Player);
             return;
         }
