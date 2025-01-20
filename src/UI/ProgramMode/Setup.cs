@@ -105,8 +105,8 @@ public class Setup : IProgramMode
         var transform = new Transform2D(position, 0, 4);
         LargeGrid<Grid<Tile>, Tile> board = EmptyBoard();
 
-
-        IProgramMode mode = new PlayGame(this, player1, player2, EmptyBoard);
+        var turnDelay = new TimeSpan(0, 0, 0, 0, 300);
+        IProgramMode mode = new PlayGame(this, player1, player2, turnDelay, EmptyBoard);
         SwitchTo?.Invoke(this, mode);
     }
     protected LargeGrid<Grid<Tile>, Tile> EmptyBoard()

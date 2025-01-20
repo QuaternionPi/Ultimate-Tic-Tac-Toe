@@ -5,14 +5,6 @@ using UltimateTicTacToe.Game;
 namespace UltimateTicTacToe.UI.ProgramMode;
 public class PlayGame : IProgramMode
 {
-    public PlayGame(IProgramMode? previous, Game.Player player1, Game.Player player2, Func<LargeGrid<Grid<Tile>, Tile>> newBoard)
-    {
-        Previous = previous;
-        NewBoard = newBoard;
-        var board = newBoard();
-        _game = new Game.Game(player1, player2, board);
-        Game.GameOver += GameOver;
-    }
     public bool InTransition { get; }
     public float TransitionValue { get; }
     public event Action<IProgramMode, IProgramMode>? SwitchTo;
@@ -21,10 +13,7 @@ public class PlayGame : IProgramMode
     private Func<LargeGrid<Grid<Tile>, Tile>> NewBoard;
     protected Game.Game Game
     {
-        get
-        {
-            return _game;
-        }
+        get { return _game; }
         set
         {
             Game.GameOver -= GameOver;
@@ -32,14 +21,24 @@ public class PlayGame : IProgramMode
             Game.GameOver += GameOver;
         }
     }
-    protected void GameOver(Game.Game sender, Game.Player? winner)
+    private TimeSpan TurnDelay { get; }
+    public PlayGame(IProgramMode? previous, Player player1, Player player2, TimeSpan turnDelay, Func<LargeGrid<Grid<Tile>, Tile>> newBoard)
+    {
+        Previous = previous;
+        NewBoard = newBoard;
+        var board = newBoard();
+        TurnDelay = turnDelay;
+        _game = new Game.Game(player1, player2, board, TurnDelay);
+        Game.GameOver += GameOver;
+    }
+    protected void GameOver(Game.Game sender, Player? winner)
     {
         if (winner != null)
         {
             winner.Score += 1;
         }
         var board = NewBoard();
-        Game = new Game.Game(sender.InactivePlayer, sender.ActivePlayer, board);
+        Game = new Game.Game(sender.InactivePlayer, sender.ActivePlayer, board, TurnDelay);
     }
     public void Draw()
     {

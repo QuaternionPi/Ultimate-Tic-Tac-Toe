@@ -16,8 +16,9 @@ public class Game : IDrawable, IUpdatable
     private UI.BannerController BannerController { get; set; }
     [JsonInclude]
     public int TurnNumber { get; protected set; }
+    private TimeSpan TurnDelay { get; set; }
     public event Action<Game, Player?>? GameOver;
-    public Game(Player active, Player inactive, LargeGrid<Grid<Tile>, Tile> board)
+    public Game(Player active, Player inactive, LargeGrid<Grid<Tile>, Tile> board, TimeSpan turnDelay)
     {
         Board = board;
         var position = new Vector2(450, 350);
@@ -29,10 +30,8 @@ public class Game : IDrawable, IUpdatable
         InactivePlayer.PlayTurn += HandlePlayerTurn;
         BannerController = new UI.BannerController(active, inactive);
 
-
-        TimeSpan delay = new(0, 0, 0, 0, 300);
-        Thread thread = new(() => DelayedPlayerStart(delay));
-        thread.Start();
+        TurnDelay = turnDelay;
+        DelayedPlayerStart();
     }
     protected void NextPlayer()
     {
@@ -43,9 +42,7 @@ public class Game : IDrawable, IUpdatable
         ActivePlayer = InactivePlayer;
         InactivePlayer = temp;
 
-        TimeSpan delay = new(0, 0, 0, 0, 100);
-        Thread thread = new(() => DelayedPlayerStart(delay));
-        thread.Start();
+        DelayedPlayerStart();
         TurnNumber++;
     }
     protected void HandlePlayerTurn(Player player, ILargeBoard<Grid<Tile>, Tile> board, int index, int innerIndex)
@@ -59,10 +56,13 @@ public class Game : IDrawable, IUpdatable
         BoardUI.UpdateLargeBoard(Board);
         ChangePlayer = true;
     }
-    protected void DelayedPlayerStart(TimeSpan delay)
+    protected void DelayedPlayerStart()
     {
-        Thread.Sleep(delay);
-        ActivePlayer.BeginTurn(Board, BoardUI, InactivePlayer);
+        new Thread(() =>
+        {
+            Thread.Sleep(TurnDelay);
+            ActivePlayer.BeginTurn(Board, BoardUI, InactivePlayer);
+        }).Start();
     }
     public void Draw()
     {
