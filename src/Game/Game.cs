@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Numerics;
 using System.Text.Json.Serialization;
 
@@ -17,20 +18,26 @@ public class Game : IDrawable, IUpdatable
     [JsonInclude]
     public int TurnNumber { get; protected set; }
     private TimeSpan TurnDelay { get; set; }
+    public bool InProgress { get; protected set; }
     public event Action<Game, Player?>? GameOver;
     public Game(Player active, Player inactive, LargeGrid<Grid<Tile>, Tile> board, TimeSpan turnDelay)
     {
+        ActivePlayer = active;
+        InactivePlayer = inactive;
         Board = board;
+        TurnDelay = turnDelay;
+        InProgress = false;
         var position = new Vector2(450, 350);
         var transform = new Transform2D(position, 0, 4);
         BoardUI = new(board, transform);
-        ActivePlayer = active;
-        InactivePlayer = inactive;
         ActivePlayer.PlayTurn += HandlePlayerTurn;
         InactivePlayer.PlayTurn += HandlePlayerTurn;
         BannerController = new UI.BannerController(active, inactive);
-
-        TurnDelay = turnDelay;
+    }
+    public void Start()
+    {
+        Debug.Assert(!InProgress, "This game is already in progress; it cannot be started");
+        InProgress = true;
         DelayedPlayerStart();
     }
     protected void NextPlayer()

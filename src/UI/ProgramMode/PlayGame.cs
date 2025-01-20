@@ -30,6 +30,7 @@ public class PlayGame : IProgramMode
         TurnDelay = turnDelay;
         _game = new Game.Game(player1, player2, board, TurnDelay);
         Game.GameOver += GameOver;
+        Game.Start();
     }
     protected void GameOver(Game.Game sender, Player? winner)
     {
@@ -39,6 +40,7 @@ public class PlayGame : IProgramMode
         }
         var board = NewBoard();
         Game = new Game.Game(sender.InactivePlayer, sender.ActivePlayer, board, TurnDelay);
+        Game.Start();
     }
     public void Draw()
     {
