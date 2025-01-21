@@ -3,7 +3,7 @@ using System.Numerics;
 using System.Text.Json.Serialization;
 
 namespace UltimateTicTacToe.Game;
-public class Game : IDrawable, IUpdatable
+public class Game
 {
     [JsonInclude]
     private LargeGrid<Grid<Tile>, Tile> Board { get; set; }

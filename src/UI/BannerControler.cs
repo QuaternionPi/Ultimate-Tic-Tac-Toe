@@ -5,7 +5,7 @@ namespace UltimateTicTacToe.UI;
 /*
 Controls the position and activation of two banners; one for each team
 */
-public class BannerController : IDrawable
+public class BannerController
 {
     public BannerController(Game.Player active, Game.Player inactive)
     {

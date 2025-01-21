@@ -5,7 +5,7 @@ namespace UltimateTicTacToe.UI;
 /*
 UI Element for picking colors
 */
-public class ColorPicker : IDrawable, IUpdatable
+public class ColorPicker
 {
     public ColorPicker(Transform2D transform, Color[] colors, int buttonsPerRow)
     {
@@ -53,7 +53,7 @@ public class ColorPicker : IDrawable, IUpdatable
             button.Update();
         }
     }
-    private class ColorSelectionButton : IDrawable, IUpdatable
+    private class ColorSelectionButton
     {
         public ColorSelectionButton(Transform2D transform, Color color)
         {

@@ -4,7 +4,7 @@ using Raylib_cs;
 using UltimateTicTacToe.UI;
 
 namespace UltimateTicTacToe.Game;
-public abstract class Player : IUpdatable
+public abstract class Player
 {
     public static readonly Color[] AllowedColors = [
         Color.RED,
