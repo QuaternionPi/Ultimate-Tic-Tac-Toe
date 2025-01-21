@@ -13,7 +13,9 @@ public class LargeBoardEvaluator
         Corner = corner;
         Win = win;
     }
-    public float Evaluate<TBoard, TCell>(ILargeBoard<TBoard, TCell> largeBoard, Player player, Player opponent) where TBoard : IBoard<TCell> where TCell : ICell<TCell>
+    public float Evaluate<TBoard, TCell>(ILargeBoard<TBoard, TCell> largeBoard, Player player, Player opponent)
+    where TBoard : IBoard<TBoard, TCell>
+    where TCell : ICell<TCell>
     {
         // Centre
         float evaluation = Centre.Evaluate(largeBoard.Grids[4], player, opponent);

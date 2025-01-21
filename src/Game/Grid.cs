@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace UltimateTicTacToe.Game;
 
-public class Grid<TCell> : IBoard<TCell>
+public class Grid<TCell> : IBoard<Grid<TCell>, TCell>
 where TCell : ICell<TCell>
 {
     public Transform2D Transform { get; }
@@ -48,7 +48,7 @@ where TCell : ICell<TCell>
 
         WinningPlayerCell = original.WinningPlayerCell.Place(Player);
     }
-    public IBoard<TCell> Place(Player player, int index)
+    public Grid<TCell> Place(Player player, int index)
     {
         return new Grid<TCell>(this, player, index);
     }

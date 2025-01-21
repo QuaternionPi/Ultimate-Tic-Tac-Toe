@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace UltimateTicTacToe.Game;
 
 public class LargeGrid<TGrid, TCell> : ILargeBoard<TGrid, TCell>
-where TGrid : IBoard<TCell>
+where TGrid : IBoard<TGrid, TCell>
 where TCell : ICell<TCell>
 {
     [JsonInclude]

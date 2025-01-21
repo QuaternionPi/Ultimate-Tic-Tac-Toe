@@ -4,7 +4,9 @@ using UltimateTicTacToe.Game;
 
 namespace UltimateTicTacToe.UI;
 
-public class LargeBoard<TGrid, TCell> where TCell : ICell<TCell> where TGrid : IBoard<TCell>
+public class LargeBoard<TGrid, TCell>
+where TGrid : IBoard<TGrid, TCell>
+where TCell : ICell<TCell>
 {
     private Player? Player { get; set; }
     private Board<TCell>[] Boards { get; set; }

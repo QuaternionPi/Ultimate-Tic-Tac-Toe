@@ -2,18 +2,28 @@ namespace UltimateTicTacToe.Game;
 /*
 The 3 by 3 objects that Ultimate Tic Tac Toe is played on
 */
-public interface IBoard<TCell> where TCell : ICell<TCell>
+public interface IBoard<TCell>
+where TCell : ICell
 {
     public TCell[] Cells { get; }
     public TCell WinningPlayerCell { get; }
     public Player? Player { get; }
     public bool AnyPlaceable { get; }
     public IEnumerable<int> PlayableIndices { get; }
-    public IBoard<TCell> Place(Player player, int index);
+}
+
+
+public interface IBoard<TSelf, TCell> : IBoard<TCell>
+where TSelf : IBoard<TSelf, TCell>
+where TCell : ICell<TCell>
+{
+    public TSelf Place(Player player, int index);
 }
 public static class BoardExtensions
 {
-    public static bool HasWinner<TCell>(this IBoard<TCell> board) where TCell : ICell<TCell>
+    public static bool HasWinner<TSelf, TCell>(this IBoard<TSelf, TCell> board)
+    where TCell : ICell<TCell>
+    where TSelf : IBoard<TSelf, TCell>
     {
         bool hasWinner = false;
 
@@ -70,7 +80,9 @@ public static class BoardExtensions
             && rightCenter == bottomRight;
         return hasWinner;
     }
-    public static Player? Winner<TCell>(this IBoard<TCell> board) where TCell : ICell<TCell>
+    public static Player? Winner<TSelf, TCell>(this IBoard<TSelf, TCell> board)
+    where TCell : ICell<TCell>
+    where TSelf : IBoard<TSelf, TCell>
     {
         if (board.HasWinner() == false)
         {

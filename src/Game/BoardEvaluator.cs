@@ -13,7 +13,7 @@ public class BoardEvaluator
         Corner = corner;
         Win = win;
     }
-    public float Evaluate<TCell>(IBoard<TCell> board, Player player, Player opponent) where TCell : ICell<TCell>
+    public float Evaluate<TCell>(IBoard<TCell> board, Player player, Player opponent) where TCell : ICell
     {
         // Centre
         float evaluation = Award(Centre, board.Cells[4].Player, player, opponent);
