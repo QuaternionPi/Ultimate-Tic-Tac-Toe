@@ -1,5 +1,4 @@
 ﻿using Raylib_cs;
-using UltimateTicTacToe;
 using UltimateTicTacToe.Game;
 
 namespace UltimateTicTacToeTests;

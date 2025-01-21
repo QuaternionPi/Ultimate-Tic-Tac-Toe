@@ -5,7 +5,7 @@ namespace UltimateTicTacToe.UI;
 
 public class Cell
 {
-    private Game.Player? Player { get; set; }
+    private Player? Player { get; set; }
     private Transform2D Transform { get; }
     public bool InTransition { get { return TransitionValue != 0; } }
     public float TransitionValue { get; protected set; }
@@ -21,7 +21,7 @@ public class Cell
         int width = 20;
         PlacementIndicator = new Rectangle((int)Transform.Position.X - width / 2, (int)Transform.Position.Y - width / 2, width, width);
     }
-    public Cell(Game.Player player, Transform2D transform, float transitionValue = 1)
+    public Cell(Player player, Transform2D transform, float transitionValue = 1)
     {
         Player = player;
         Transform = transform;

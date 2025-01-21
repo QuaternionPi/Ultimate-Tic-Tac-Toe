@@ -10,7 +10,7 @@ public class ColorPicker : IDrawable, IUpdatable
     public ColorPicker(Transform2D transform, Color[] colors, int buttonsPerRow)
     {
         Transform = transform;
-        List<ColorSelectionButton> colorButtons = new();
+        List<ColorSelectionButton> colorButtons = [];
         int buttonSpacing = 50;
         int buttonsInRow = 0;
         var buttonTransform = new Transform2D(transform.Position, 0, 1);

@@ -46,13 +46,7 @@ public class Setup : IProgramMode
         rightBotButton.Clicked += SetPlayer1Bot;
         leftBotButton.Clicked += SetPlayer2Bot;
 
-        Buttons = new List<Button>(){
-                        playButton,
-                        rightHumanButton,
-                        leftHumanButton,
-                        rightBotButton,
-                        leftBotButton,
-                    };
+        Buttons = [playButton, rightHumanButton, leftHumanButton, rightBotButton, leftBotButton];
 
         SetPlayer1Bot();
         SetPlayer2Bot();

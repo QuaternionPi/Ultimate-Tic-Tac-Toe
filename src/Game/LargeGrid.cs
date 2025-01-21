@@ -19,7 +19,7 @@ where TCell : ICell<TCell>
     public IEnumerable<(int, int)> PlayableIndices { get; }
     public LargeGrid(IEnumerable<TGrid> grids, TCell winningPlayerCell)
     {
-        Grids = grids.ToArray();
+        Grids = [.. grids];
         Debug.Assert(Grids.Length == 9);
         Placeable = new bool[Grids.Length];
         for (int i = 0; i < 9; i++)
@@ -72,7 +72,7 @@ where TCell : ICell<TCell>
             from j in Grids[i].PlayableIndices
             select (i, j);
 
-        WinningPlayerCell = (TCell)original.WinningPlayerCell.Place(Player);
+        WinningPlayerCell = original.WinningPlayerCell.Place(Player);
     }
     public ILargeBoard<TGrid, TCell> Place(Player player, int index, int innerIndex)
     {

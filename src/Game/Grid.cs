@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using System.Text.Json.Serialization;
-using System.Linq;
 
 namespace UltimateTicTacToe.Game;
 
@@ -37,7 +36,7 @@ where TCell : ICell<TCell>
         for (int i = 0; i < 9; i++)
         {
             TCell originalCell = original.Cells[i];
-            Cells[i] = i == index ? (TCell)originalCell.Place(player) : originalCell;
+            Cells[i] = i == index ? originalCell.Place(player) : originalCell;
         }
 
         Player = this.Winner();
@@ -47,7 +46,7 @@ where TCell : ICell<TCell>
             where Cells[i].Placeable
             select i;
 
-        WinningPlayerCell = (TCell)original.WinningPlayerCell.Place(Player);
+        WinningPlayerCell = original.WinningPlayerCell.Place(Player);
     }
     public IBoard<TCell> Place(Player player, int index)
     {
