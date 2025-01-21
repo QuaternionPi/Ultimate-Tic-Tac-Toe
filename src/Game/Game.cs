@@ -59,7 +59,7 @@ public class Game : IDrawable, IUpdatable
             Console.WriteLine($"Not player {player}'s turn");
             return;
         }
-        Board = (LargeGrid<Grid<Tile>, Tile>)Board.Place(ActivePlayer, index, innerIndex);
+        Board = Board.Place(ActivePlayer, index, innerIndex);
         BoardUI.UpdateLargeBoard(Board);
         ChangePlayer = true;
     }

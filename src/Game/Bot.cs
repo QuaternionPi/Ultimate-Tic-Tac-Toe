@@ -37,7 +37,7 @@ public class Bot : Player
 
         var evaluatedMoves =
             from move in moves.AsParallel()
-            let placedBoard = (LargeGrid<Grid<Tile>, Tile>)board.Place(
+            let placedBoard = board.Place(
                         player,
                         move.Item1,
                         move.Item2)
@@ -72,7 +72,7 @@ public class Bot : Player
         float minEvaluation = float.PositiveInfinity;
         foreach (var move in possibleMoves)
         {
-            var placedBoard = (LargeGrid<Grid<Tile>, Tile>)board.Place(player, move.Item1, move.Item2);
+            var placedBoard = board.Place(player, move.Item1, move.Item2);
             var evaluation = -Minimax(placedBoard, depth - 1, -beta, -alpha, opponent, player);
             minEvaluation = Math.Min(minEvaluation, evaluation);
             beta = Math.Min(beta, evaluation);

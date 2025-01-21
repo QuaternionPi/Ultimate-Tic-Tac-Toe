@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace UltimateTicTacToe.Game;
 
-public class LargeGrid<TGrid, TCell> : ILargeBoard<TGrid, TCell>
+public class LargeGrid<TGrid, TCell> : ILargeBoard<LargeGrid<TGrid, TCell>, TGrid, TCell>
 where TGrid : IBoard<TGrid, TCell>
 where TCell : ICell<TCell>
 {
@@ -45,7 +45,7 @@ where TCell : ICell<TCell>
         for (int i = 0; i < 9; i++)
         {
             TGrid originalGrid = original.Grids[i];
-            Grids[i] = i == index ? (TGrid)originalGrid.Place(player, innerIndex) : originalGrid;
+            Grids[i] = i == index ? originalGrid.Place(player, innerIndex) : originalGrid;
         }
         Placeable = new bool[9];
         TGrid nextGrid = Grids[innerIndex];
@@ -74,7 +74,7 @@ where TCell : ICell<TCell>
 
         WinningPlayerCell = original.WinningPlayerCell.Place(Player);
     }
-    public ILargeBoard<TGrid, TCell> Place(Player player, int index, int innerIndex)
+    public LargeGrid<TGrid, TCell> Place(Player player, int index, int innerIndex)
     {
         return new LargeGrid<TGrid, TCell>(this, player, index, innerIndex);
     }

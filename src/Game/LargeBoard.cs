@@ -3,15 +3,18 @@ namespace UltimateTicTacToe.Game;
 The 3 by 3 objects that Ultimate Tic Tac Toe is played on
 */
 public interface ILargeBoard<TGrid, TCell>
-where TCell : ICell<TCell>
-where TGrid : IBoard<TGrid, TCell>
 {
     public TGrid[] Grids { get; }
     public TCell WinningPlayerCell { get; }
     public Player? Player { get; }
     public bool AnyPlaceable { get; }
     public IEnumerable<(int, int)> PlayableIndices { get; }
-    public ILargeBoard<TGrid, TCell> Place(Player player, int index, int innerIndex);
+}
+public interface ILargeBoard<TSelf, TGrid, TCell> : ILargeBoard<TGrid, TCell>
+where TCell : ICell<TCell>
+where TGrid : IBoard<TGrid, TCell>
+{
+    public TSelf Place(Player player, int index, int innerIndex);
 }
 public static class LargeBoardExtensions
 {
