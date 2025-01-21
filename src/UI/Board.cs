@@ -3,7 +3,7 @@ using System.Numerics;
 using UltimateTicTacToe.Game;
 namespace UltimateTicTacToe.UI;
 
-public class Board<TCell> where TCell : Game.ICell
+public class Board<TCell> where TCell : ICell<TCell>
 {
     private Game.Player? Player { get; set; }
     private Cell[] Cells { get; set; }

@@ -5,7 +5,7 @@ namespace UltimateTicTacToe.Game;
 
 public class LargeGrid<TGrid, TCell> : ILargeBoard<TGrid, TCell>
 where TGrid : IBoard<TCell>
-where TCell : ICell
+where TCell : ICell<TCell>
 {
     [JsonInclude]
     public Transform2D Transform { get; }

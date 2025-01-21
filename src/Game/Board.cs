@@ -2,7 +2,7 @@ namespace UltimateTicTacToe.Game;
 /*
 The 3 by 3 objects that Ultimate Tic Tac Toe is played on
 */
-public interface IBoard<TCell> where TCell : ICell
+public interface IBoard<TCell> where TCell : ICell<TCell>
 {
     public TCell[] Cells { get; }
     public TCell WinningPlayerCell { get; }
@@ -13,7 +13,7 @@ public interface IBoard<TCell> where TCell : ICell
 }
 public static class BoardExtensions
 {
-    public static bool HasWinner<TCell>(this IBoard<TCell> board) where TCell : ICell
+    public static bool HasWinner<TCell>(this IBoard<TCell> board) where TCell : ICell<TCell>
     {
         bool hasWinner = false;
 
@@ -70,7 +70,7 @@ public static class BoardExtensions
             && rightCenter == bottomRight;
         return hasWinner;
     }
-    public static Player? Winner<TCell>(this IBoard<TCell> board) where TCell : ICell
+    public static Player? Winner<TCell>(this IBoard<TCell> board) where TCell : ICell<TCell>
     {
         if (board.HasWinner() == false)
         {

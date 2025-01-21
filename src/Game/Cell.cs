@@ -10,5 +10,8 @@ public interface ICell
 {
     public Player? Player { get; }
     public bool Placeable { get; }
-    public ICell Place(Player? player);
+}
+public interface ICell<TSelf> : ICell where TSelf : ICell<TSelf>
+{
+    public TSelf Place(Player? player);
 }

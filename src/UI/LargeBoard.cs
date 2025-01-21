@@ -1,10 +1,12 @@
 using System.Numerics;
 using Raylib_cs;
+using UltimateTicTacToe.Game;
+
 namespace UltimateTicTacToe.UI;
 
-public class LargeBoard<TGrid, TCell> where TCell : Game.ICell where TGrid : Game.IBoard<TCell>
+public class LargeBoard<TGrid, TCell> where TCell : ICell<TCell> where TGrid : IBoard<TCell>
 {
-    private Game.Player? Player { get; set; }
+    private Player? Player { get; set; }
     private Board<TCell>[] Boards { get; set; }
     private IEnumerable<(int, int)> Moves { get; set; }
     private Cell WinningPlayerCell { get; set; }
@@ -29,7 +31,7 @@ public class LargeBoard<TGrid, TCell> where TCell : Game.ICell where TGrid : Gam
         }
     }
     public event Action<LargeBoard<TGrid, TCell>, int, int>? Clicked;
-    public LargeBoard(Game.ILargeBoard<TGrid, TCell> largeBoard, Transform2D transform)
+    public LargeBoard(ILargeBoard<TGrid, TCell> largeBoard, Transform2D transform)
     {
         Boards = new Board<TCell>[9];
         Player = largeBoard.Player;
@@ -50,7 +52,7 @@ public class LargeBoard<TGrid, TCell> where TCell : Game.ICell where TGrid : Gam
         }
         WinningPlayerCell = new Cell(largeBoard.WinningPlayerCell, new Transform2D(transform.Position, 1, transform.Scale * 4));
     }
-    public void UpdateLargeBoard(Game.ILargeBoard<TGrid, TCell> largeBoard)
+    public void UpdateLargeBoard(ILargeBoard<TGrid, TCell> largeBoard)
     {
         Player = largeBoard.Player;
         for (int i = 0; i < 9; i++)

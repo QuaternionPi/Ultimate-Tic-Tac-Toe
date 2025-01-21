@@ -5,7 +5,7 @@ using System.Linq;
 namespace UltimateTicTacToe.Game;
 
 public class Grid<TCell> : IBoard<TCell>
-where TCell : ICell
+where TCell : ICell<TCell>
 {
     public Transform2D Transform { get; }
     [JsonInclude]

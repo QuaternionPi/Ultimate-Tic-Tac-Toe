@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using Raylib_cs;
 
 namespace UltimateTicTacToe.Game;
-public class Tile : ICell
+public class Tile : ICell<Tile>
 {
     [JsonInclude]
     public Player? Player { get; }
@@ -13,7 +13,7 @@ public class Tile : ICell
         Player = player;
         Placeable = player == null;
     }
-    public ICell Place(Player? player)
+    public Tile Place(Player? player)
     {
         return new Tile(player);
     }
