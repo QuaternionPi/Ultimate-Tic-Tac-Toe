@@ -1,24 +1,31 @@
+using UltimateTicTacToe.Genetics;
+
 namespace UltimateTicTacToe.Game;
 
 public class LargeBoardEvaluator
 {
-    private BoardEvaluator Centre { get; }
-    private BoardEvaluator Edge { get; }
-    private BoardEvaluator Corner { get; }
-    private float Win { get; }
-    public LargeBoardEvaluator(BoardEvaluator centre, BoardEvaluator edge, BoardEvaluator corner, float win)
+    [Gene]
+    public BoardEvaluator Centre { get; set; }
+    [Gene]
+    public BoardEvaluator Edge { get; set; }
+    [Gene]
+    public BoardEvaluator Corner { get; set; }
+    [Gene]
+    public double Win { get; set; }
+    public LargeBoardEvaluator() { }
+    public LargeBoardEvaluator(BoardEvaluator centre, BoardEvaluator edge, BoardEvaluator corner, double win)
     {
         Centre = centre;
         Edge = edge;
         Corner = corner;
         Win = win;
     }
-    public float Evaluate<TBoard, TCell>(ILargeBoard<TBoard, TCell> largeBoard, Player player, Player opponent)
+    public double Evaluate<TBoard, TCell>(ILargeBoard<TBoard, TCell> largeBoard, Player player, Player opponent)
     where TBoard : IBoard<TBoard, TCell>
     where TCell : ICell<TCell>
     {
         // Centre
-        float evaluation = Centre.Evaluate(largeBoard.Grids[4], player, opponent);
+        double evaluation = Centre.Evaluate(largeBoard.Grids[4], player, opponent);
 
         // Edges
         evaluation += Edge.Evaluate(largeBoard.Grids[0], player, opponent);
@@ -37,7 +44,7 @@ public class LargeBoardEvaluator
         return evaluation;
 
     }
-    protected static float Award<T>(float amount, T? compare, T positive, T negative) where T : class
+    protected static double Award<T>(double amount, T? compare, T positive, T negative) where T : class
     {
         if (positive.Equals(compare))
             return amount;

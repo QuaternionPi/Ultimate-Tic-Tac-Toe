@@ -1,22 +1,29 @@
+using UltimateTicTacToe.Genetics;
+
 namespace UltimateTicTacToe.Game;
 
 public class BoardEvaluator
 {
-    private float Centre { get; }
-    private float Edge { get; }
-    private float Corner { get; }
-    private float Win { get; }
-    public BoardEvaluator(float centre, float edge, float corner, float win)
+    [Gene]
+    public double Centre { get; set; }
+    [Gene]
+    public double Edge { get; set; }
+    [Gene]
+    public double Corner { get; set; }
+    [Gene]
+    public double Win { get; set; }
+    public BoardEvaluator() { }
+    public BoardEvaluator(double centre, double edge, double corner, double win)
     {
         Centre = centre;
         Edge = edge;
         Corner = corner;
         Win = win;
     }
-    public float Evaluate<TCell>(IBoard<TCell> board, Player player, Player opponent) where TCell : ICell
+    public double Evaluate<TCell>(IBoard<TCell> board, Player player, Player opponent) where TCell : ICell
     {
         // Centre
-        float evaluation = Award(Centre, board.Cells[4].Player, player, opponent);
+        double evaluation = Award(Centre, board.Cells[4].Player, player, opponent);
 
         // Edges
         evaluation += Award(Edge, board.Cells[0].Player, player, opponent);
@@ -34,7 +41,7 @@ public class BoardEvaluator
         evaluation += Award(Win, board.Player, player, opponent);
         return evaluation;
     }
-    protected static float Award<T>(float amount, T? compare, T positive, T negative) where T : class
+    protected static double Award<T>(double amount, T? compare, T positive, T negative) where T : class
     {
         if (positive.Equals(compare))
             return amount;
