@@ -20,7 +20,7 @@ public class Game
     private TimeSpan TurnDelay { get; set; }
     public bool InProgress { get; protected set; }
     public event Action<Game, Player?>? GameOver;
-    public Game(Player active, Player inactive, LargeGrid<Grid<Tile>, Tile> board, TimeSpan turnDelay)
+    public Game(Player active, Player inactive, LargeGrid<Grid<Tile>, Tile> board, TimeSpan turnDelay, TimeSpan transitionTime)
     {
         ActivePlayer = active;
         InactivePlayer = inactive;
@@ -29,7 +29,7 @@ public class Game
         InProgress = false;
         var position = new Vector2(450, 350);
         var transform = new Transform2D(position, 0, 4);
-        BoardUI = new(board, transform);
+        BoardUI = new(board, transform, transitionTime);
         ActivePlayer.PlayTurn += HandlePlayerTurn;
         InactivePlayer.PlayTurn += HandlePlayerTurn;
         BannerController = new UI.BannerController(active, inactive);

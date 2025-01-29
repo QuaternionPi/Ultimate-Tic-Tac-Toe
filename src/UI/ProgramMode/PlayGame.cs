@@ -23,13 +23,22 @@ public class PlayGame : IProgramMode
         }
     }
     private TimeSpan TurnDelay { get; }
-    public PlayGame(IProgramMode? previous, Player player1, Player player2, TimeSpan turnDelay, Func<LargeGrid<Grid<Tile>, Tile>> newBoard)
+    private TimeSpan TransitionTime { get; }
+    public PlayGame(
+        IProgramMode? previous,
+        Player player1,
+        Player player2,
+        TimeSpan turnDelay,
+        TimeSpan transitionTime,
+        Func<LargeGrid<Grid<Tile>, Tile>> newBoard
+    )
     {
         Previous = previous;
         NewBoard = newBoard;
         var board = newBoard();
         TurnDelay = turnDelay;
-        _game = new Game.Game(player1, player2, board, TurnDelay);
+        TransitionTime = transitionTime;
+        _game = new Game.Game(player1, player2, board, TurnDelay, TransitionTime);
 
         BoardEvaluator b1 = new(0, 0, 0, 100);
         BoardEvaluator b2 = new(0, 0, 10, 100);
@@ -50,7 +59,7 @@ public class PlayGame : IProgramMode
         {
             var p1 = new Bot(eval1.Evaluate, Player.Symbol.X, Color.RED, 0);
             var p2 = new Bot(eval1.Evaluate, Player.Symbol.O, Color.BLUE, 0);
-            var game = new Game.Game(p1, p2, newBoard(), new TimeSpan(0));
+            var game = new Game.Game(p1, p2, newBoard(), new TimeSpan(0), new TimeSpan(0));
             bool foundWinner = false;
             Player? winner = null;
             game.GameOver += (sender, player) => { winner = player; foundWinner = true; };
@@ -76,7 +85,7 @@ public class PlayGame : IProgramMode
             winner.Score += 1;
         }
         var board = NewBoard();
-        Game = new Game.Game(sender.InactivePlayer, sender.ActivePlayer, board, TurnDelay);
+        Game = new Game.Game(sender.InactivePlayer, sender.ActivePlayer, board, TurnDelay, TransitionTime);
         Game.Start();
     }
     public void Draw()

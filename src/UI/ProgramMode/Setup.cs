@@ -100,7 +100,8 @@ public class Setup : IProgramMode
         LargeGrid<Grid<Tile>, Tile> board = EmptyBoard();
 
         var turnDelay = new TimeSpan(0, 0, 0, 0, 300);
-        IProgramMode mode = new PlayGame(this, player1, player2, turnDelay, EmptyBoard);
+        var transitionTime = new TimeSpan(0, 0, 0, 0, 100);
+        IProgramMode mode = new PlayGame(this, player1, player2, turnDelay, transitionTime, EmptyBoard);
         SwitchTo?.Invoke(this, mode);
     }
     protected LargeGrid<Grid<Tile>, Tile> EmptyBoard()

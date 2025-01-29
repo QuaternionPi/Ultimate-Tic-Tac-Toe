@@ -29,8 +29,9 @@ public class Board<TCell> where TCell : ICell<TCell>
             return max;
         }
     }
+    private TimeSpan TransitionTime { get; }
     public event Action<Board<TCell>, int>? Clicked;
-    public Board(IBoard<TCell> board, Transform2D transform, IEnumerable<int>? moves = null)
+    public Board(IBoard<TCell> board, Transform2D transform, TimeSpan transitionTime, IEnumerable<int>? moves = null)
     {
         Cells = new Cell[9];
         Player = board.Player;
@@ -42,13 +43,15 @@ public class Board<TCell> where TCell : ICell<TCell>
             var address = PositionOfIndex(i);
             var position = PixelPosition(transform, (int)address.X, (int)address.Y);
             var cellTransform = new Transform2D(position, 0, 1);
-            Cells[i] = new Cell(cell, cellTransform);
+            Cells[i] = new Cell(cell, cellTransform, transitionTime);
         }
         foreach (var cell in Cells)
         {
             cell.Clicked += HandleClickedCell;
         }
-        WinningPlayerCell = new Cell(board.WinningPlayerCell, new Transform2D(transform.Position, 0, transform.Scale * 4));
+        TransitionTime = transitionTime;
+        var winningCellTransform = new Transform2D(transform.Position, 0, transform.Scale * 4);
+        WinningPlayerCell = new Cell(board.WinningPlayerCell, winningCellTransform, transitionTime);
     }
     public void UpdateBoard(IBoard<TCell> board, IEnumerable<int>? moves = null)
     {

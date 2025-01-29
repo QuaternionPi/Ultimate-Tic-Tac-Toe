@@ -32,8 +32,9 @@ where TCell : ICell<TCell>
             return max;
         }
     }
+    private TimeSpan TransitionTime { get; }
     public event Action<LargeBoard<TGrid, TCell>, int, int>? Clicked;
-    public LargeBoard(ILargeBoard<TGrid, TCell> largeBoard, Transform2D transform)
+    public LargeBoard(ILargeBoard<TGrid, TCell> largeBoard, Transform2D transform, TimeSpan transitionTime)
     {
         Boards = new Board<TCell>[9];
         Player = largeBoard.Player;
@@ -46,13 +47,15 @@ where TCell : ICell<TCell>
             var position = PixelPosition(transform, (int)address.X, (int)address.Y);
             var cellTransform = new Transform2D(position, 0, 1);
             var moves = from move in Moves where move.Item1 == i select move.Item2;
-            Boards[i] = new Board<TCell>(board, cellTransform);
+            Boards[i] = new Board<TCell>(board, cellTransform, transitionTime);
         }
         foreach (var cell in Boards)
         {
             cell.Clicked += HandleClickedCell;
         }
-        WinningPlayerCell = new Cell(largeBoard.WinningPlayerCell, new Transform2D(transform.Position, 1, transform.Scale * 4));
+        TransitionTime = transitionTime;
+        var winningCellTransform = new Transform2D(transform.Position, 1, transform.Scale * 4);
+        WinningPlayerCell = new Cell(largeBoard.WinningPlayerCell, winningCellTransform, transitionTime);
     }
     public void UpdateLargeBoard(ILargeBoard<TGrid, TCell> largeBoard)
     {
