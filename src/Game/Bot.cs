@@ -4,8 +4,8 @@ using Raylib_cs;
 namespace UltimateTicTacToe.Game;
 public class Bot : Player
 {
-    private Func<LargeGrid<Grid<Tile>, Tile>, Player, Player, float> Evaluate { get; }
-    public Bot(Func<LargeGrid<Grid<Tile>, Tile>, Player, Player, float> evaluate, Symbol symbol, Color color, int score) : base(symbol, color, score)
+    private Func<LargeGrid<Grid<Tile>, Tile>, Player, Player, double> Evaluate { get; }
+    public Bot(Func<LargeGrid<Grid<Tile>, Tile>, Player, Player, double> evaluate, Symbol symbol, Color color, int score) : base(symbol, color, score)
     {
         Evaluate = evaluate;
     }
@@ -31,12 +31,12 @@ public class Bot : Player
         )
     {
         Debug.Assert(moves.Any() != false, "Cannot choose best move from no moves");
-        float alpha = float.NegativeInfinity;
-        float beta = float.PositiveInfinity;
-        int depth = moves.Count() < 7 ? 6 : moves.Count() < 30 ? 5 : 4;
+        double alpha = double.NegativeInfinity;
+        double beta = double.PositiveInfinity;
+        int depth = moves.Count() < 7 ? 4 : moves.Count() < 30 ? 3 : 2;
 
         var evaluatedMoves =
-            from move in moves.AsParallel()
+            from move in moves
             let placedBoard = board.Place(
                         player,
                         move.Item1,
@@ -54,11 +54,11 @@ public class Bot : Player
         var bestMove = evaluatedMoves.First().move;
         return bestMove;
     }
-    protected float Minimax(
+    protected double Minimax(
         LargeGrid<Grid<Tile>, Tile> board,
-        float depth,
-        float alpha,
-        float beta,
+        double depth,
+        double alpha,
+        double beta,
         Player player,
         Player opponent)
     {
@@ -69,7 +69,7 @@ public class Bot : Player
         }
 
         var possibleMoves = board.PlayableIndices;
-        float minEvaluation = float.PositiveInfinity;
+        double minEvaluation = double.PositiveInfinity;
         foreach (var move in possibleMoves)
         {
             var placedBoard = board.Place(player, move.Item1, move.Item2);

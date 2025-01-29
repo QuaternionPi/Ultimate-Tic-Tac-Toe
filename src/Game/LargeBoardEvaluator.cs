@@ -12,7 +12,13 @@ public class LargeBoardEvaluator
     public BoardEvaluator Corner { get; set; }
     [Gene]
     public double Win { get; set; }
-    public LargeBoardEvaluator() { }
+    public LargeBoardEvaluator()
+    {
+        Win = 0;
+        Centre = new();
+        Edge = new();
+        Corner = new();
+    }
     public LargeBoardEvaluator(BoardEvaluator centre, BoardEvaluator edge, BoardEvaluator corner, double win)
     {
         Centre = centre;

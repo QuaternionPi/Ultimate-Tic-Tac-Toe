@@ -38,7 +38,7 @@ public class Game
     {
         Debug.Assert(!InProgress, "This game is already in progress; it cannot be started");
         InProgress = true;
-        DelayedPlayerStart();
+        DelayedPlayTurn();
     }
     protected void NextPlayer()
     {
@@ -49,7 +49,7 @@ public class Game
         ActivePlayer = InactivePlayer;
         InactivePlayer = temp;
 
-        DelayedPlayerStart();
+        DelayedPlayTurn();
         TurnNumber++;
     }
     protected void HandlePlayerTurn(Player player, ILargeBoard<Grid<Tile>, Tile> board, int index, int innerIndex)
@@ -63,7 +63,7 @@ public class Game
         BoardUI.UpdateLargeBoard(Board);
         ChangePlayer = true;
     }
-    protected void DelayedPlayerStart()
+    protected void DelayedPlayTurn()
     {
         new Thread(() =>
         {
