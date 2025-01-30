@@ -8,23 +8,23 @@ public class Crossover
     private readonly Type _genomeType;
     private readonly Random _random;
     private readonly Dictionary<Type, Crossover> _cachedCrossover;
-    private readonly PropertyInfo[] _doubleGenes;
-    private readonly PropertyInfo[] _objectGenes;
+    private readonly PropertyInfo[] _doubleProperties;
+    private readonly PropertyInfo[] _objectProperties;
     public Crossover(Type genomeType, Random? random = null)
     {
         _genomeType = genomeType;
         var genes = genomeType
             .GetProperties()
             .Where(property => property.IsDefined(typeof(Gene), false));
-        _doubleGenes = [.. genes.Where(property => property.PropertyType == typeof(double))];
-        _objectGenes = [.. genes.Where(property => property.PropertyType != typeof(double))];
+        _doubleProperties = [.. genes.Where(property => property.PropertyType == typeof(double))];
+        _objectProperties = [.. genes.Where(property => property.PropertyType != typeof(double))];
 
         _random = random ?? new Random(0);
 
         _cachedCrossover = [];
-        foreach (var objectGene in _objectGenes)
+        foreach (var objectProperty in _objectProperties)
         {
-            Type geneType = objectGene.PropertyType;
+            Type geneType = objectProperty.PropertyType;
             var crossover = new Crossover(geneType, _random);
             _cachedCrossover[geneType] = crossover;
         }
@@ -33,44 +33,61 @@ public class Crossover
     {
         Debug.Assert(typeof(TGenome) == _genomeType, $"TGenome must be the same type as _genomeType. {typeof(TGenome)} != {_genomeType}");
         TGenome result = new();
-        foreach (var gene in _doubleGenes)
+        foreach (var property in _doubleProperties)
         {
-            var gene1 = (double)(gene.GetValue(genome1) ?? 0);
-            var gene2 = (double)(gene.GetValue(genome2) ?? 0);
-            var resultGene = Combine(gene1, gene2);
-            gene.SetValue(result, resultGene);
+            var gene1Value = (double)(property.GetValue(genome1) ?? 0);
+            var gene2Value = (double)(property.GetValue(genome2) ?? 0);
+            Gene gene = property.GetCustomAttribute<Gene>()!;
+            var resultGene = Combine(gene1Value, gene2Value, gene);
+            property.SetValue(result, resultGene);
         }
-        foreach (var gene in _objectGenes)
+        foreach (var property in _objectProperties)
         {
-            dynamic? gene1 = gene.GetValue(genome1);
-            dynamic? gene2 = gene.GetValue(genome2);
+            dynamic? gene1Value = property.GetValue(genome1);
+            dynamic? gene2Value = property.GetValue(genome2);
 
             dynamic? resultGene;
-            if (gene1 is not null && gene2 is not null)
+            if (gene1Value is not null && gene2Value is not null)
             {
-                var geneType = gene.PropertyType;
+                var geneType = property.PropertyType;
                 var crossover = _cachedCrossover[geneType];
-                resultGene = crossover.Combine(gene1, gene2);
+                resultGene = crossover.Combine(gene1Value, gene2Value);
             }
             else
             {
-                resultGene = gene1 ?? gene2;
+                resultGene = gene1Value ?? gene2Value;
             }
 
-            gene.SetValue(result, resultGene);
+            property.SetValue(result, resultGene);
         }
         return result;
     }
-    protected double Combine(double genome1, double genome2)
+    protected double Combine(double gene1Value, double gene2Value, Gene gene)
     {
-        var preserveChance = 0.9;
-        var preserveRole = _random.NextDouble();
-        if (preserveChance <= preserveRole)
+        var minChance = 0.025;
+        var maxChance = 0.025;
+        var averageChance = 0.05;
+        var copyGene1Chance = 0.45;
+        var role = _random.NextDouble();
+        if (role <= minChance && gene.RangeType is not null)
         {
-            var genome1Change = 0.5;
-            var genomeRole = _random.NextDouble();
-            return genome1Change <= genomeRole ? genome1 : genome2;
+            return (double)gene.Minimum!;
         }
-        return (genome1 + genome2) / 2;
+        role -= minChance;
+        if (role <= maxChance && gene.RangeType is not null)
+        {
+            return (double)gene.Minimum!;
+        }
+        role -= maxChance;
+        if (role <= averageChance)
+        {
+            return (gene1Value + gene2Value) / 2;
+        }
+        role -= averageChance;
+        if (role <= copyGene1Chance)
+        {
+            return gene1Value;
+        }
+        return gene2Value;
     }
 }

@@ -86,7 +86,7 @@ where TGenome : class, new()
     public void RunGeneration(Random random, int replications)
     {
         var pairs = Enumerable
-            .Range(0, Genomes.Count() / TournamentSize)
+            .Range(0, Genomes.Length / TournamentSize)
             .SelectMany((x) => Tournament(random, replications))
             .ToArray();
         var newGenomes =
