@@ -6,13 +6,15 @@ public class Pool<TGenome>
 where TGenome : class, new()
 {
     private static int TournamentSize { get; } = 3;
-    private IEnumerable<TGenome> Genomes { get; set; }
+    private TGenome[] Genomes { get; set; }
     private Func<TGenome, TGenome, int> Score { get; }
+    private Crossover Crossover { get; set; }
     public Pool(IEnumerable<TGenome> genomes, Func<TGenome, TGenome, int> score)
     {
         Debug.Assert(genomes.Count() > 2);
-        Genomes = genomes;
+        Genomes = [.. genomes];
         Score = score;
+        Crossover = new Crossover(typeof(TGenome));
     }
     public static IEnumerable<(TGenome, TGenome)> RouletteWheelSelection
     (
@@ -81,34 +83,6 @@ where TGenome : class, new()
         }
         return genomes;
     }
-    public double GaussianCrossOver(Random random, double genome1Value, double genome2Value)
-    {
-        var preserveChance = 0.9;
-        var preserveRole = random.NextDouble();
-        if (preserveChance <= preserveRole)
-        {
-            var genome1Change = 0.5;
-            var genomeRole = random.NextDouble();
-            return genome1Change <= genomeRole ? genome1Value : genome2Value;
-        }
-        return (genome1Value + genome2Value) / 2;
-    }
-    public TGenome CrossOver(Random random, TGenome genome1, TGenome genome2)
-    {
-        var genes = typeof(TGenome)
-            .GetProperties()
-            .Where(property => property.IsDefined(typeof(Gene), false));
-        var doubleGenes = genes.Where(property => property.PropertyType == typeof(double)).ToArray();
-        TGenome newGenome = new();
-        foreach (var property in doubleGenes)
-        {
-            var genome1Value = (double)property.GetValue(genome1)!;
-            var genome2Value = (double)property.GetValue(genome2)!;
-            var newGenomeValue = GaussianCrossOver(random, genome1Value, genome2Value);
-            property.SetValue(newGenome, newGenomeValue);
-        }
-        return newGenome;
-    }
     public void RunGeneration(Random random, int replications)
     {
         var pairs = Enumerable
@@ -119,7 +93,7 @@ where TGenome : class, new()
             from pair in pairs
             let genome1 = pair.Item1
             let genome2 = pair.Item2
-            select CrossOver(random, genome1, genome2);
-        Genomes = newGenomes.ToArray();
+            select Crossover.Combine(genome1, genome2);
+        Genomes = [.. newGenomes];
     }
 }
