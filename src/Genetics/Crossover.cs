@@ -64,19 +64,19 @@ public class Crossover
     }
     protected double Combine(double gene1Value, double gene2Value, Gene gene)
     {
-        var minChance = 0.025;
-        var maxChance = 0.025;
-        var averageChance = 0.05;
+        var minChance = 0.005;
+        var maxChance = 0.005;
+        var averageChance = 0.09;
         var copyGene1Chance = 0.45;
         var role = _random.NextDouble();
-        if (role <= minChance && gene.RangeType is not null)
+        if (role <= minChance)
         {
-            return (double)gene.Minimum!;
+            return gene.RangeType == typeof(double) ? (double)gene.Minimum! : 0;
         }
         role -= minChance;
-        if (role <= maxChance && gene.RangeType is not null)
+        if (role <= maxChance)
         {
-            return (double)gene.Minimum!;
+            return gene.RangeType == typeof(double) ? (double)gene.Maximum! : 1000;
         }
         role -= maxChance;
         if (role <= averageChance)

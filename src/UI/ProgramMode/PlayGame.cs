@@ -58,7 +58,7 @@ public class PlayGame : IProgramMode
         Pool<LargeBoardEvaluator> pool = new(genomes, (eval1, eval2) =>
         {
             var p1 = new Bot(eval1.Evaluate, Player.Symbol.X, Color.RED, 0);
-            var p2 = new Bot(eval1.Evaluate, Player.Symbol.O, Color.BLUE, 0);
+            var p2 = new Bot(eval2.Evaluate, Player.Symbol.O, Color.BLUE, 0);
             var game = new Game.Game(p1, p2, newBoard(), new TimeSpan(0), new TimeSpan(0));
             bool foundWinner = false;
             Player? winner = null;
@@ -72,8 +72,9 @@ public class PlayGame : IProgramMode
                 game.Update();
             }
             return winner == null ? 0 : winner == p1 ? 1 : -1;
-        });
-        pool.RunGeneration(new Random(1), 1);
+        }, new Random(1));
+        for (int i = 0; i < 20; i++)
+            pool.RunGeneration(1);
 
         Game.GameOver += GameOver;
         Game.Start();

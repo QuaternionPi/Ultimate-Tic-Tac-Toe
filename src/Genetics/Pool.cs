@@ -9,11 +9,13 @@ where TGenome : class, new()
     private TGenome[] Genomes { get; set; }
     private Func<TGenome, TGenome, int> Score { get; }
     private Crossover Crossover { get; set; }
-    public Pool(IEnumerable<TGenome> genomes, Func<TGenome, TGenome, int> score)
+    private Random _random { get; }
+    public Pool(IEnumerable<TGenome> genomes, Func<TGenome, TGenome, int> score, Random? random = null)
     {
         Debug.Assert(genomes.Count() > 2);
         Genomes = [.. genomes];
         Score = score;
+        _random = random ?? new Random(0);
         Crossover = new Crossover(typeof(TGenome));
     }
     public static IEnumerable<(TGenome, TGenome)> RouletteWheelSelection
@@ -52,11 +54,15 @@ where TGenome : class, new()
         IEnumerable<int> weights = scores.Values;
         return RouletteWheelSelection(genomes, weights, random, limit);
     }
-    public IEnumerable<(TGenome, TGenome)> Tournament(Random random, int replications)
+    public IEnumerable<(TGenome, TGenome)> Tournament(int replications)
     {
         List<(TGenome, TGenome)> genomes = [];
-        foreach (var batch in Genomes.OrderBy(order => random.Next()).Batch(TournamentSize))
+        foreach (var batch in Genomes.OrderBy(order => _random.Next()).Batch(TournamentSize))
         {
+            if (batch.Count() != TournamentSize)
+            {
+                break;
+            }
             Dictionary<TGenome, int> scores = [];
             foreach (var genome in batch)
             {
@@ -83,11 +89,11 @@ where TGenome : class, new()
         }
         return genomes;
     }
-    public void RunGeneration(Random random, int replications)
+    public void RunGeneration(int replications)
     {
         var pairs = Enumerable
-            .Range(0, Genomes.Length / TournamentSize)
-            .SelectMany((x) => Tournament(random, replications))
+            .Range(0, TournamentSize)
+            .SelectMany((x) => Tournament(replications))
             .ToArray();
         var newGenomes =
             from pair in pairs
