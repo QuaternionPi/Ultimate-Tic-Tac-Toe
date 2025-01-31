@@ -36,8 +36,10 @@ where TCell : ICell<TCell>
 
         WinningPlayerCell = winningPlayerCell;
     }
-    public LargeGrid(LargeGrid<TGrid, TCell> original, Player player, int index, int innerIndex)
+    public LargeGrid(LargeGrid<TGrid, TCell> original, Player player, (int, int) move)
     {
+        var index = move.Item1;
+        var innerIndex = move.Item2;
         Debug.Assert(original.Placeable[index], "You Cannot place on that cell");
         Transform = original.Transform;
         Grids = new TGrid[9];
@@ -74,8 +76,8 @@ where TCell : ICell<TCell>
 
         WinningPlayerCell = original.WinningPlayerCell.Place(Player);
     }
-    public LargeGrid<TGrid, TCell> Place(Player player, int index, int innerIndex)
+    public LargeGrid<TGrid, TCell> Place(Player player, (int, int) move)
     {
-        return new LargeGrid<TGrid, TCell>(this, player, index, innerIndex);
+        return new LargeGrid<TGrid, TCell>(this, player, move);
     }
 }

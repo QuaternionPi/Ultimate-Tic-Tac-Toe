@@ -13,7 +13,7 @@ public class Bot : Player
     {
         var possibleMoves = board.PlayableIndices;
         var move = BestMove(board, possibleMoves, this, opponent);
-        MakeMove(board, move.Item1, move.Item2);
+        MakeMove(board, move);
     }
     public override void EndTurn()
     {
@@ -37,10 +37,7 @@ public class Bot : Player
 
         var evaluatedMoves =
             from move in moves
-            let placedBoard = board.Place(
-                        player,
-                        move.Item1,
-                        move.Item2)
+            let placedBoard = board.Place(player, move)
             let score = Minimax(
                     placedBoard,
                     depth,
@@ -49,9 +46,9 @@ public class Bot : Player
                     opponent,
                     player)
             orderby score descending
-            select (move, score);
+            select move;
 
-        var bestMove = evaluatedMoves.First().move;
+        var bestMove = evaluatedMoves.First();
         return bestMove;
     }
     protected double Minimax(
@@ -72,7 +69,7 @@ public class Bot : Player
         double minEvaluation = double.PositiveInfinity;
         foreach (var move in possibleMoves)
         {
-            var placedBoard = board.Place(player, move.Item1, move.Item2);
+            var placedBoard = board.Place(player, move);
             var evaluation = -Minimax(placedBoard, depth - 1, -beta, -alpha, opponent, player);
             minEvaluation = Math.Min(minEvaluation, evaluation);
             beta = Math.Min(beta, evaluation);
@@ -81,8 +78,8 @@ public class Bot : Player
         }
         return minEvaluation;
     }
-    protected void MakeMove(LargeGrid<Grid<Tile>, Tile> board, int index, int innerIndex)
+    protected void MakeMove(LargeGrid<Grid<Tile>, Tile> board, (int, int) move)
     {
-        InvokePlayTurn(this, board, index, innerIndex);
+        InvokePlayTurn(this, board, move);
     }
 }

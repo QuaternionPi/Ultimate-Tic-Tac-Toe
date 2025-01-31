@@ -14,7 +14,7 @@ public interface ILargeBoard<TSelf, TGrid, TCell> : ILargeBoard<TGrid, TCell>
 where TCell : ICell<TCell>
 where TGrid : IBoard<TGrid, TCell>
 {
-    public TSelf Place(Player player, int index, int innerIndex);
+    public TSelf Place(Player player, (int, int) move);
 }
 public static class LargeBoardExtensions
 {

@@ -28,18 +28,19 @@ public class Human : Player
     {
 
     }
-    private void HandleClickedBoard(UI.LargeBoard<Grid<Tile>, Tile> board, int index, int innerIndex)
+    private void HandleClickedBoard(UI.LargeBoard<Grid<Tile>, Tile> board, (int, int) move)
     {
         if (Board == null)
         {
             return;
         }
+        var index = move.Item1;
         bool placeable = Board.Placeable[index] && Board.Grids[index].AnyPlaceable;
         if (!placeable || MoveMade)
         {
             return;
         }
         MoveMade = true;
-        InvokePlayTurn(this, Board, index, innerIndex);
+        InvokePlayTurn(this, Board, move);
     }
 }

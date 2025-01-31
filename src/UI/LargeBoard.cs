@@ -33,7 +33,7 @@ where TCell : ICell<TCell>
         }
     }
     private TimeSpan TransitionTime { get; }
-    public event Action<LargeBoard<TGrid, TCell>, int, int>? Clicked;
+    public event Action<LargeBoard<TGrid, TCell>, (int, int)>? Clicked;
     public LargeBoard(ILargeBoard<TGrid, TCell> largeBoard, Transform2D transform, TimeSpan transitionTime)
     {
         Boards = new Board<TCell>[9];
@@ -119,7 +119,7 @@ where TCell : ICell<TCell>
     public void HandleClickedCell(Board<TCell> board, int innerIndex)
     {
         var index = Array.IndexOf(Boards, board);
-        Clicked?.Invoke(this, index, innerIndex);
+        Clicked?.Invoke(this, (index, innerIndex));
     }
     public static Vector2 PixelPosition(Transform2D transform, int i, int j)
     {

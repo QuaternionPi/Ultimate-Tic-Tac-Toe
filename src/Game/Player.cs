@@ -27,8 +27,8 @@ public abstract class Player
     public Symbol Shape { get; set; }
     [JsonInclude]
     public Color Color { get; set; }
-    public event Action<Player, LargeGrid<Grid<Tile>, Tile>, int, int>? PlayTurn;
-    protected void InvokePlayTurn(Player player, LargeGrid<Grid<Tile>, Tile> board, int index, int innerIndex) => PlayTurn?.Invoke(player, board, index, innerIndex);
+    public event Action<Player, LargeGrid<Grid<Tile>, Tile>, (int, int)>? PlayTurn;
+    protected void InvokePlayTurn(Player player, LargeGrid<Grid<Tile>, Tile> board, (int, int) move) => PlayTurn?.Invoke(player, board, move);
     public abstract void BeginTurn(LargeGrid<Grid<Tile>, Tile> board, LargeBoard<Grid<Tile>, Tile> largeBoard, Player opponent);
     public abstract void EndTurn();
     public abstract void Update();

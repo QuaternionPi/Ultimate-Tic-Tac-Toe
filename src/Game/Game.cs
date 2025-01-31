@@ -52,14 +52,14 @@ public class Game
         DelayedPlayTurn();
         TurnNumber++;
     }
-    protected void HandlePlayerTurn(Player player, ILargeBoard<Grid<Tile>, Tile> board, int index, int innerIndex)
+    protected void HandlePlayerTurn(Player player, ILargeBoard<Grid<Tile>, Tile> board, (int, int) move)
     {
         if (player != ActivePlayer)
         {
             Console.WriteLine($"Not player {player}'s turn");
             return;
         }
-        Board = Board.Place(ActivePlayer, index, innerIndex);
+        Board = Board.Place(ActivePlayer, move);
         BoardUI.UpdateLargeBoard(Board);
         ChangePlayer = true;
     }
