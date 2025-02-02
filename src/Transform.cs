@@ -16,20 +16,11 @@ public readonly struct Transform2D
     }
     [JsonInclude]
     [JsonConverter(typeof(Json.Vector2Converter))]
-    public Vector2 Position
-    {
-        get;
-    }
+    public Vector2 Position { get; }
     [JsonInclude]
-    public float Rotation
-    {
-        get;
-    }
+    public float Rotation { get; }
     [JsonInclude]
-    public float Scale
-    {
-        get;
-    }
+    public float Scale { get; }
     public Transform2D Translate(Vector2 delta)
     {
         return new Transform2D(Position + delta, Rotation, Scale);

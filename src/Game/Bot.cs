@@ -5,11 +5,22 @@ namespace UltimateTicTacToe.Game;
 public class Bot : Player
 {
     private Func<LargeGrid<Grid<Tile>, Tile>, Player, Player, double> Evaluate { get; }
-    public Bot(Func<LargeGrid<Grid<Tile>, Tile>, Player, Player, double> evaluate, Symbol symbol, Color color, int score) : base(symbol, color, score)
+    public Bot
+    (
+        Func<LargeGrid<Grid<Tile>, Tile>, Player, Player, double> evaluate,
+        Symbol symbol,
+        Color color,
+        int score
+    ) : base(symbol, color, score)
     {
         Evaluate = evaluate;
     }
-    public override void BeginTurn(LargeGrid<Grid<Tile>, Tile> board, UI.LargeBoard<Grid<Tile>, Tile> largeBoard, Player opponent)
+    public override void BeginTurn
+    (
+        LargeGrid<Grid<Tile>, Tile> board,
+        UI.LargeBoard<Grid<Tile>, Tile> largeBoard,
+        Player opponent
+    )
     {
         var possibleMoves = board.Moves;
         var move = BestMove(board, possibleMoves, this, opponent);
@@ -17,12 +28,13 @@ public class Bot : Player
     }
     public override void EndTurn() { }
     public override void Update() { }
-    protected (int, int) BestMove(
+    protected (int, int) BestMove
+    (
         LargeGrid<Grid<Tile>, Tile> board,
         IEnumerable<(int, int)> moves,
         Player player,
         Player opponent
-        )
+    )
     {
         Debug.Assert(moves.Any(), "Cannot choose best move from no moves");
         double alpha = double.NegativeInfinity;
@@ -44,13 +56,15 @@ public class Bot : Player
         }
         return bestMove;
     }
-    protected double Minimax(
+    protected double Minimax
+    (
         LargeGrid<Grid<Tile>, Tile> board,
         double depth,
         double alpha,
         double beta,
         Player player,
-        Player opponent)
+        Player opponent
+    )
     {
         // The base case of the recursion or board is winning position
         if (depth == 0 || !board.AnyPlaceable)

@@ -42,13 +42,8 @@ public class Game
     }
     protected void NextPlayer()
     {
-        Player temp;
         ActivePlayer.EndTurn();
-
-        temp = ActivePlayer;
-        ActivePlayer = InactivePlayer;
-        InactivePlayer = temp;
-
+        (InactivePlayer, ActivePlayer) = (ActivePlayer, InactivePlayer);
         DelayedPlayTurn();
         TurnNumber++;
     }

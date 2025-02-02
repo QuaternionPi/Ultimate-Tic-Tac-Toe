@@ -9,13 +9,13 @@ where TGenome : class, new()
     private TGenome[] Genomes { get; set; }
     private Func<TGenome, TGenome, int> Score { get; }
     private Crossover Crossover { get; set; }
-    private Random _random { get; }
+    private Random Random { get; }
     public Pool(IEnumerable<TGenome> genomes, Func<TGenome, TGenome, int> score, Random? random = null)
     {
         Debug.Assert(genomes.Count() > 2);
         Genomes = [.. genomes];
         Score = score;
-        _random = random ?? new Random(0);
+        Random = random ?? new Random(0);
         Crossover = new Crossover(typeof(TGenome));
     }
     public static IEnumerable<(TGenome, TGenome)> RouletteWheelSelection
@@ -57,7 +57,7 @@ where TGenome : class, new()
     public IEnumerable<(TGenome, TGenome)> Tournament(int replications)
     {
         List<(TGenome, TGenome)> genomes = [];
-        foreach (var batch in Genomes.OrderBy(order => _random.Next()).Batch(TournamentSize))
+        foreach (var batch in Genomes.OrderBy(order => Random.Next()).Batch(TournamentSize))
         {
             if (batch.Count() != TournamentSize)
             {

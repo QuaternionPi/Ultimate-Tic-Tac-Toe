@@ -31,7 +31,7 @@ public class Button
     {
         bool leftMouse = Mouse.IsMouseButtonReleased(0);
         Vector2 mousePosition = Mouse.GetMousePosition();
-        Rectangle rectangle = new Rectangle(
+        Rectangle rectangle = new(
             Transform.Position.X - Dimensions.X / 2,
             Transform.Position.Y - Dimensions.Y / 2,
             Dimensions.X,

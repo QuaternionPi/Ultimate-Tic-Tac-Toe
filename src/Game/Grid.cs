@@ -28,7 +28,7 @@ where TCell : ICell<TCell>
         Debug.Assert(Cells.Length == 9);
 
         Player = this.Winner();
-        AnyPlaceable = Player == null && Cells.Any((x) => x.Placeable);
+        AnyPlaceable = Player == null && Cells.Any((cell) => cell.Placeable);
         Moves =
             from i in Enumerable.Range(0, 9)
             where Cells[i].Placeable
@@ -49,7 +49,7 @@ where TCell : ICell<TCell>
         }
 
         Player = original.Player ?? Winner(player, index);
-        AnyPlaceable = Player == null && Cells.Any((x) => x.Placeable);
+        AnyPlaceable = Player == null && Cells.Any((cell) => cell.Placeable);
         Moves =
             from i in Enumerable.Range(0, 9)
             where Cells[i].Placeable

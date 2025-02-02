@@ -1,6 +1,6 @@
 namespace UltimateTicTacToe.Genetics;
 
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = false)]
+[AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
 public class Gene : Attribute
 {
     public IComparable? Minimum { get; }

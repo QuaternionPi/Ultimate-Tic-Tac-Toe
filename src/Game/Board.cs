@@ -12,7 +12,6 @@ where TCell : ICell
     public IEnumerable<int> Moves { get; }
 }
 
-
 public interface IBoard<TSelf, TCell> : IBoard<TCell>
 where TSelf : IBoard<TSelf, TCell>
 where TCell : ICell<TCell>

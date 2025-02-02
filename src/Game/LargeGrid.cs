@@ -60,20 +60,20 @@ where TCell : ICell<TCell>
         }
         Placeable = new bool[9];
         TGrid nextGrid = Grids[innerIndex];
-        if (!nextGrid.AnyPlaceable)
-        {
-            for (int i = 0; i < 9; i++)
-            {
-                Placeable[i] = Grids[i].AnyPlaceable;
-            }
-        }
-        else
+        if (nextGrid.AnyPlaceable)
         {
             for (int i = 0; i < 9; i++)
             {
                 Placeable[i] = false;
             }
             Placeable[innerIndex] = true;
+        }
+        else
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                Placeable[i] = Grids[i].AnyPlaceable;
+            }
         }
         Player = Winner(player, move);
         AnyPlaceable = Player == null && Grids.Any((x) => x.AnyPlaceable);

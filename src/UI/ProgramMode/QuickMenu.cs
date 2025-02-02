@@ -5,10 +5,6 @@ public class QuickMenu : IProgramMode
     public float TransitionValue { get; }
     public event Action<IProgramMode, IProgramMode>? SwitchTo;
     public IProgramMode? Previous { get; }
-    public void Draw()
-    {
-    }
-    public void Update()
-    {
-    }
+    public void Draw() { }
+    public void Update() { }
 }
