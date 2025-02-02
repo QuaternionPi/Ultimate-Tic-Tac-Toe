@@ -6,6 +6,8 @@ public class Confirm : IProgramMode
 {
     public Confirm(IProgramMode previous, string message, Action action)
     {
+        Previous = previous;
+        Message = message;
         var confirmTransform = new Transform2D(new Vector2(170, 490));
         var cancelTransform = new Transform2D(new Vector2(170, 590));
 
@@ -32,17 +34,16 @@ public class Confirm : IProgramMode
     protected string Message { get; }
     public bool InTransition { get; }
     public float TransitionValue { get; }
-    public IProgramMode? Previous => null;
+    public IProgramMode? Previous { get; protected set; }
     public event Action<IProgramMode, IProgramMode>? SwitchTo;
     public void Draw()
     {
         Buttons.ForEach(button => button.Draw());
         Font font = Graphics.Text.GetFontDefault();
-        string message = $"Ultimate Tic Tac Toe";
         float spacing = 3;
         float fontSize = 40;
-        float messageWidth = Graphics.Text.MeasureTextEx(font, message, fontSize, spacing).X;
-        Graphics.Text.DrawTextEx(font, message, new Vector2(450 - messageWidth / 2, 20), fontSize, spacing, Color.GRAY);
+        float messageWidth = Graphics.Text.MeasureTextEx(font, Message, fontSize, spacing).X;
+        Graphics.Text.DrawTextEx(font, Message, new Vector2(450 - messageWidth / 2, 20), fontSize, spacing, Color.GRAY);
     }
     public void Update()
     {
