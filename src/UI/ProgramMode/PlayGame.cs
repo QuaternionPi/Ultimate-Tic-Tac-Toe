@@ -57,8 +57,8 @@ public class PlayGame : IProgramMode
         ];
         Pool<LargeBoardEvaluator> pool = new(genomes, (eval1, eval2) =>
         {
-            var p1 = new Bot(eval1, Player.Symbol.X, Color.RED, 0);
-            var p2 = new Bot(eval2, Player.Symbol.O, Color.BLUE, 0);
+            var p1 = new Bot(eval1, Player.Symbol.X, Color.RED, 0, 1);
+            var p2 = new Bot(eval2, Player.Symbol.O, Color.BLUE, 0, 2);
             var game = new Game.Game(p1, p2, newBoard(), new TimeSpan(0), new TimeSpan(0));
             bool foundWinner = false;
             Player? winner = null;

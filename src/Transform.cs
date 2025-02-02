@@ -15,7 +15,6 @@ public readonly struct Transform2D
         Scale = scale;
     }
     [JsonInclude]
-    [JsonConverter(typeof(Json.Vector2Converter))]
     public Vector2 Position { get; }
     [JsonInclude]
     public float Rotation { get; }

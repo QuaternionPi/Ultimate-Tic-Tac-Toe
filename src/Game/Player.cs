@@ -4,7 +4,7 @@ using Raylib_cs;
 using UltimateTicTacToe.UI;
 
 namespace UltimateTicTacToe.Game;
-public abstract class Player
+public abstract partial class Player
 {
     public static readonly Color[] AllowedColors = [
         Color.RED,
@@ -15,11 +15,12 @@ public abstract class Player
         Color.DARKGREEN,
     ];
     public enum Symbol { X, O };
-    public Player(Symbol symbol, Color color, int score)
+    public Player(Symbol symbol, Color color, int score, int id)
     {
         Shape = symbol;
         Color = color;
         Score = score;
+        _token = new Token(id);
     }
     [JsonInclude]
     public int Score;

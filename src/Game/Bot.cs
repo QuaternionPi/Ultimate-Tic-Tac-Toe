@@ -11,8 +11,9 @@ public class Bot : Player
         LargeBoardEvaluator evaluator,
         Symbol symbol,
         Color color,
-        int score
-    ) : base(symbol, color, score)
+        int score,
+        int id
+    ) : base(symbol, color, score, id)
     {
         Evaluator = evaluator;
     }
