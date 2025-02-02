@@ -25,7 +25,7 @@ public static class Program
             Graphics.EndDrawing();
         }
     }
-    private static IProgramMode Mode = new Setup();
+    private static IProgramMode Mode = new Home();
     private static void ChangeMode(IProgramMode from, IProgramMode to)
     {
         from.SwitchTo -= ChangeMode;
