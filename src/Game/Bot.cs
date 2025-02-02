@@ -4,16 +4,17 @@ using Raylib_cs;
 namespace UltimateTicTacToe.Game;
 public class Bot : Player
 {
-    private Func<LargeGrid<Grid<Tile>, Tile>, Player, Player, double> Evaluate { get; }
+    private Func<LargeGrid<Grid<Tile>, Tile>, Player, Player, double> Evaluate => Evaluator.Evaluate;
+    private LargeBoardEvaluator Evaluator { get; }
     public Bot
     (
-        Func<LargeGrid<Grid<Tile>, Tile>, Player, Player, double> evaluate,
+        LargeBoardEvaluator evaluator,
         Symbol symbol,
         Color color,
         int score
     ) : base(symbol, color, score)
     {
-        Evaluate = evaluate;
+        Evaluator = evaluator;
     }
     public override void BeginTurn
     (
