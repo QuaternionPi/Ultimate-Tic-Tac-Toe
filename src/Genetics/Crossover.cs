@@ -20,11 +20,38 @@ public class Crossover
         _objectProperties = [.. genes.Where(property => property.PropertyType != typeof(double))];
 
         _random = random ?? new Random(0);
-
         _cachedCrossover = [];
         foreach (var objectProperty in _objectProperties)
         {
             Type geneType = objectProperty.PropertyType;
+            if (_cachedCrossover.ContainsKey(geneType))
+            {
+                // if a valid crossover exists in this cache don't create another
+                continue;
+            }
+            var crossover = new Crossover(geneType, _random, _cachedCrossover);
+            _cachedCrossover[geneType] = crossover;
+        }
+    }
+    private Crossover(Type genomeType, Random random, Dictionary<Type, Crossover> cachedCrossover)
+    {
+        _genomeType = genomeType;
+        var genes = genomeType
+            .GetProperties()
+            .Where(property => property.IsDefined(typeof(Gene), false));
+        _doubleProperties = [.. genes.Where(property => property.PropertyType == typeof(double))];
+        _objectProperties = [.. genes.Where(property => property.PropertyType != typeof(double))];
+
+        _random = random;
+        _cachedCrossover = cachedCrossover;
+        foreach (var objectProperty in _objectProperties)
+        {
+            Type geneType = objectProperty.PropertyType;
+            if (_cachedCrossover.ContainsKey(geneType))
+            {
+                // if a valid crossover exists in this cache don't create another
+                continue;
+            }
             var crossover = new Crossover(geneType, _random);
             _cachedCrossover[geneType] = crossover;
         }
