@@ -30,6 +30,11 @@ public class Home : IProgramMode
             var setup = new Setup();
             SwitchTo?.Invoke(this, setup);
         };
+        exitButton.Clicked += () =>
+        {
+            var confirm = new Confirm(this, "Are you certain you wish to exit?", () => Program.Exit(0));
+            SwitchTo?.Invoke(this, confirm);
+        };
     }
     protected List<Button> Buttons;
     public bool InTransition { get; }

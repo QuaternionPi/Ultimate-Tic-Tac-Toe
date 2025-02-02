@@ -32,6 +32,10 @@ public static class Program
         Mode = to;
         to.SwitchTo += ChangeMode;
     }
+    public static void Exit(int status = 0)
+    {
+        Environment.Exit(status);
+    }
 }
 public class Save
 {
