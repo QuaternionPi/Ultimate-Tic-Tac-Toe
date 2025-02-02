@@ -9,7 +9,7 @@ where TCell : ICell
     public TCell WinningPlayerCell { get; }
     public Player? Player { get; }
     public bool AnyPlaceable { get; }
-    public IEnumerable<int> PlayableIndices { get; }
+    public IEnumerable<int> Moves { get; }
 }
 
 

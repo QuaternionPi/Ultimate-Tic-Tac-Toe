@@ -12,7 +12,7 @@ where TCell : ICell<TCell>
     public TCell WinningPlayerCell { get; }
     public Player? Player { get; }
     public bool AnyPlaceable { get; }
-    public IEnumerable<int> PlayableIndices { get; }
+    public IEnumerable<int> Moves { get; }
     public TCell this[int index]
     {
         get { return Cells[index]; }
@@ -29,7 +29,7 @@ where TCell : ICell<TCell>
 
         Player = this.Winner();
         AnyPlaceable = Player == null && Cells.Any((x) => x.Placeable);
-        PlayableIndices =
+        Moves =
             from i in Enumerable.Range(0, 9)
             where Cells[i].Placeable
             select i;
@@ -50,7 +50,7 @@ where TCell : ICell<TCell>
 
         Player = original.Player ?? Winner(player, index);
         AnyPlaceable = Player == null && Cells.Any((x) => x.Placeable);
-        PlayableIndices =
+        Moves =
             from i in Enumerable.Range(0, 9)
             where Cells[i].Placeable
             select i;

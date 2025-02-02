@@ -16,7 +16,7 @@ where TCell : ICell<TCell>
     [JsonInclude]
     public Player? Player { get; }
     public bool AnyPlaceable { get; }
-    public IEnumerable<(int, int)> PlayableIndices { get; }
+    public IEnumerable<(int, int)> Moves { get; }
     public TGrid this[int index]
     {
         get { return Grids[index]; }
@@ -37,10 +37,10 @@ where TCell : ICell<TCell>
         }
         Player = this.Winner();
         AnyPlaceable = Player == null && Grids.Any((x) => x.AnyPlaceable);
-        PlayableIndices =
+        Moves =
             from i in Enumerable.Range(0, 9)
             where Placeable[i]
-            from j in Grids[i].PlayableIndices
+            from j in Grids[i].Moves
             select (i, j);
 
         WinningPlayerCell = winningPlayerCell;
@@ -77,10 +77,10 @@ where TCell : ICell<TCell>
         }
         Player = Winner(player, move);
         AnyPlaceable = Player == null && Grids.Any((x) => x.AnyPlaceable);
-        PlayableIndices =
+        Moves =
             from i in Enumerable.Range(0, 9)
             where Placeable[i]
-            from j in Grids[i].PlayableIndices
+            from j in Grids[i].Moves
             select (i, j);
 
         WinningPlayerCell = original.WinningPlayerCell.Place(Player);

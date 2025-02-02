@@ -11,7 +11,7 @@ public class Bot : Player
     }
     public override void BeginTurn(LargeGrid<Grid<Tile>, Tile> board, UI.LargeBoard<Grid<Tile>, Tile> largeBoard, Player opponent)
     {
-        var possibleMoves = board.PlayableIndices;
+        var possibleMoves = board.Moves;
         var move = BestMove(board, possibleMoves, this, opponent);
         MakeMove(board, move);
     }
@@ -58,7 +58,7 @@ public class Bot : Player
             return Evaluate(board, opponent, player);
         }
 
-        var moves = board.PlayableIndices;
+        var moves = board.Moves;
         double minScore = double.PositiveInfinity;
         foreach (var move in moves)
         {

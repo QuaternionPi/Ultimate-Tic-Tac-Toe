@@ -39,7 +39,7 @@ where TCell : ICell<TCell>
         Boards = new Board<TCell>[9];
         Player = largeBoard.Player;
         Transform = transform;
-        Moves = largeBoard.PlayableIndices;
+        Moves = largeBoard.Moves;
         for (int i = 0; i < 9; i++)
         {
             var board = largeBoard.Grids[i];
@@ -70,7 +70,7 @@ where TCell : ICell<TCell>
         {
             cell.Clicked += HandleClickedCell;
         }
-        Moves = largeBoard.PlayableIndices;
+        Moves = largeBoard.Moves;
         WinningPlayerCell.UpdateCell(largeBoard.WinningPlayerCell);
     }
     public void Update()

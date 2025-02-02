@@ -36,7 +36,7 @@ public class Board<TCell> where TCell : ICell<TCell>
         Cells = new Cell[9];
         Player = board.Player;
         Transform = transform;
-        Moves = moves ?? board.PlayableIndices;
+        Moves = moves ?? board.Moves;
         for (int i = 0; i < 9; i++)
         {
             var cell = board.Cells[i];
@@ -56,7 +56,7 @@ public class Board<TCell> where TCell : ICell<TCell>
     public void UpdateBoard(IBoard<TCell> board, IEnumerable<int>? moves = null)
     {
         Player = board.Player;
-        Moves = moves ?? board.PlayableIndices;
+        Moves = moves ?? board.Moves;
         for (int i = 0; i < 9; i++)
         {
             var cell = board.Cells[i];
