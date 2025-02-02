@@ -40,37 +40,34 @@ public static class LargeBoardExtensions
 
         if (trueCenter != null)
         {
-            bool winnerFound = false;
+            bool winnerFound =
             // Column 1
-            winnerFound |= leftCenter == trueCenter && trueCenter == rightCenter;
+            (leftCenter == trueCenter && trueCenter == rightCenter)
             // Row 1
-            winnerFound |= topCenter == trueCenter && trueCenter == bottomCenter;
-
+            || (topCenter == trueCenter && trueCenter == bottomCenter)
             // Diagonals
-            winnerFound |= topLeft == trueCenter && trueCenter == bottomRight;
-            winnerFound |= topRight == trueCenter && trueCenter == bottomLeft;
-
+            || (topLeft == trueCenter && trueCenter == bottomRight)
+            || (topRight == trueCenter && trueCenter == bottomLeft);
             if (winnerFound)
                 return trueCenter;
         }
         if (topLeft != null)
         {
-            bool winnerFound = false;
+            bool winnerFound =
             // Column 0
-            winnerFound |= topLeft == topCenter && topCenter == topRight;
-
+            (topLeft == topCenter && topCenter == topRight)
             // Row 0
-            winnerFound |= topLeft == leftCenter && leftCenter == bottomLeft;
+            || (topLeft == leftCenter && leftCenter == bottomLeft);
             if (winnerFound)
                 return topLeft;
         }
         if (bottomRight != null)
         {
+            bool winnerFound =
             // Column 2
-            bool winnerFound = false;
-            winnerFound |= bottomLeft == bottomCenter && bottomCenter == bottomRight;
+             (bottomLeft == bottomCenter && bottomCenter == bottomRight)
             // Row 2
-            winnerFound |= topRight == rightCenter && rightCenter == bottomRight;
+            || (topRight == rightCenter && rightCenter == bottomRight);
             if (winnerFound)
                 return bottomRight;
         }
