@@ -15,14 +15,8 @@ public class Bot : Player
         var move = BestMove(board, possibleMoves, this, opponent);
         MakeMove(board, move);
     }
-    public override void EndTurn()
-    {
-
-    }
-    public override void Update()
-    {
-
-    }
+    public override void EndTurn() { }
+    public override void Update() { }
     protected (int, int) BestMove(
         LargeGrid<Grid<Tile>, Tile> board,
         IEnumerable<(int, int)> moves,
@@ -30,25 +24,24 @@ public class Bot : Player
         Player opponent
         )
     {
-        Debug.Assert(moves.Any() != false, "Cannot choose best move from no moves");
+        Debug.Assert(moves.Any(), "Cannot choose best move from no moves");
         double alpha = double.NegativeInfinity;
         double beta = double.PositiveInfinity;
-        int depth = moves.Count() < 7 ? 4 : moves.Count() < 30 ? 3 : 2;
+        int depth = moves.Count() < 7 ? 6 : moves.Count() < 30 ? 5 : 4;
 
-        var evaluatedMoves =
-            from move in moves
-            let placedBoard = board.Place(player, move)
-            let score = Minimax(
-                    placedBoard,
-                    depth,
-                    -beta,
-                    -alpha,
-                    opponent,
-                    player)
-            orderby score descending
-            select move;
-
-        var bestMove = evaluatedMoves.First();
+        var bestMove = moves.First();
+        double minScore = double.PositiveInfinity;
+        foreach (var move in moves)
+        {
+            var placedBoard = board.Place(player, move);
+            var score = -Minimax(placedBoard, depth - 1, -beta, -alpha, opponent, player);
+            beta = Math.Min(beta, score);
+            if (score < minScore)
+            {
+                minScore = score;
+                bestMove = move;
+            }
+        }
         return bestMove;
     }
     protected double Minimax(
@@ -65,18 +58,18 @@ public class Bot : Player
             return Evaluate(board, opponent, player);
         }
 
-        var possibleMoves = board.PlayableIndices;
-        double minEvaluation = double.PositiveInfinity;
-        foreach (var move in possibleMoves)
+        var moves = board.PlayableIndices;
+        double minScore = double.PositiveInfinity;
+        foreach (var move in moves)
         {
             var placedBoard = board.Place(player, move);
-            var evaluation = -Minimax(placedBoard, depth - 1, -beta, -alpha, opponent, player);
-            minEvaluation = Math.Min(minEvaluation, evaluation);
-            beta = Math.Min(beta, evaluation);
+            var score = -Minimax(placedBoard, depth - 1, -beta, -alpha, opponent, player);
+            minScore = Math.Min(minScore, score);
+            beta = Math.Min(beta, score);
             if (beta <= alpha)
                 break;
         }
-        return minEvaluation;
+        return minScore;
     }
     protected void MakeMove(LargeGrid<Grid<Tile>, Tile> board, (int, int) move)
     {
