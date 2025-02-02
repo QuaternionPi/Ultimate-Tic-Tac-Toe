@@ -17,6 +17,15 @@ where TCell : ICell<TCell>
     public Player? Player { get; }
     public bool AnyPlaceable { get; }
     public IEnumerable<(int, int)> PlayableIndices { get; }
+    public TGrid this[int index]
+    {
+        get { return Grids[index]; }
+        private set { Grids[index] = value; }
+    }
+    public IEnumerable<TGrid> this[IEnumerable<int> indices]
+    {
+        get { foreach (var index in indices) yield return Grids[index]; }
+    }
     public LargeGrid(IEnumerable<TGrid> grids, TCell winningPlayerCell)
     {
         Grids = [.. grids];
@@ -66,7 +75,7 @@ where TCell : ICell<TCell>
             }
             Placeable[innerIndex] = true;
         }
-        Player = this.Winner();
+        Player = Winner(player, move);
         AnyPlaceable = Player == null && Grids.Any((x) => x.AnyPlaceable);
         PlayableIndices =
             from i in Enumerable.Range(0, 9)
@@ -79,5 +88,22 @@ where TCell : ICell<TCell>
     public LargeGrid<TGrid, TCell> Place(Player player, (int, int) move)
     {
         return new LargeGrid<TGrid, TCell>(this, player, move);
+    }
+    protected Player? Winner(Player player, (int, int) move)
+    {
+        int[][] winLines = move.Item1 switch
+        {
+            0 => [[0, 1, 2], [0, 3, 6], [0, 4, 8]],
+            1 => [[0, 1, 2], [1, 4, 7]],
+            2 => [[0, 1, 2], [2, 4, 6], [2, 5, 8]],
+            3 => [[0, 3, 6], [3, 4, 5]],
+            4 => [[0, 4, 8], [1, 4, 7], [2, 4, 6], [3, 4, 5]],
+            5 => [[2, 5, 8], [3, 4, 5]],
+            6 => [[0, 3, 6], [2, 4, 6], [6, 7, 8]],
+            7 => [[1, 4, 7], [6, 7, 8]],
+            8 => [[0, 4, 8], [2, 5, 8], [6, 7, 8]],
+            _ => throw new ArgumentOutOfRangeException(nameof(move)),
+        };
+        return winLines.Any(line => this[line].All(grid => grid.Player == player)) ? player : null;
     }
 }

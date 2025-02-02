@@ -74,7 +74,9 @@ public class PlayGame : IProgramMode
             return winner == null ? 0 : winner == p1 ? 1 : -1;
         }, new Random(1));
         for (int i = 0; i < 20; i++)
-            pool.RunGeneration(1);
+        {
+            //pool.RunGeneration(1);
+        }
 
         Game.GameOver += GameOver;
         Game.Start();
