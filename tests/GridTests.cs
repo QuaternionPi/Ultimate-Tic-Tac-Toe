@@ -5,94 +5,98 @@ namespace UltimateTicTacToeTests;
 
 public class SmallGridTests
 {
+    private Grid<Tile> EmptyGrid { get; }
     public SmallGridTests()
     {
-
+        List<Tile> cells = [
+            new Tile(null),
+            new Tile(null),
+            new Tile(null),
+            new Tile(null),
+            new Tile(null),
+            new Tile(null),
+            new Tile(null),
+            new Tile(null),
+            new Tile(null)
+        ];
+        EmptyGrid = new(cells, new Tile(null));
     }
     [Fact]
-    public void EmptyGridHasNineEmptyCells()
+    public void EmptyGridHasAllPlacableCells()
     {
-        Grid<Tile> grid = new();
-        foreach (var row in grid.Cells)
-            foreach (var cell in row)
-                Assert.Null(cell.Player);
+        foreach (var cell in EmptyGrid.Cells)
+        {
+            Assert.True(cell.Placeable);
+        }
+    }
+    [Fact]
+    public void EmptyGridHasNoWinner()
+    {
+        Assert.True(EmptyGrid.Winner is null);
     }
     [Theory]
-    [InlineData(0, 0, 0, 1, 0, 2)] // Top row
-    [InlineData(1, 0, 1, 1, 1, 2)] // Middle row
-    [InlineData(2, 0, 2, 1, 2, 2)] // Bottom row
-    [InlineData(0, 0, 1, 0, 2, 0)] // Left column
-    [InlineData(0, 1, 1, 1, 2, 1)] // Middle column
-    [InlineData(0, 2, 1, 2, 2, 2)] // Right column
-    [InlineData(0, 0, 1, 1, 2, 2)] // Negative diagonal
-    [InlineData(2, 0, 1, 1, 0, 2)] // Positive diagonal
-    public void WonByThreeInARow(int x1, int y1, int x2, int y2, int x3, int y3)
+    [InlineData(0, 1, 2)] // Top row
+    [InlineData(3, 4, 5)] // Middle row
+    [InlineData(6, 7, 8)] // Bottom row
+    [InlineData(0, 3, 6)] // Left column
+    [InlineData(1, 4, 7)] // Middle column
+    [InlineData(2, 5, 8)] // Right column
+    [InlineData(0, 4, 8)] // Negative diagonal
+    [InlineData(6, 4, 2)] // Positive diagonal
+    public void WonByThreeInARow(int a, int b, int c)
     {
-        Grid<Tile> grid = new(null, new(), true);
-        Bot player = new(Player.Symbol.O, Color.BLUE, 0);
+        var symbol = Player.Symbol.O;
+        var player = new Human(symbol, Color.BLUE, 0);
+        var token = player.GetToken();
 
-        Tile topLeft = grid.Cells[x1][y1];
-        grid = grid.Place([topLeft], player, true);
-        Tile topMiddle = grid.Cells[x2][y2];
-        grid = grid.Place([topMiddle], player, true);
-        Tile topRight = grid.Cells[x3][y3];
-        grid = grid.Place([topRight], player, true);
+        var grid = EmptyGrid;
+        grid = grid.Place(token, a);
+        grid = grid.Place(token, b);
+        grid = grid.Place(token, c);
 
-        Player? winner = grid.Winner();
+        Player.Token? winner = grid.Winner;
 
-        Assert.Equal(winner, player);
+        Assert.Equal(winner, token);
     }
     [Fact]
     public void GameNotWonByConstellationOfSix()
     {
-        Grid<Tile> grid = new(null, new(), true);
-        Bot player = new(Player.Symbol.O, Color.BLUE, 0);
+        var symbol = Player.Symbol.O;
+        var player = new Human(symbol, Color.BLUE, 0);
+        var token = player.GetToken();
 
-        Tile topLeft = grid.Cells[0][0];
-        grid = grid.Place([topLeft], player, true);
-        Tile topMiddle = grid.Cells[0][1];
-        grid = grid.Place([topMiddle], player, true);
-        Tile leftMiddle = grid.Cells[1][0];
-        grid = grid.Place([leftMiddle], player, true);
-        Tile bottomRight = grid.Cells[2][2];
-        grid = grid.Place([bottomRight], player, true);
-        Tile bottomMiddle = grid.Cells[2][1];
-        grid = grid.Place([bottomMiddle], player, true);
-        Tile rightMiddle = grid.Cells[1][2];
-        grid = grid.Place([rightMiddle], player, true);
+        var grid = EmptyGrid;
+        grid = grid.Place(token, 0);
+        grid = grid.Place(token, 1);
+        grid = grid.Place(token, 3);
+        grid = grid.Place(token, 5);
+        grid = grid.Place(token, 7);
+        grid = grid.Place(token, 8);
 
-        Player? winner = grid.Winner();
-
+        Player.Token? winner = grid.Winner;
         Assert.Null(winner);
     }
     [Fact]
     public void GameCanTie()
     {
-        Grid<Tile> grid = new(null, new(), true);
-        Bot player1 = new(Player.Symbol.O, Color.BLUE, 0);
-        Bot player2 = new(Player.Symbol.X, Color.RED, 0);
+        var symbol = Player.Symbol.O;
+        var player1 = new Human(symbol, Color.BLUE, 0);
+        var player2 = new Human(symbol, Color.BLUE, 0);
+        var token1 = player1.GetToken();
+        var token2 = player2.GetToken();
 
-        Tile topLeft = grid.Cells[0][0];
-        grid = grid.Place([topLeft], player1, true);
-        Tile topMiddle = grid.Cells[0][1];
-        grid = grid.Place([topMiddle], player1, true);
-        Tile topRight = grid.Cells[0][2];
-        grid = grid.Place([topRight], player2, true);
-        Tile leftMiddle = grid.Cells[1][0];
-        grid = grid.Place([leftMiddle], player2, true);
-        Tile trueMiddle = grid.Cells[1][1];
-        grid = grid.Place([trueMiddle], player1, true);
-        Tile rightMiddle = grid.Cells[1][2];
-        grid = grid.Place([rightMiddle], player1, true);
-        Tile bottomLeft = grid.Cells[2][0];
-        grid = grid.Place([bottomLeft], player1, true);
-        Tile bottomMiddle = grid.Cells[2][1];
-        grid = grid.Place([bottomMiddle], player2, true);
-        Tile bottomRight = grid.Cells[2][2];
-        grid = grid.Place([bottomRight], player2, true);
+        var grid = EmptyGrid;
+        grid = grid.Place(token1, 0);
+        grid = grid.Place(token1, 1);
+        grid = grid.Place(token2, 2);
+        grid = grid.Place(token2, 3);
+        grid = grid.Place(token2, 4);
+        grid = grid.Place(token1, 5);
+        grid = grid.Place(token1, 6);
+        grid = grid.Place(token1, 7);
+        grid = grid.Place(token2, 8);
 
-        Player? winner = grid.Winner();
-
+        Player.Token? winner = grid.Winner;
         Assert.Null(winner);
     }
 
