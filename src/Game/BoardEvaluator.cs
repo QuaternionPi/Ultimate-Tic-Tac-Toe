@@ -20,25 +20,25 @@ public class BoardEvaluator
         Corner = corner;
         Win = win;
     }
-    public double Evaluate<TCell>(IBoard<TCell> board, Player player, Player opponent) where TCell : ICell
+    public double Evaluate<TCell>(IBoard<TCell> board, Player.Token player, Player.Token opponent) where TCell : ICell
     {
         // Centre
-        double evaluation = Award(Centre, board.Cells[4].Player, player, opponent);
+        double evaluation = Award(Centre, board.Cells[4].Owner, player, opponent);
 
         // Edges
-        evaluation += Award(Edge, board.Cells[0].Player, player, opponent);
-        evaluation += Award(Edge, board.Cells[2].Player, player, opponent);
-        evaluation += Award(Edge, board.Cells[6].Player, player, opponent);
-        evaluation += Award(Edge, board.Cells[8].Player, player, opponent);
+        evaluation += Award(Edge, board.Cells[0].Owner, player, opponent);
+        evaluation += Award(Edge, board.Cells[2].Owner, player, opponent);
+        evaluation += Award(Edge, board.Cells[6].Owner, player, opponent);
+        evaluation += Award(Edge, board.Cells[8].Owner, player, opponent);
 
         // Corners
-        evaluation += Award(Corner, board.Cells[0].Player, player, opponent);
-        evaluation += Award(Corner, board.Cells[2].Player, player, opponent);
-        evaluation += Award(Corner, board.Cells[6].Player, player, opponent);
-        evaluation += Award(Corner, board.Cells[8].Player, player, opponent);
+        evaluation += Award(Corner, board.Cells[0].Owner, player, opponent);
+        evaluation += Award(Corner, board.Cells[2].Owner, player, opponent);
+        evaluation += Award(Corner, board.Cells[6].Owner, player, opponent);
+        evaluation += Award(Corner, board.Cells[8].Owner, player, opponent);
 
         // Win
-        evaluation += Award(Win, board.Player, player, opponent);
+        evaluation += Award(Win, board.Winner, player, opponent);
         return evaluation;
     }
     protected static double Award<T>(double amount, T? compare, T positive, T negative) where T : class

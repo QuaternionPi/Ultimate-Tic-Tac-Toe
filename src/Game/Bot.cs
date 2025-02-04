@@ -4,16 +4,15 @@ using Raylib_cs;
 namespace UltimateTicTacToe.Game;
 public class Bot : Player
 {
-    private Func<LargeGrid<Grid<Tile>, Tile>, Player, Player, double> Evaluate => Evaluator.Evaluate;
+    private Func<LargeGrid<Grid<Tile>, Tile>, Player.Token, Player.Token, double> Evaluate => Evaluator.Evaluate;
     private LargeBoardEvaluator Evaluator { get; }
     public Bot
     (
         LargeBoardEvaluator evaluator,
         Symbol symbol,
         Color color,
-        int score,
-        int id
-    ) : base(symbol, color, score, id)
+        int score
+    ) : base(symbol, color, score)
     {
         Evaluator = evaluator;
     }
@@ -25,7 +24,7 @@ public class Bot : Player
     )
     {
         var possibleMoves = board.Moves;
-        var move = BestMove(board, possibleMoves, this, opponent);
+        var move = BestMove(board, possibleMoves, GetToken(), opponent.GetToken());
         MakeMove(board, move);
     }
     public override void EndTurn() { }
@@ -34,8 +33,8 @@ public class Bot : Player
     (
         LargeGrid<Grid<Tile>, Tile> board,
         IEnumerable<(int, int)> moves,
-        Player player,
-        Player opponent
+        Player.Token player,
+        Player.Token opponent
     )
     {
         Debug.Assert(moves.Any(), "Cannot choose best move from no moves");
@@ -64,8 +63,8 @@ public class Bot : Player
         double depth,
         double alpha,
         double beta,
-        Player player,
-        Player opponent
+        Player.Token player,
+        Player.Token opponent
     )
     {
         // The base case of the recursion or board is winning position

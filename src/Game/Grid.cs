@@ -10,7 +10,7 @@ where TCell : ICell<TCell>
     [JsonInclude]
     public TCell[] Cells { get; }
     public TCell WinningPlayerCell { get; }
-    public Player? Player { get; }
+    public Player.Token? Winner { get; }
     public bool AnyPlaceable { get; }
     public IEnumerable<int> Moves { get; }
     public TCell this[int index]
@@ -27,8 +27,8 @@ where TCell : ICell<TCell>
         Cells = [.. cells];
         Debug.Assert(Cells.Length == 9);
 
-        Player = this.Winner();
-        AnyPlaceable = Player == null && Cells.Any((cell) => cell.Placeable);
+        Winner = this.Winner();
+        AnyPlaceable = Winner == null && Cells.Any((cell) => cell.Placeable);
         Moves =
             from i in Enumerable.Range(0, 9)
             where Cells[i].Placeable
@@ -36,7 +36,7 @@ where TCell : ICell<TCell>
 
         WinningPlayerCell = winningPlayerCell;
     }
-    public Grid(Grid<TCell> original, Player player, int index)
+    public Grid(Grid<TCell> original, Player.Token token, int index)
     {
         Debug.Assert(original.Cells[index].Placeable, "You Cannot place on that cell");
         Transform = original.Transform;
@@ -45,23 +45,23 @@ where TCell : ICell<TCell>
         for (int i = 0; i < 9; i++)
         {
             TCell originalCell = original.Cells[i];
-            Cells[i] = i == index ? originalCell.Place(player) : originalCell;
+            Cells[i] = i == index ? originalCell.Place(token) : originalCell;
         }
 
-        Player = original.Player ?? Winner(player, index);
-        AnyPlaceable = Player == null && Cells.Any((cell) => cell.Placeable);
+        Winner = original.Winner ?? UpdateWinner(token, index);
+        AnyPlaceable = Winner == null && Cells.Any((cell) => cell.Placeable);
         Moves =
             from i in Enumerable.Range(0, 9)
             where Cells[i].Placeable
             select i;
 
-        WinningPlayerCell = original.WinningPlayerCell.Place(Player);
+        WinningPlayerCell = original.WinningPlayerCell.Place(Winner);
     }
-    public Grid<TCell> Place(Player player, int index)
+    public Grid<TCell> Place(Player.Token token, int index)
     {
-        return new Grid<TCell>(this, player, index);
+        return new Grid<TCell>(this, token, index);
     }
-    protected Player? Winner(Player player, int move)
+    protected Player.Token? UpdateWinner(Player.Token token, int move)
     {
         int[][] winLines = move switch
         {
@@ -76,6 +76,6 @@ where TCell : ICell<TCell>
             8 => [[0, 4, 8], [2, 5, 8], [6, 7, 8]],
             _ => throw new ArgumentOutOfRangeException(nameof(move)),
         };
-        return winLines.Any(line => this[line].All(cell => cell.Player == player)) ? player : null;
+        return winLines.Any(line => this[line].All(cell => cell.Owner == token)) ? token : null;
     }
 }

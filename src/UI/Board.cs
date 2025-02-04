@@ -5,7 +5,7 @@ namespace UltimateTicTacToe.UI;
 
 public class Board<TCell> where TCell : ICell<TCell>
 {
-    private Player? Player { get; set; }
+    private Player.Token? Winner { get; set; }
     private Cell[] Cells { get; set; }
     private IEnumerable<int> Moves { get; set; }
     private Cell WinningPlayerCell { get; set; }
@@ -34,7 +34,7 @@ public class Board<TCell> where TCell : ICell<TCell>
     public Board(IBoard<TCell> board, Transform2D transform, TimeSpan transitionTime, IEnumerable<int>? moves = null)
     {
         Cells = new Cell[9];
-        Player = board.Player;
+        Winner = board.Winner;
         Transform = transform;
         Moves = moves ?? board.Moves;
         for (int i = 0; i < 9; i++)
@@ -55,7 +55,7 @@ public class Board<TCell> where TCell : ICell<TCell>
     }
     public void UpdateBoard(IBoard<TCell> board, IEnumerable<int>? moves = null)
     {
-        Player = board.Player;
+        Winner = board.Winner;
         Moves = moves ?? board.Moves;
         for (int i = 0; i < 9; i++)
         {
@@ -81,7 +81,7 @@ public class Board<TCell> where TCell : ICell<TCell>
     public void Draw()
     {
         bool gridCellInTransition = Cells.Any((x) => x.InTransition);
-        if (Player != null && gridCellInTransition == false)
+        if (Winner != null && gridCellInTransition == false)
         {
             WinningPlayerCell.Draw();
             return;

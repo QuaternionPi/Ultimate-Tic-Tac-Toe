@@ -7,7 +7,7 @@ where TCell : ICell
 {
     public TCell[] Cells { get; }
     public TCell WinningPlayerCell { get; }
-    public Player? Player { get; }
+    public Player.Token? Winner { get; }
     public bool AnyPlaceable { get; }
     public IEnumerable<int> Moves { get; }
 }
@@ -16,31 +16,31 @@ public interface IBoard<TSelf, TCell> : IBoard<TCell>
 where TSelf : IBoard<TSelf, TCell>
 where TCell : ICell<TCell>
 {
-    public TSelf Place(Player player, int index);
+    public TSelf Place(Player.Token token, int index);
 }
 public static class BoardExtensions
 {
-    public static Player? Winner<TSelf, TCell>(this IBoard<TSelf, TCell> board)
+    public static Player.Token? Winner<TSelf, TCell>(this IBoard<TSelf, TCell> board)
     where TCell : ICell<TCell>
     where TSelf : IBoard<TSelf, TCell>
     {
-        Player?[] cellWinners = new Player?[9];
+        Player.Token?[] cellWinners = new Player.Token?[9];
         for (int i = 0; i < 9; i++)
         {
-            cellWinners[i] = board.Cells[i]?.Player;
+            cellWinners[i] = board.Cells[i]?.Owner;
         }
 
-        Player? topLeft = cellWinners[0];
-        Player? topCenter = cellWinners[1];
-        Player? topRight = cellWinners[2];
+        Player.Token? topLeft = cellWinners[0];
+        Player.Token? topCenter = cellWinners[1];
+        Player.Token? topRight = cellWinners[2];
 
-        Player? leftCenter = cellWinners[3];
-        Player? trueCenter = cellWinners[4];
-        Player? rightCenter = cellWinners[5];
+        Player.Token? leftCenter = cellWinners[3];
+        Player.Token? trueCenter = cellWinners[4];
+        Player.Token? rightCenter = cellWinners[5];
 
-        Player? bottomLeft = cellWinners[6];
-        Player? bottomCenter = cellWinners[7];
-        Player? bottomRight = cellWinners[8];
+        Player.Token? bottomLeft = cellWinners[6];
+        Player.Token? bottomCenter = cellWinners[7];
+        Player.Token? bottomRight = cellWinners[8];
 
         if (trueCenter != null)
         {

@@ -8,8 +8,8 @@ public class Setup : IProgramMode
     public Setup(IProgramMode? previous = null)
     {
         Previous = previous;
-        Player1 = new Human(Player.Symbol.X, Color.RED, 0, 1);
-        Player2 = new Human(Player.Symbol.O, Color.BLUE, 0, 2);
+        Player1 = new Human(Player.Symbol.X, Color.RED, 0);
+        Player2 = new Human(Player.Symbol.O, Color.BLUE, 0);
         UI = new BannerController(Player1, Player2);
         UI.Activate(Player1);
         UI.Activate(Player2);
@@ -85,14 +85,14 @@ public class Setup : IProgramMode
         Player player1;
         Player player2;
         if (Player1Type == "Human")
-            player1 = new Human(Player1.Shape, Player1.Color, 0, 1);
+            player1 = new Human(Player1.Shape, Player1.Color, 0);
         else
-            player1 = new Bot(evaluator, Player1.Shape, Player1.Color, 0, 1);
+            player1 = new Bot(evaluator, Player1.Shape, Player1.Color, 0);
 
         if (Player2Type == "Human")
-            player2 = new Human(Player2.Shape, Player2.Color, 0, 2);
+            player2 = new Human(Player2.Shape, Player2.Color, 0);
         else
-            player2 = new Bot(evaluator, Player2.Shape, Player2.Color, 0, 2);
+            player2 = new Bot(evaluator, Player2.Shape, Player2.Color, 0);
 
 
         var position = new Vector2(450, 350);

@@ -14,7 +14,7 @@ where TCell : ICell<TCell>
     public TGrid[] Grids { get; }
     public TCell WinningPlayerCell { get; }
     [JsonInclude]
-    public Player? Player { get; }
+    public Player.Token? Winner { get; }
     public bool AnyPlaceable { get; }
     public IEnumerable<(int, int)> Moves { get; }
     public TGrid this[int index]
@@ -35,8 +35,8 @@ where TCell : ICell<TCell>
         {
             Placeable[i] = Grids[i].AnyPlaceable;
         }
-        Player = this.Winner();
-        AnyPlaceable = Player == null && Grids.Any((x) => x.AnyPlaceable);
+        Winner = this.Winner();
+        AnyPlaceable = Winner == null && Grids.Any((x) => x.AnyPlaceable);
         Moves =
             from i in Enumerable.Range(0, 9)
             where Placeable[i]
@@ -45,7 +45,7 @@ where TCell : ICell<TCell>
 
         WinningPlayerCell = winningPlayerCell;
     }
-    public LargeGrid(LargeGrid<TGrid, TCell> original, Player player, (int, int) move)
+    public LargeGrid(LargeGrid<TGrid, TCell> original, Player.Token token, (int, int) move)
     {
         var index = move.Item1;
         var innerIndex = move.Item2;
@@ -56,7 +56,7 @@ where TCell : ICell<TCell>
         for (int i = 0; i < 9; i++)
         {
             TGrid originalGrid = original.Grids[i];
-            Grids[i] = i == index ? originalGrid.Place(player, innerIndex) : originalGrid;
+            Grids[i] = i == index ? originalGrid.Place(token, innerIndex) : originalGrid;
         }
         Placeable = new bool[9];
         TGrid nextGrid = Grids[innerIndex];
@@ -75,21 +75,21 @@ where TCell : ICell<TCell>
                 Placeable[i] = Grids[i].AnyPlaceable;
             }
         }
-        Player = Winner(player, move);
-        AnyPlaceable = Player == null && Grids.Any((x) => x.AnyPlaceable);
+        Winner = UpdateWinner(token, move);
+        AnyPlaceable = Winner == null && Grids.Any((x) => x.AnyPlaceable);
         Moves =
             from i in Enumerable.Range(0, 9)
             where Placeable[i]
             from j in Grids[i].Moves
             select (i, j);
 
-        WinningPlayerCell = original.WinningPlayerCell.Place(Player);
+        WinningPlayerCell = original.WinningPlayerCell.Place(Winner);
     }
-    public LargeGrid<TGrid, TCell> Place(Player player, (int, int) move)
+    public LargeGrid<TGrid, TCell> Place(Player.Token player, (int, int) move)
     {
         return new LargeGrid<TGrid, TCell>(this, player, move);
     }
-    protected Player? Winner(Player player, (int, int) move)
+    protected Player.Token? UpdateWinner(Player.Token token, (int, int) move)
     {
         int[][] winLines = move.Item1 switch
         {
@@ -104,6 +104,6 @@ where TCell : ICell<TCell>
             8 => [[0, 4, 8], [2, 5, 8], [6, 7, 8]],
             _ => throw new ArgumentOutOfRangeException(nameof(move)),
         };
-        return winLines.Any(line => this[line].All(grid => grid.Player == player)) ? player : null;
+        return winLines.Any(line => this[line].All(grid => grid.Winner == token)) ? token : null;
     }
 }

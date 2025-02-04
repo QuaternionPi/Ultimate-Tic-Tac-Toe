@@ -54,7 +54,7 @@ public class Game
             Console.WriteLine($"Not player {player}'s turn");
             return;
         }
-        Board = Board.Place(ActivePlayer, move);
+        Board = Board.Place(ActivePlayer.GetToken(), move);
         BoardUI.UpdateLargeBoard(Board);
         ChangePlayer = true;
     }
@@ -86,12 +86,24 @@ public class Game
             return;
         }
         // Board won by a player or the board cannot be placed on
-        if (Board.Player != null || Board.AnyPlaceable == false)
+        var winner = Board.Winner;
+        if (winner is not null || Board.AnyPlaceable == false)
         {
             ActivePlayer.PlayTurn -= HandlePlayerTurn;
             InactivePlayer.PlayTurn -= HandlePlayerTurn;
             ActivePlayer.EndTurn();
-            GameOver?.Invoke(this, Board.Player);
+            if (ActivePlayer.Equals(winner))
+            {
+                GameOver?.Invoke(this, ActivePlayer);
+            }
+            else if (InactivePlayer.Equals(winner))
+            {
+                GameOver?.Invoke(this, InactivePlayer);
+            }
+            else
+            {
+                GameOver?.Invoke(this, null);
+            }
             return;
         }
         // Toggle players

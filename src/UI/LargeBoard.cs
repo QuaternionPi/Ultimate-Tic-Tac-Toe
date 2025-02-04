@@ -8,7 +8,7 @@ public class LargeBoard<TGrid, TCell>
 where TGrid : IBoard<TGrid, TCell>
 where TCell : ICell<TCell>
 {
-    private Player? Player { get; set; }
+    private Player.Token? Winner { get; set; }
     private Board<TCell>[] Boards { get; set; }
     private IEnumerable<(int, int)> Moves { get; set; }
     private Cell WinningPlayerCell { get; set; }
@@ -37,7 +37,7 @@ where TCell : ICell<TCell>
     public LargeBoard(ILargeBoard<TGrid, TCell> largeBoard, Transform2D transform, TimeSpan transitionTime)
     {
         Boards = new Board<TCell>[9];
-        Player = largeBoard.Player;
+        Winner = largeBoard.Winner;
         Transform = transform;
         Moves = largeBoard.Moves;
         for (int i = 0; i < 9; i++)
@@ -59,7 +59,7 @@ where TCell : ICell<TCell>
     }
     public void UpdateLargeBoard(ILargeBoard<TGrid, TCell> largeBoard)
     {
-        Player = largeBoard.Player;
+        Winner = largeBoard.Winner;
         for (int i = 0; i < 9; i++)
         {
             var moves = from move in Moves where move.Item1 == i select move.Item2;
@@ -86,7 +86,7 @@ where TCell : ICell<TCell>
     public void Draw()
     {
         bool gridCellInTransition = Boards.Any((x) => x.InTransition);
-        if (Player != null && gridCellInTransition == false)
+        if (Winner != null && gridCellInTransition == false)
         {
             WinningPlayerCell.Draw();
             return;

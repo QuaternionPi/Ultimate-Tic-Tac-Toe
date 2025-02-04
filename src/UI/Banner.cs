@@ -1,5 +1,6 @@
 using System.Numerics;
 using Raylib_cs;
+using UltimateTicTacToe.Game;
 
 namespace UltimateTicTacToe.UI;
 /*
@@ -13,7 +14,7 @@ public class Banner
         Transform = transform;
         Active = active;
         Font = Graphics.Text.GetFontDefault();
-        Cell = new Cell(Player, Transform, 0);
+        Cell = new Cell(Player.GetToken(), Transform, 0);
     }
     public Transform2D Transform { get; }
     public Game.Player Player { get; }

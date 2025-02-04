@@ -5,7 +5,7 @@ public class Human : Player
 {
     private UI.LargeBoard<Grid<Tile>, Tile>? BoardUI { get; set; }
     private bool MoveMade { get; set; }
-    public Human(Symbol symbol, Color color, int score, int id) : base(symbol, color, score, id)
+    public Human(Symbol symbol, Color color, int score) : base(symbol, color, score)
     {
         MoveMade = false;
     }

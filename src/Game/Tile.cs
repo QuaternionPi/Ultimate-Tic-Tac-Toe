@@ -4,14 +4,14 @@ namespace UltimateTicTacToe.Game;
 public class Tile : ICell<Tile>
 {
     [JsonInclude]
-    public Player? Player { get; }
+    public Player.Token? Owner { get; }
     public bool Placeable { get; }
-    public Tile(Player? player)
+    public Tile(Player.Token? player)
     {
-        Player = player;
+        Owner = player;
         Placeable = player == null;
     }
-    public Tile Place(Player? player)
+    public Tile Place(Player.Token? player)
     {
         return new Tile(player);
     }

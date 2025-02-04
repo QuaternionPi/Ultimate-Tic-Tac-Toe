@@ -26,7 +26,7 @@ public class LargeBoardEvaluator
         Corner = corner;
         Win = win;
     }
-    public double Evaluate<TBoard, TCell>(ILargeBoard<TBoard, TCell> largeBoard, Player player, Player opponent)
+    public double Evaluate<TBoard, TCell>(ILargeBoard<TBoard, TCell> largeBoard, Player.Token player, Player.Token opponent)
     where TBoard : IBoard<TBoard, TCell>
     where TCell : ICell<TCell>
     {
@@ -46,7 +46,7 @@ public class LargeBoardEvaluator
         evaluation += Corner.Evaluate(largeBoard.Grids[8], player, opponent);
 
         // Win
-        evaluation += Award(Win, largeBoard.Player, player, opponent);
+        evaluation += Award(Win, largeBoard.Winner, player, opponent);
         return evaluation;
 
     }
