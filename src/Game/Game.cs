@@ -92,11 +92,11 @@ public class Game
             ActivePlayer.PlayTurn -= HandlePlayerTurn;
             InactivePlayer.PlayTurn -= HandlePlayerTurn;
             ActivePlayer.EndTurn();
-            if (ActivePlayer.Equals(winner))
+            if (ActivePlayer.GetToken().Equals(winner))
             {
                 GameOver?.Invoke(this, ActivePlayer);
             }
-            else if (InactivePlayer.Equals(winner))
+            else if (InactivePlayer.GetToken().Equals(winner))
             {
                 GameOver?.Invoke(this, InactivePlayer);
             }
