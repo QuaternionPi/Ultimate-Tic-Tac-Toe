@@ -10,13 +10,13 @@ namespace UltimateTicTacToe.Serialization.Json
             if (reader.TokenType != JsonTokenType.String)
                 throw new JsonException("Expected to decode a string");
             string text = reader.GetString() ?? throw new JsonException("String cannot be null");
-            if (text.Length != 7 && text.Length != 9) throw new JsonException($"Colors must be of length 7 (RBG) or 9 (RGBA), not: {text}");
+            if (text.Length != 7 && text.Length != 9) throw new JsonException($"Colors must be of length 7 (RBG) or 9 (RGBA), not: {text.Length}");
 
             return text.Length == 7 ? ReadRGB(text) : ReadRGBA(text);
         }
         public override void Write(Utf8JsonWriter writer, Color color, JsonSerializerOptions options)
         {
-            string text = $"#{color.r:X}{color.g:X}{color.b:X}{color.a:X}";
+            string text = $"#{color.r:X2}{color.g:X2}{color.b:X2}{color.a:X2}";
             writer.WriteStringValue(text);
         }
         private static Color ReadRGB(string text)
