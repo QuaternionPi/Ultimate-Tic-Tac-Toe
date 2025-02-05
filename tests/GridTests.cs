@@ -3,10 +3,10 @@ using UltimateTicTacToe.Game;
 
 namespace UltimateTicTacToeTests;
 
-public class SmallGridTests
+public class GridTests
 {
     private Grid<Tile> EmptyGrid { get; }
-    public SmallGridTests()
+    public GridTests()
     {
         List<Tile> cells = [
             new Tile(null),
@@ -81,7 +81,7 @@ public class SmallGridTests
     {
         var symbol = Player.Symbol.O;
         var player1 = new Human(symbol, Color.BLUE, 0);
-        var player2 = new Human(symbol, Color.BLUE, 0);
+        var player2 = new Human(symbol, Color.RED, 0);
         var token1 = player1.GetToken();
         var token2 = player2.GetToken();
 
