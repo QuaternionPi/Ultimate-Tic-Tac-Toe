@@ -6,8 +6,6 @@ namespace UltimateTicTacToe.Game;
 public class Grid<TCell> : IBoard<Grid<TCell>, TCell>
 where TCell : ICell<TCell>
 {
-    public Transform2D Transform { get; }
-    [JsonInclude]
     public TCell[] Cells { get; }
     public TCell WinningPlayerCell { get; }
     public Player.Token? Winner { get; }
@@ -39,7 +37,6 @@ where TCell : ICell<TCell>
     public Grid(Grid<TCell> original, Player.Token token, int index)
     {
         Debug.Assert(original.Cells[index].Placeable, "You Cannot place on that cell");
-        Transform = original.Transform;
         Cells = new TCell[9];
 
         for (int i = 0; i < 9; i++)
