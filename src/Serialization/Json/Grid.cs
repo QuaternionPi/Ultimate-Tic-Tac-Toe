@@ -34,9 +34,11 @@ namespace UltimateTicTacToe.Serialization.Json
         where TCell : class, ICell<TCell>
         {
             private JsonConverter<TCell> CellConverter { get; }
+            private JsonConverter<TCell[]> CellArrayConverter { get; }
             public GridOfTConverterInner(JsonSerializerOptions options)
             {
                 CellConverter = (JsonConverter<TCell>)options.GetConverter(typeof(TCell));
+                CellArrayConverter = (JsonConverter<TCell[]>)options.GetConverter(typeof(TCell[]));
             }
             public override Grid<TCell>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
@@ -65,10 +67,10 @@ namespace UltimateTicTacToe.Serialization.Json
                     switch (propertyName)
                     {
                         case "Cells":
-                            cells = JsonSerializer.Deserialize<TCell[]>(ref reader, options);
+                            cells = CellArrayConverter.Read(ref reader, typeof(TCell[]), options);
                             break;
                         case "WinningPlayerCell":
-                            winningPlayerCell = JsonSerializer.Deserialize<TCell>(ref reader, options);
+                            winningPlayerCell = CellConverter.Read(ref reader, typeof(TCell), options);
                             break;
                         default:
                             throw new JsonException($"Expects properties 'Cells' or 'WinningPlayerCell' not {propertyName}");
@@ -81,15 +83,10 @@ namespace UltimateTicTacToe.Serialization.Json
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName("Cells");
-                writer.WriteStartArray();
-                foreach (TCell cell in grid.Cells)
-                {
-                    JsonSerializer.Serialize(writer, cell, options);
-                }
-                writer.WriteEndArray();
+                CellArrayConverter.Write(writer, grid.Cells, options);
 
                 writer.WritePropertyName("WinningPlayerCell");
-                JsonSerializer.Serialize(writer, grid.WinningPlayerCell, options);
+                CellConverter.Write(writer, grid.WinningPlayerCell, options);
 
                 writer.WriteEndObject();
             }
