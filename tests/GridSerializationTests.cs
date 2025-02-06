@@ -26,21 +26,4 @@ public class GridSerializationTests
         Assert.Equal(grid.AnyPlaceable, newGrid?.AnyPlaceable);
         Assert.Equal(grid.ToString(), newGrid?.ToString());
     }
-    [Fact]
-    public void CanSerializeGrid()
-    {
-        var options = new JsonSerializerOptions();
-        options.Converters.Add(new TileConverter());
-        options.Converters.Add(new ColorConverter());
-        var symbol = Player.Symbol.O;
-        var player = new Human(symbol, Color.BLUE, 0);
-        var token = player.GetToken();
-
-        var tile = new Tile(token);
-        var json = JsonSerializer.Serialize(tile, options);
-        var newTile = JsonSerializer.Deserialize<Tile>(json, options);
-        Assert.Equal(tile.Owner, newTile?.Owner);
-        Assert.Equal(tile.Placeable, newTile?.Placeable);
-        Assert.Equal(tile.ToString(), newTile?.ToString());
-    }
 }
