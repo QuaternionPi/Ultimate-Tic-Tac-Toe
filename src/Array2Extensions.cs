@@ -1,4 +1,4 @@
-static class Extensions
+static class Array2Extensions
 {
     public static R[,] Select<T, R>(this T[,] items, Func<T, R> f)
     {
