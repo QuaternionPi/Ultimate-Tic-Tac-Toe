@@ -4,7 +4,7 @@ using Raylib_cs;
 using UltimateTicTacToe.UI;
 
 namespace UltimateTicTacToe.Game;
-public abstract partial class Player
+public abstract partial class Player(Player.Symbol symbol, Color color, int score)
 {
     public static readonly Color[] AllowedColors = [
         Color.RED,
@@ -15,19 +15,13 @@ public abstract partial class Player
         Color.DARKGREEN,
     ];
     public enum Symbol { X, O };
-    public Player(Symbol symbol, Color color, int score)
-    {
-        Shape = symbol;
-        Color = color;
-        Score = score;
-        _token = new Token(symbol, color);
-    }
+
     [JsonInclude]
-    public int Score;
+    public int Score { get; set; } = score;
     [JsonInclude]
-    public Symbol Shape { get; set; }
+    public Symbol Shape { get; set; } = symbol;
     [JsonInclude]
-    public Color Color { get; set; }
+    public Color Color { get; set; } = color;
     public event Action<Player, LargeGrid<Grid<Tile>, Tile>, (int, int)>? PlayTurn;
     protected void InvokePlayTurn(Player player, LargeGrid<Grid<Tile>, Tile> board, (int, int) move) => PlayTurn?.Invoke(player, board, move);
     public abstract void BeginTurn(LargeGrid<Grid<Tile>, Tile> board, LargeBoard<Grid<Tile>, Tile> largeBoard, Player opponent);
