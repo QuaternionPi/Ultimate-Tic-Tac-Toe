@@ -31,10 +31,11 @@ public class PlayerSerializationTests
     public void CanSerializeBotPlayer()
     {
         var options = new JsonSerializerOptions();
+        options.Converters.Add(new ColorConverter());
 
-        var evaluator = new LargeBoardEvaluator();
         var symbol = Player.Symbol.O;
-        var player = new Bot(evaluator, symbol, Color.BLUE, 0);
+        var evaluator = new LargeBoardEvaluator(new(1, 2, 3, 4), new(5, 6, 7, 8), new(9, 10, 11, 12), 40);
+        Player player = new Bot(evaluator, symbol, Color.BLUE, 0);
         var json = JsonSerializer.Serialize(player, options);
         var newPlayer = JsonSerializer.Deserialize<Player>(json, options);
         Assert.Equal(player.Score, newPlayer?.Score);

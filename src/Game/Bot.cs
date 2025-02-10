@@ -1,18 +1,22 @@
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 using Raylib_cs;
 
 namespace UltimateTicTacToe.Game;
 public class Bot : Player
 {
-    private Func<LargeGrid<Grid<Tile>, Tile>, Player.Token, Player.Token, double> Evaluate => Evaluator.Evaluate;
+    [JsonIgnore]
+    private Func<LargeGrid<Grid<Tile>, Tile>, Token, Token, double> Evaluate => Evaluator.Evaluate;
+    [JsonInclude]
     private LargeBoardEvaluator Evaluator { get; }
+    [JsonConstructor]
     public Bot
     (
         LargeBoardEvaluator evaluator,
-        Symbol symbol,
+        Symbol shape,
         Color color,
         int score
-    ) : base(symbol, color, score)
+    ) : base(shape, color, score)
     {
         Evaluator = evaluator;
     }
@@ -33,8 +37,8 @@ public class Bot : Player
     (
         LargeGrid<Grid<Tile>, Tile> board,
         IEnumerable<(int, int)> moves,
-        Player.Token player,
-        Player.Token opponent
+        Token player,
+        Token opponent
     )
     {
         Debug.Assert(moves.Any(), "Cannot choose best move from no moves");
@@ -63,8 +67,8 @@ public class Bot : Player
         double depth,
         double alpha,
         double beta,
-        Player.Token player,
-        Player.Token opponent
+        Token player,
+        Token opponent
     )
     {
         // The base case of the recursion or board is winning position
