@@ -7,31 +7,40 @@ public class Game
 {
     [JsonInclude]
     private LargeGrid<Grid<Tile>, Tile> Board { get; set; }
+    [JsonIgnore]
     private UI.LargeBoard<Grid<Tile>, Tile> BoardUI { get; set; }
     [JsonInclude]
-    public Player ActivePlayer { get; protected set; }
+    public Player Active { get; protected set; }
     [JsonInclude]
-    public Player InactivePlayer { get; protected set; }
+    public Player Inactive { get; protected set; }
+    [JsonIgnore]
     private bool ChangePlayer;
-    [JsonInclude]
+    [JsonIgnore]
     private UI.BannerController BannerController { get; set; }
     [JsonInclude]
     public int TurnNumber { get; protected set; }
+    [JsonInclude]
     private TimeSpan TurnDelay { get; set; }
+    [JsonInclude]
+    private TimeSpan TransitionTime { get; set; }
+    [JsonIgnore]
     public bool InProgress { get; protected set; }
     public event Action<Game, Player?>? GameOver;
-    public Game(Player active, Player inactive, LargeGrid<Grid<Tile>, Tile> board, TimeSpan turnDelay, TimeSpan transitionTime)
+    [JsonConstructor]
+    public Game(int turnNumber, Player active, Player inactive, LargeGrid<Grid<Tile>, Tile> board, TimeSpan turnDelay, TimeSpan transitionTime)
     {
-        ActivePlayer = active;
-        InactivePlayer = inactive;
+        TurnNumber = turnNumber;
+        Active = active;
+        Inactive = inactive;
         Board = board;
         TurnDelay = turnDelay;
+        TransitionTime = transitionTime;
         InProgress = false;
         var position = new Vector2(450, 350);
         var transform = new Transform2D(position, 0, 4);
         BoardUI = new(board, transform, transitionTime);
-        ActivePlayer.PlayTurn += HandlePlayerTurn;
-        InactivePlayer.PlayTurn += HandlePlayerTurn;
+        Active.PlayTurn += HandlePlayerTurn;
+        Inactive.PlayTurn += HandlePlayerTurn;
         BannerController = new UI.BannerController(active, inactive);
     }
     public void Start()
@@ -42,19 +51,19 @@ public class Game
     }
     protected void NextPlayer()
     {
-        ActivePlayer.EndTurn();
-        (InactivePlayer, ActivePlayer) = (ActivePlayer, InactivePlayer);
+        Active.EndTurn();
+        (Inactive, Active) = (Active, Inactive);
         DelayedPlayTurn();
         TurnNumber++;
     }
     protected void HandlePlayerTurn(Player player, ILargeBoard<Grid<Tile>, Tile> board, (int, int) move)
     {
-        if (player != ActivePlayer)
+        if (player != Active)
         {
             Console.WriteLine($"Not player {player}'s turn");
             return;
         }
-        Board = Board.Place(ActivePlayer.GetToken(), move);
+        Board = Board.Place(Active.GetToken(), move);
         BoardUI.UpdateLargeBoard(Board);
         ChangePlayer = true;
     }
@@ -63,7 +72,7 @@ public class Game
         new Thread(() =>
         {
             Thread.Sleep(TurnDelay);
-            ActivePlayer.BeginTurn(Board, BoardUI, InactivePlayer);
+            Active.BeginTurn(Board, BoardUI, Inactive);
         }).Start();
     }
     public void Draw()
@@ -79,7 +88,7 @@ public class Game
             ChangePlayer = false;
             NextPlayer();
         }
-        ActivePlayer.Update();
+        Active.Update();
         // Board currently in a transition
         if (BoardUI.InTransition)
         {
@@ -89,16 +98,16 @@ public class Game
         var winner = Board.Winner;
         if (winner is not null || Board.AnyPlaceable == false)
         {
-            ActivePlayer.PlayTurn -= HandlePlayerTurn;
-            InactivePlayer.PlayTurn -= HandlePlayerTurn;
-            ActivePlayer.EndTurn();
-            if (ActivePlayer.GetToken().Equals(winner))
+            Active.PlayTurn -= HandlePlayerTurn;
+            Inactive.PlayTurn -= HandlePlayerTurn;
+            Active.EndTurn();
+            if (Active.GetToken().Equals(winner))
             {
-                GameOver?.Invoke(this, ActivePlayer);
+                GameOver?.Invoke(this, Active);
             }
-            else if (InactivePlayer.GetToken().Equals(winner))
+            else if (Inactive.GetToken().Equals(winner))
             {
-                GameOver?.Invoke(this, InactivePlayer);
+                GameOver?.Invoke(this, Inactive);
             }
             else
             {
@@ -107,7 +116,7 @@ public class Game
             return;
         }
         // Toggle players
-        BannerController.Activate(ActivePlayer);
-        BannerController.Deactivate(InactivePlayer);
+        BannerController.Activate(Active);
+        BannerController.Deactivate(Inactive);
     }
 }

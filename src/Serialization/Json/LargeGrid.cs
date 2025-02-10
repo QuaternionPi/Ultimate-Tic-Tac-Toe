@@ -8,10 +8,11 @@ public class LargeGridOfTConverter : JsonConverterFactory
 {
     public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
-        Type cellType = typeToConvert.GetGenericArguments()[0];
+        Type gridType = typeToConvert.GetGenericArguments()[0];
+        Type cellType = typeToConvert.GetGenericArguments()[1];
         var converter = (JsonConverter)Activator.CreateInstance(
             typeof(LargeGridOfTConverterInner<,>).MakeGenericType(
-                [cellType]),
+                [gridType, cellType]),
             BindingFlags.Instance | BindingFlags.Public,
             binder: null,
             args: [options],
@@ -38,7 +39,7 @@ public class LargeGridOfTConverter : JsonConverterFactory
         public LargeGridOfTConverterInner(JsonSerializerOptions options)
         {
             CellConverter = (JsonConverter<TCell>)options.GetConverter(typeof(TCell));
-            GridArrayConverter = (JsonConverter<TGrid[]>)options.GetConverter(typeof(TCell[]));
+            GridArrayConverter = (JsonConverter<TGrid[]>)options.GetConverter(typeof(TGrid[]));
         }
         public override LargeGrid<TGrid, TCell>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
@@ -67,7 +68,7 @@ public class LargeGridOfTConverter : JsonConverterFactory
                 switch (propertyName)
                 {
                     case "Grids":
-                        grids = GridArrayConverter.Read(ref reader, typeof(TCell[]), options);
+                        grids = GridArrayConverter.Read(ref reader, typeof(TGrid[]), options);
                         break;
                     case "WinningPlayerCell":
                         winningPlayerCell = CellConverter.Read(ref reader, typeof(TCell), options);
