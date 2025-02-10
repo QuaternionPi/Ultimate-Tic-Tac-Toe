@@ -15,7 +15,6 @@ public class GridSerializationTests
     public void CanSerializeEmptyGrid()
     {
         var options = new JsonSerializerOptions();
-        options.Converters.Add(new TileConverter());
         options.Converters.Add(new GridOfTConverter());
         var tiles = Enumerable.Range(0, 9).Select(x => new Tile(null));
         var winningPlayerTile = new Tile(null);

@@ -17,7 +17,6 @@ public class GameSerializationTests
     {
         var options = new JsonSerializerOptions();
         options.Converters.Add(new ColorConverter());
-        options.Converters.Add(new TileConverter());
         options.Converters.Add(new GridOfTConverter());
         options.Converters.Add(new LargeGridOfTConverter());
 
@@ -35,7 +34,6 @@ public class GameSerializationTests
     {
         var options = new JsonSerializerOptions();
         options.Converters.Add(new ColorConverter());
-        options.Converters.Add(new TileConverter());
         options.Converters.Add(new GridOfTConverter());
         options.Converters.Add(new LargeGridOfTConverter());
 

@@ -3,14 +3,17 @@ using System.Text.Json.Serialization;
 namespace UltimateTicTacToe.Game;
 public class Tile : ICell<Tile>
 {
+    [JsonInclude]
     public Player.Token? Owner { get; }
+    [JsonIgnore]
     public bool Placeable { get => Owner == null; }
-    public Tile(Player.Token? player)
+    [JsonConstructor]
+    public Tile(Player.Token? owner)
     {
-        Owner = player;
+        Owner = owner;
     }
-    public Tile Place(Player.Token? player)
+    public Tile Place(Player.Token? owner)
     {
-        return new Tile(player);
+        return new Tile(owner);
     }
 }

@@ -15,7 +15,6 @@ public class TileSerializationTests
     public void CanSerializeEmptyTile()
     {
         var options = new JsonSerializerOptions();
-        options.Converters.Add(new TileConverter());
         var tile = new Tile(null);
         var json = JsonSerializer.Serialize(tile, options);
         var newTile = JsonSerializer.Deserialize<Tile>(json, options);
@@ -27,7 +26,6 @@ public class TileSerializationTests
     public void CanSerializeTile()
     {
         var options = new JsonSerializerOptions();
-        options.Converters.Add(new TileConverter());
         options.Converters.Add(new ColorConverter());
         var symbol = Player.Symbol.O;
         var player = new Human(symbol, Color.BLUE, 0);

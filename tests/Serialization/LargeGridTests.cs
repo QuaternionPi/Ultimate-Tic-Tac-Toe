@@ -15,7 +15,6 @@ public class LargeGridSerializationTests
     public void CanSerializeEmptyLargeGrid()
     {
         var options = new JsonSerializerOptions();
-        options.Converters.Add(new TileConverter());
         options.Converters.Add(new GridOfTConverter());
         options.Converters.Add(new LargeGridOfTConverter());
         var tiles = Enumerable.Range(0, 9).Select(x => new Tile(null));
