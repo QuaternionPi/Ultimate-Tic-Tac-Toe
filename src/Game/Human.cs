@@ -1,14 +1,19 @@
+using System.Text.Json.Serialization;
 using Raylib_cs;
 
 namespace UltimateTicTacToe.Game;
 public class Human : Player
 {
+    [JsonIgnore]
     private UI.LargeBoard<Grid<Tile>, Tile>? BoardUI { get; set; }
+    [JsonIgnore]
     private bool MoveMade { get; set; }
-    public Human(Symbol symbol, Color color, int score) : base(symbol, color, score)
+    [JsonConstructor]
+    public Human(Symbol shape, Color color, int score) : base(shape, color, score)
     {
         MoveMade = false;
     }
+    [JsonIgnore]
     protected LargeGrid<Grid<Tile>, Tile>? Board;
     public override void BeginTurn(LargeGrid<Grid<Tile>, Tile> board, UI.LargeBoard<Grid<Tile>, Tile> boardUI, Player opponent)
     {
