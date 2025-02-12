@@ -10,7 +10,7 @@ public static class Program
         Window.Init(900, 650, "Ultimate Tic Tac Toe");
         Window.SetTargetFPS(30);
 
-        Image windowIcon = Raylib.LoadImage("./Window Icon.png");
+        Image windowIcon = Raylib.LoadImage("../../../Window Icon.png");
         Window.SetWindowIcon(windowIcon);
         Raylib.UnloadImage(windowIcon);
 
