@@ -37,11 +37,3 @@ public static class Program
         Environment.Exit(status);
     }
 }
-public class Save
-{
-
-}
-public class Load
-{
-
-}
