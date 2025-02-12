@@ -1,5 +1,6 @@
 using System.Numerics;
 using Raylib_cs;
+using UltimateTicTacToe.Serialization;
 
 namespace UltimateTicTacToe.UI.ProgramMode;
 public class Home : IProgramMode
@@ -23,7 +24,21 @@ public class Home : IProgramMode
         var settingsButton = new Button(settingsTransform, size, "Settings", textColor, backgroundColor, borderColor);
         var exitButton = new Button(exitTransform, size, "Exit", textColor, backgroundColor, borderColor);
 
-        Buttons = [continueButton, newGameButton, loadButton, settingsButton, exitButton];
+        var saves = SaveManager.AllSaves();
+        if (saves.Count == 0)
+        {
+            Buttons = [newGameButton, loadButton, settingsButton, exitButton];
+        }
+        else
+        {
+            Buttons = [continueButton, newGameButton, loadButton, settingsButton, exitButton];
+            continueButton.Clicked += () =>
+            {
+                var save = SaveManager.AllSaves().First();
+                var game = save.Game;
+                var playGame = new PlayGame(this, game);
+            };
+        }
 
         newGameButton.Clicked += () =>
         {

@@ -6,6 +6,8 @@ namespace UltimateTicTacToe.Game;
 public class Game
 {
     [JsonInclude]
+    private LargeGrid<Grid<Tile>, Tile> ResetBoard { get; set; }
+    [JsonInclude]
     private LargeGrid<Grid<Tile>, Tile> Board { get; set; }
     [JsonIgnore]
     private UI.LargeBoard<Grid<Tile>, Tile> BoardUI { get; set; }
@@ -27,11 +29,21 @@ public class Game
     public bool InProgress { get; protected set; }
     public event Action<Game, Player?>? GameOver;
     [JsonConstructor]
-    public Game(int turnNumber, Player active, Player inactive, LargeGrid<Grid<Tile>, Tile> board, TimeSpan turnDelay, TimeSpan transitionTime)
+    public Game
+    (
+        int turnNumber,
+        Player active,
+        Player inactive,
+        LargeGrid<Grid<Tile>, Tile> resetBoard,
+        LargeGrid<Grid<Tile>, Tile> board,
+        TimeSpan turnDelay,
+        TimeSpan transitionTime
+    )
     {
         TurnNumber = turnNumber;
         Active = active;
         Inactive = inactive;
+        ResetBoard = resetBoard;
         Board = board;
         TurnDelay = turnDelay;
         TransitionTime = transitionTime;
@@ -49,6 +61,14 @@ public class Game
         InProgress = true;
         DelayedPlayTurn();
     }
+    public void Reset()
+    {
+        TurnNumber = 0;
+        InProgress = false;
+        Active.PlayTurn += HandlePlayerTurn;
+        Inactive.PlayTurn += HandlePlayerTurn;
+        Board = ResetBoard;
+    }
     protected void NextPlayer()
     {
         Active.EndTurn();
@@ -58,6 +78,10 @@ public class Game
     }
     protected void HandlePlayerTurn(Player player, ILargeBoard<Grid<Tile>, Tile> board, (int, int) move)
     {
+        if (board != Board)
+        {
+            return;
+        }
         if (player != Active)
         {
             Console.WriteLine($"Not player {player}'s turn");
