@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Text.Json.Serialization;
 
 namespace UltimateTicTacToe.Game;
 
@@ -10,7 +9,7 @@ where TCell : ICell<TCell>
     public TCell WinningPlayerCell { get; }
     public Player.Token? Winner { get; }
     public bool AnyPlaceable { get; }
-    public IEnumerable<int> Moves { get; }
+    public int[] Moves { get; }
     public TCell this[int index]
     {
         get { return Cells[index]; }
@@ -27,10 +26,11 @@ where TCell : ICell<TCell>
 
         Winner = this.Winner();
         AnyPlaceable = Winner == null && Cells.Any((cell) => cell.Placeable);
-        Moves =
+        Moves = [..
             from i in Enumerable.Range(0, 9)
             where Cells[i].Placeable
-            select i;
+            select i
+        ];
 
         WinningPlayerCell = winningPlayerCell;
     }
@@ -47,10 +47,11 @@ where TCell : ICell<TCell>
 
         Winner = original.Winner ?? UpdateWinner(token, index);
         AnyPlaceable = Winner == null && Cells.Any((cell) => cell.Placeable);
-        Moves =
+        Moves = [..
             from i in Enumerable.Range(0, 9)
             where Cells[i].Placeable
-            select i;
+            select i
+        ];
 
         WinningPlayerCell = original.WinningPlayerCell.Place(Winner);
     }

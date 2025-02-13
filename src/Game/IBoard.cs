@@ -9,7 +9,7 @@ where TCell : ICell
     public TCell WinningPlayerCell { get; }
     public Player.Token? Winner { get; }
     public bool AnyPlaceable { get; }
-    public IEnumerable<int> Moves { get; }
+    public int[] Moves { get; }
 }
 
 public interface IBoard<TSelf, TCell> : IBoard<TCell>

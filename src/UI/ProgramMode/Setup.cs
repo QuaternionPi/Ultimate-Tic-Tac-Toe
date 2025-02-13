@@ -102,15 +102,15 @@ public class Setup : IProgramMode
 
         var position = new Vector2(450, 350);
         var transform = new Transform2D(position, 0, 4);
-        var board = EmptyBoard();
+        var board = EmptyLargeGrid();
 
-        var turnDelay = new TimeSpan(0, 0, 0, 0, 300);
-        var transitionTime = new TimeSpan(0, 0, 0, 0, 100);
+        var turnDelay = new TimeSpan(0, 0, 0, 0, 00);
+        var transitionTime = new TimeSpan(0, 0, 0, 0, 00);
         var game = new Game.Game(0, player1, player2, board, board, turnDelay, transitionTime);
         IProgramMode mode = new PlayGame(this, game);
         SwitchTo?.Invoke(this, mode);
     }
-    protected LargeGrid<Grid<Tile>, Tile> EmptyBoard()
+    protected static LargeGrid<Grid<Tile>, Tile> EmptyLargeGrid()
     {
         var cells = new Grid<Tile>[9];
         for (int i = 0; i < 9; i++)
@@ -120,7 +120,7 @@ public class Setup : IProgramMode
         var victoryTile = new Tile(null);
         return new LargeGrid<Grid<Tile>, Tile>(cells, victoryTile);
     }
-    protected Grid<Tile> EmptyGrid()
+    protected static Grid<Tile> EmptyGrid()
     {
         var cells = new Tile[9];
         for (int i = 0; i < 9; i++)

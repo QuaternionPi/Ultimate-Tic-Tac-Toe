@@ -8,7 +8,7 @@ public interface ILargeBoard<TGrid, TCell>
     public TCell WinningPlayerCell { get; }
     public Player.Token? Winner { get; }
     public bool AnyPlaceable { get; }
-    public IEnumerable<(int, int)> Moves { get; }
+    public (int, int)[] Moves { get; }
 }
 public interface ILargeBoard<TSelf, TGrid, TCell> : ILargeBoard<TGrid, TCell>
 where TCell : ICell<TCell>

@@ -7,16 +7,13 @@ public class LargeGrid<TGrid, TCell> : ILargeBoard<LargeGrid<TGrid, TCell>, TGri
 where TGrid : IBoard<TGrid, TCell>
 where TCell : ICell<TCell>
 {
-    [JsonInclude]
     public Transform2D Transform { get; }
-    [JsonInclude]
     public bool[] Placeable { get; }
     public TGrid[] Grids { get; }
     public TCell WinningPlayerCell { get; }
-    [JsonInclude]
     public Player.Token? Winner { get; }
     public bool AnyPlaceable { get; }
-    public IEnumerable<(int, int)> Moves { get; }
+    public (int, int)[] Moves { get; }
     public TGrid this[int index]
     {
         get { return Grids[index]; }
@@ -37,11 +34,12 @@ where TCell : ICell<TCell>
         }
         Winner = this.Winner();
         AnyPlaceable = Winner == null && Grids.Any((x) => x.AnyPlaceable);
-        Moves =
+        Moves = [..
             from i in Enumerable.Range(0, 9)
             where Placeable[i]
             from j in Grids[i].Moves
-            select (i, j);
+            select (i, j)
+        ];
 
         WinningPlayerCell = winningPlayerCell;
     }
@@ -77,11 +75,12 @@ where TCell : ICell<TCell>
         }
         Winner = UpdateWinner(token, move);
         AnyPlaceable = Winner == null && Grids.Any((x) => x.AnyPlaceable);
-        Moves =
+        Moves = [..
             from i in Enumerable.Range(0, 9)
             where Placeable[i]
             from j in Grids[i].Moves
-            select (i, j);
+            select (i, j)
+        ];
 
         WinningPlayerCell = original.WinningPlayerCell.Place(Winner);
     }
