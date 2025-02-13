@@ -9,6 +9,7 @@ public static class Program
         Window.SetConfigFlags(ConfigFlags.FLAG_MSAA_4X_HINT);
         Window.Init(900, 650, "Ultimate Tic Tac Toe");
         Window.SetTargetFPS(30);
+        Keyboard.SetExitKey(KeyboardKey.KEY_ZERO);
 
         Image windowIcon = Raylib.LoadImage("../../../Window Icon.png");
         Window.SetWindowIcon(windowIcon);

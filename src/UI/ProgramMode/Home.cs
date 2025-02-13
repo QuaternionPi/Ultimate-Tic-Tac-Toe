@@ -34,9 +34,10 @@ public class Home : IProgramMode
             Buttons = [continueButton, newGameButton, loadButton, settingsButton, exitButton];
             continueButton.Clicked += () =>
             {
-                var save = SaveManager.AllSaves().First();
+                var save = saves.First();
                 var game = save.Game;
                 var playGame = new PlayGame(this, game);
+                SwitchTo?.Invoke(this, playGame);
             };
         }
 
@@ -44,6 +45,11 @@ public class Home : IProgramMode
         {
             var setup = new Setup();
             SwitchTo?.Invoke(this, setup);
+        };
+        loadButton.Clicked += () =>
+        {
+            var load = new Load(this);
+            SwitchTo?.Invoke(this, load);
         };
         exitButton.Clicked += () =>
         {
