@@ -6,7 +6,7 @@ namespace UltimateTicTacToe.UI.ProgramMode;
 
 public class Setup : IProgramMode
 {
-    public Setup(IProgramMode? previous = null)
+    public Setup(IProgramMode previous)
     {
         Previous = previous;
         Player1 = new Human(Player.Symbol.X, Color.RED, 0);
@@ -56,7 +56,7 @@ public class Setup : IProgramMode
     public bool InTransition { get; }
     public float TransitionValue { get; }
     public event Action<IProgramMode, IProgramMode>? SwitchTo;
-    public IProgramMode? Previous { get; }
+    public IProgramMode Previous { get; }
     protected BannerController UI { get; }
     protected ColorPicker RightColorPicker { get; }
     protected ColorPicker LeftColorPicker { get; }
@@ -73,6 +73,10 @@ public class Setup : IProgramMode
     }
     public void Update()
     {
+        if (Keyboard.IsKeyPressed(KeyboardKey.KEY_ESCAPE))
+        {
+            SwitchTo?.Invoke(this, Previous);
+        }
         Buttons.ForEach(button => button.Update());
         RightColorPicker.Update();
         LeftColorPicker.Update();

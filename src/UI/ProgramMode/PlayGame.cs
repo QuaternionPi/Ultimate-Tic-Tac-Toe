@@ -9,7 +9,7 @@ public class PlayGame : IProgramMode
     public bool InTransition { get; }
     public float TransitionValue { get; }
     public event Action<IProgramMode, IProgramMode>? SwitchTo;
-    public IProgramMode? Previous { get; }
+    public IProgramMode Previous { get; }
     private Game.Game _game;
     protected Game.Game Game
     {
@@ -21,11 +21,7 @@ public class PlayGame : IProgramMode
             Game.GameOver += GameOver;
         }
     }
-    private TimeSpan TurnDelay { get; }
-    private TimeSpan TransitionTime { get; }
-    public PlayGame(
-        IProgramMode? previous, Game.Game game
-    )
+    public PlayGame(IProgramMode previous, Game.Game game)
     {
         Previous = previous;
         _game = game;
@@ -53,6 +49,10 @@ public class PlayGame : IProgramMode
     }
     public void Update()
     {
+        if (Keyboard.IsKeyPressed(KeyboardKey.KEY_ESCAPE))
+        {
+            SwitchTo?.Invoke(this, Previous);
+        }
         Game.Update();
     }
 }

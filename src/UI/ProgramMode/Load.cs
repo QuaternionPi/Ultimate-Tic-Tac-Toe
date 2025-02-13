@@ -8,6 +8,7 @@ public class Load : IProgramMode
 {
     public Load(IProgramMode previous)
     {
+        Previous = previous;
         var textColor = Color.GRAY;
         var backgroundColor = Color.LIGHTGRAY;
         var borderColor = backgroundColor;
@@ -34,7 +35,7 @@ public class Load : IProgramMode
     protected List<Button> Buttons;
     public bool InTransition { get; }
     public float TransitionValue { get; }
-    public IProgramMode? Previous => null;
+    public IProgramMode Previous { get; }
     public event Action<IProgramMode, IProgramMode>? SwitchTo;
     public void Draw()
     {
@@ -48,6 +49,10 @@ public class Load : IProgramMode
     }
     public void Update()
     {
+        if (Keyboard.IsKeyPressed(KeyboardKey.KEY_ESCAPE))
+        {
+            SwitchTo?.Invoke(this, Previous);
+        }
         Buttons.ForEach(button => button.Update());
     }
 }

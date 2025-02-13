@@ -35,7 +35,7 @@ public class Confirm : IProgramMode
     protected string Message { get; }
     public bool InTransition { get; }
     public float TransitionValue { get; }
-    public IProgramMode? Previous { get; protected set; }
+    public IProgramMode Previous { get; }
     public event Action<IProgramMode, IProgramMode>? SwitchTo;
     public void Draw()
     {
@@ -48,6 +48,10 @@ public class Confirm : IProgramMode
     }
     public void Update()
     {
+        if (Keyboard.IsKeyPressed(KeyboardKey.KEY_ESCAPE))
+        {
+            SwitchTo?.Invoke(this, Previous);
+        }
         Buttons.ForEach(button => button.Update());
     }
 }

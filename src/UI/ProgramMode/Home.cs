@@ -44,7 +44,7 @@ public class Home : IProgramMode
 
         newGameButton.Clicked += () =>
         {
-            var setup = new Setup();
+            var setup = new Setup(this);
             SwitchTo?.Invoke(this, setup);
         };
         loadButton.Clicked += () =>
