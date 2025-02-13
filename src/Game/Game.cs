@@ -51,22 +51,26 @@ public class Game
         var position = new Vector2(450, 350);
         var transform = new Transform2D(position, 0, 4);
         BoardUI = new(board, transform, transitionTime);
-        Active.PlayTurn += HandlePlayerTurn;
-        Inactive.PlayTurn += HandlePlayerTurn;
         BannerController = new UI.BannerController(active, inactive);
     }
     public void Start()
     {
         Debug.Assert(!InProgress, "This game is already in progress; it cannot be started");
         InProgress = true;
+        Active.PlayTurn += HandlePlayerTurn;
+        Inactive.PlayTurn += HandlePlayerTurn;
         DelayedPlayTurn();
+    }
+    public void Stop()
+    {
+        InProgress = false;
+        Active.PlayTurn -= HandlePlayerTurn;
+        Inactive.PlayTurn -= HandlePlayerTurn;
     }
     public void Reset()
     {
         TurnNumber = 0;
         InProgress = false;
-        Active.PlayTurn += HandlePlayerTurn;
-        Inactive.PlayTurn += HandlePlayerTurn;
         Board = ResetBoard;
     }
     protected void NextPlayer()

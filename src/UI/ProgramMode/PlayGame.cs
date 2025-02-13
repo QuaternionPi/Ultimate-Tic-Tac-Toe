@@ -52,6 +52,7 @@ public class PlayGame : IProgramMode
         if (Keyboard.IsKeyPressed(KeyboardKey.KEY_ESCAPE))
         {
             SwitchTo?.Invoke(this, Previous);
+            Game.Stop();
         }
         Game.Update();
     }
