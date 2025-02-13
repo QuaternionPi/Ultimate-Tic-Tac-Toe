@@ -1,4 +1,5 @@
 namespace UltimateTicTacToe.UI.ProgramMode;
+
 public class QuickMenu : IProgramMode
 {
     public bool InTransition { get; }

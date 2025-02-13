@@ -3,6 +3,7 @@ using Raylib_cs;
 using UltimateTicTacToe.Game;
 
 namespace UltimateTicTacToe.UI.ProgramMode;
+
 public class Setup : IProgramMode
 {
     public Setup(IProgramMode? previous = null)

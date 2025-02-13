@@ -2,6 +2,7 @@ using System.Numerics;
 using Raylib_cs;
 
 namespace UltimateTicTacToe.UI.ProgramMode;
+
 public class Confirm : IProgramMode
 {
     public Confirm(IProgramMode previous, string message, Action action)

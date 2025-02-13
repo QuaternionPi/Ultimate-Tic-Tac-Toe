@@ -3,6 +3,7 @@ using Raylib_cs;
 using UltimateTicTacToe.Serialization;
 
 namespace UltimateTicTacToe.UI.ProgramMode;
+
 public class Load : IProgramMode
 {
     public Load(IProgramMode previous)
@@ -39,7 +40,7 @@ public class Load : IProgramMode
     {
         Buttons.ForEach(button => button.Draw());
         Font font = Graphics.Text.GetFontDefault();
-        string message = $"Ultimate Tic Tac Toe";
+        string message = "Load game";
         float spacing = 3;
         float fontSize = 40;
         float messageWidth = Graphics.Text.MeasureTextEx(font, message, fontSize, spacing).X;

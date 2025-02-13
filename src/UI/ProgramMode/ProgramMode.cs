@@ -1,4 +1,5 @@
 namespace UltimateTicTacToe.UI.ProgramMode;
+
 public interface IProgramMode
 {
     public IProgramMode? Previous { get; }

@@ -1,9 +1,9 @@
 using System.Numerics;
 using Raylib_cs;
 using UltimateTicTacToe.Game;
-using UltimateTicTacToe.Genetics;
 
 namespace UltimateTicTacToe.UI.ProgramMode;
+
 public class PlayGame : IProgramMode
 {
     public bool InTransition { get; }
