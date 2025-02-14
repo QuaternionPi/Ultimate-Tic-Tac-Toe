@@ -6,27 +6,29 @@ namespace UltimateTicTacToe.Game;
 public class Game
 {
     [JsonInclude]
-    private LargeGrid<Grid<Tile>, Tile> ResetBoard { get; set; }
-    [JsonInclude]
-    private LargeGrid<Grid<Tile>, Tile> Board { get; set; }
-    [JsonIgnore]
-    private UI.LargeBoard<Grid<Tile>, Tile> BoardUI { get; set; }
-    [JsonInclude]
     public Player Active { get; protected set; }
     [JsonInclude]
     public Player Inactive { get; protected set; }
+    [JsonInclude]
+    private LargeGrid<Grid<Tile>, Tile> Board { get; set; }
+    [JsonInclude]
+    private LargeGrid<Grid<Tile>, Tile> ResetBoard { get; }
     [JsonIgnore]
     private bool ChangePlayer;
     [JsonIgnore]
-    private UI.BannerController BannerController { get; set; }
+    public bool InProgress { get; protected set; }
     [JsonInclude]
     public int TurnNumber { get; protected set; }
     [JsonInclude]
-    private TimeSpan TurnDelay { get; set; }
+    private TimeSpan TurnDelay { get; }
     [JsonInclude]
-    private TimeSpan TransitionTime { get; set; }
+    private TimeSpan TransitionTime { get; }
     [JsonIgnore]
-    public bool InProgress { get; protected set; }
+    private UI.LargeBoard<Grid<Tile>, Tile> BoardUI { get; }
+    [JsonIgnore]
+    private UI.BannerController BannerController { get; }
+    [JsonInclude]
+    public bool UpdateUI { get; }
     public event Action<Game, Player?>? GameOver;
     [JsonConstructor]
     public Game
@@ -34,19 +36,21 @@ public class Game
         int turnNumber,
         Player active,
         Player inactive,
-        LargeGrid<Grid<Tile>, Tile> resetBoard,
         LargeGrid<Grid<Tile>, Tile> board,
+        LargeGrid<Grid<Tile>, Tile> resetBoard,
         TimeSpan turnDelay,
-        TimeSpan transitionTime
+        TimeSpan transitionTime,
+        bool updateUI = true
     )
     {
         TurnNumber = turnNumber;
         Active = active;
         Inactive = inactive;
-        ResetBoard = resetBoard;
         Board = board;
+        ResetBoard = resetBoard;
         TurnDelay = turnDelay;
         TransitionTime = transitionTime;
+        UpdateUI = updateUI;
         InProgress = false;
         var position = new Vector2(450, 350);
         var transform = new Transform2D(position, 0, 4);
@@ -92,7 +96,10 @@ public class Game
             return;
         }
         Board = Board.Place(Active.GetToken(), move);
-        BoardUI.UpdateLargeBoard(Board);
+        if (UpdateUI)
+        {
+            BoardUI.UpdateLargeBoard(Board);
+        }
         ChangePlayer = true;
     }
     protected void DelayedPlayTurn()
@@ -110,17 +117,20 @@ public class Game
     }
     public void Update()
     {
-        BoardUI.Update();
         if (ChangePlayer && Board.AnyPlaceable)
         {
             ChangePlayer = false;
             NextPlayer();
         }
         Active.Update();
-        // Board currently in a transition
-        if (BoardUI.InTransition)
+        if (UpdateUI)
         {
-            return;
+            BoardUI.Update();
+            // Board currently in a transition
+            if (BoardUI.InTransition)
+            {
+                return;
+            }
         }
         // Board won by a player or the board cannot be placed on
         var winner = Board.Winner;
@@ -143,8 +153,11 @@ public class Game
             }
             return;
         }
-        // Toggle players
-        BannerController.Activate(Active);
-        BannerController.Deactivate(Inactive);
+        if (UpdateUI)
+        {
+            // Toggle players
+            BannerController.Activate(Active);
+            BannerController.Deactivate(Inactive);
+        }
     }
 }
