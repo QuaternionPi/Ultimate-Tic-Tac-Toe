@@ -92,12 +92,12 @@ public class Setup : IProgramMode
         if (Player1Type == "Human")
             player1 = new Human(Player1.Shape, Player1.Color, 0);
         else
-            player1 = new Bot(evaluator, Player1.Shape, Player1.Color, 0);
+            player1 = new Bot(evaluator, new Random(0), Player1.Shape, Player1.Color, 0);
 
         if (Player2Type == "Human")
             player2 = new Human(Player2.Shape, Player2.Color, 0);
         else
-            player2 = new Bot(evaluator, Player2.Shape, Player2.Color, 0);
+            player2 = new Bot(evaluator, new Random(1), Player2.Shape, Player2.Color, 0);
 
 
         var position = new Vector2(450, 350);

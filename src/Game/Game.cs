@@ -24,7 +24,7 @@ public class Game
     [JsonInclude]
     private TimeSpan TransitionTime { get; }
     [JsonIgnore]
-    private UI.LargeBoard<Grid<Tile>, Tile> BoardUI { get; }
+    private UI.LargeBoard<Grid<Tile>, Tile> BoardUI { get; set; }
     [JsonIgnore]
     private UI.BannerController BannerController { get; }
     [JsonInclude]
@@ -76,6 +76,9 @@ public class Game
         TurnNumber = 0;
         InProgress = false;
         Board = ResetBoard;
+        var position = new Vector2(450, 350);
+        var transform = new Transform2D(position, 0, 4);
+        BoardUI = new(Board, transform, TransitionTime);
     }
     protected void NextPlayer()
     {

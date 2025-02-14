@@ -45,7 +45,7 @@ where TCell : ICell<TCell>
             Cells[i] = i == index ? originalCell.Place(token) : originalCell;
         }
 
-        Winner = original.Winner ?? UpdateWinner(token, index);
+        Winner = this.Winner();//original.Winner ?? UpdateWinner(token, index);
         AnyPlaceable = Winner == null && Cells.Any((cell) => cell.Placeable);
         Moves = [..
             from i in Enumerable.Range(0, 9)

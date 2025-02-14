@@ -9,16 +9,20 @@ public class Bot : Player
     private Func<LargeGrid<Grid<Tile>, Tile>, Token, Token, double> Evaluate => Evaluator.Evaluate;
     [JsonInclude]
     private LargeBoardEvaluator Evaluator { get; }
+    [JsonInclude]
+    private Random Random { get; }
     [JsonConstructor]
     public Bot
     (
         LargeBoardEvaluator evaluator,
+        Random random,
         Symbol shape,
         Color color,
         int score
     ) : base(shape, color, score)
     {
         Evaluator = evaluator;
+        Random = random;
     }
     public override void BeginTurn
     (
@@ -42,13 +46,14 @@ public class Bot : Player
     )
     {
         Debug.Assert(moves.Any(), "Cannot choose best move from no moves");
-        double alpha = double.NegativeInfinity;
-        double beta = double.PositiveInfinity;
-        int depth = moves.Count() < 7 ? 6 : moves.Count() < 30 ? 5 : 4;
+        var alpha = double.NegativeInfinity;
+        var beta = double.PositiveInfinity;
+        int depth = 4;//moves.Count() < 7 ? 6 : moves.Count() < 30 ? 5 : 4;
 
         var bestMove = moves.First();
-        double minScore = double.PositiveInfinity;
-        foreach (var move in moves)
+        var minScore = double.PositiveInfinity;
+        var randomOrderMoves = from move in moves orderby Random.Next() descending select move;
+        foreach (var move in randomOrderMoves)
         {
             var placedBoard = board.Place(player, move);
             var score = -Minimax(placedBoard, depth - 1, -beta, -alpha, opponent, player);
