@@ -45,7 +45,7 @@ where TCell : ICell<TCell>
             Cells[i] = i == index ? originalCell.Place(token) : originalCell;
         }
 
-        Winner = this.Winner();//original.Winner ?? UpdateWinner(token, index);
+        Winner = original.Winner ?? UpdateWinner(token, index);
         AnyPlaceable = Winner == null && Cells.Any((cell) => cell.Placeable);
         Moves = [..
             from i in Enumerable.Range(0, 9)
@@ -63,15 +63,15 @@ where TCell : ICell<TCell>
     {
         int[][] winLines = move switch
         {
-            0 => [[0, 1, 2], [0, 3, 6], [0, 4, 8]],
-            1 => [[0, 1, 2], [1, 4, 7]],
-            2 => [[0, 1, 2], [2, 4, 6], [2, 5, 8]],
-            3 => [[0, 3, 6], [3, 4, 5]],
-            4 => [[0, 4, 8], [1, 4, 7], [2, 4, 6], [3, 4, 5]],
-            5 => [[2, 5, 8], [3, 4, 5]],
-            6 => [[0, 3, 6], [2, 4, 6], [6, 7, 8]],
-            7 => [[1, 4, 7], [6, 7, 8]],
-            8 => [[0, 4, 8], [2, 5, 8], [6, 7, 8]],
+            0 => [[1, 2], [3, 6], [4, 8]],
+            1 => [[0, 2], [4, 7]],
+            2 => [[0, 1], [4, 6], [5, 8]],
+            3 => [[0, 6], [4, 5]],
+            4 => [[0, 8], [1, 7], [2, 6], [3, 5]],
+            5 => [[2, 8], [3, 4]],
+            6 => [[0, 3], [2, 4], [7, 8]],
+            7 => [[1, 4], [6, 8]],
+            8 => [[0, 4], [2, 5], [6, 7]],
             _ => throw new ArgumentOutOfRangeException(nameof(move)),
         };
         return winLines.Any(line => this[line].All(cell => cell.Owner == token)) ? token : null;

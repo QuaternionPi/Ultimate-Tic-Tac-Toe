@@ -30,6 +30,7 @@ public class PlayGame : IProgramMode
     }
     protected void GameOver(Game.Game sender, Player? winner)
     {
+        Console.WriteLine(DateTime.Now);
         if (winner != null)
         {
             winner.Score += 1;
