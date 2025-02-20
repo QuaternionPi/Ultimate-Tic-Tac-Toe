@@ -1,18 +1,25 @@
 {
     "configurations": [
         {
-            "name": "C#: UltimateTicTacToe",
+            "name": "C#: Play UltimateTicTacToe",
             "type": "dotnet",
             "request": "launch",
             "projectPath": "${workspaceFolder}\\src\\UltimateTicTacToe.csproj",
             "launchConfigurationId": "TargetFramework=;UltimateTicTacToe"
         },
         {
-            "name": "C#: UltimateTicTacToeTests",
+            "name": "C#: Test UltimateTicTacToe",
             "type": "dotnet",
             "request": "launch",
             "projectPath": "${workspaceFolder}\\tests\\UltimateTicTacToeTests.csproj",
             "launchConfigurationId": "TargetFramework=;UltimateTicTacToeTests"
+        },
+        {
+            "name": "C#: Evolve UltimateTicTacToe",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\src\\UltimateTicTacToeEvolve.csproj",
+            "launchConfigurationId": "TargetFramework=;UltimateTicTacToeEvolve"
         }
     ]
 }

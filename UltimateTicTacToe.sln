@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UltimateTicTacToe", "src\Ul
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltimateTicTacToeTests", "tests\UltimateTicTacToeTests.csproj", "{6E92F75D-EFA6-4466-93B3-C7FFA236D45C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltimateTicTacToeEvolve", "src\UltimateTicTacToeEvolve.csproj", "{41800216-7862-48B5-9493-24DA23DDA32C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{6E92F75D-EFA6-4466-93B3-C7FFA236D45C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E92F75D-EFA6-4466-93B3-C7FFA236D45C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E92F75D-EFA6-4466-93B3-C7FFA236D45C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41800216-7862-48B5-9493-24DA23DDA32C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41800216-7862-48B5-9493-24DA23DDA32C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41800216-7862-48B5-9493-24DA23DDA32C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41800216-7862-48B5-9493-24DA23DDA32C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <StartupObject>UltimateTicTacToe.Program</StartupObject>
+    <StartupObject>UltimateTicTacToe.Evolve</StartupObject>
     <OutputType>Exe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
     <RootNamespace>UltimateTicTacToe</RootNamespace>
