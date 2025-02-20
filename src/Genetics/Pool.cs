@@ -7,14 +7,12 @@ where TGenome : class, new()
 {
     private static int TournamentSize { get; } = 3;
     private TGenome[] Genomes { get; set; }
-    private Func<TGenome, TGenome, int> Score { get; }
     private Crossover Crossover { get; set; }
     private Random Random { get; }
-    public Pool(IEnumerable<TGenome> genomes, Func<TGenome, TGenome, int> score, Random? random = null)
+    public Pool(IEnumerable<TGenome> genomes, Random? random = null)
     {
         Debug.Assert(genomes.Count() > 2);
         Genomes = [.. genomes];
-        Score = score;
         Random = random ?? new Random(0);
         Crossover = new Crossover(typeof(TGenome));
     }
@@ -54,7 +52,7 @@ where TGenome : class, new()
         IEnumerable<int> weights = scores.Values;
         return RouletteWheelSelection(genomes, weights, random, limit);
     }
-    public IEnumerable<(TGenome, TGenome)> Tournament(int replications)
+    public IEnumerable<(TGenome, TGenome)> Tournament(Func<TGenome, TGenome, int> rank, int replications)
     {
         List<(TGenome, TGenome)> genomes = [];
         foreach (var batch in Genomes.OrderBy(order => Random.Next()).Batch(TournamentSize))
@@ -74,7 +72,7 @@ where TGenome : class, new()
                 var genome2 = pair.Item2;
                 var score = Enumerable
                     .Range(0, replications)
-                    .Select((x) => Score(genome1, genome2))
+                    .Select((x) => rank(genome1, genome2))
                     .Sum();
                 scores[genome1] += score;
                 scores[genome2] -= score;
@@ -89,11 +87,11 @@ where TGenome : class, new()
         }
         return genomes;
     }
-    public void RunGeneration(int replications)
+    public void RunGeneration(Func<TGenome, TGenome, int> rank, int replications)
     {
         var pairs = Enumerable
             .Range(0, TournamentSize)
-            .SelectMany((x) => Tournament(replications))
+            .SelectMany((x) => Tournament(rank, replications))
             .ToArray();
         var newGenomes =
             from pair in pairs

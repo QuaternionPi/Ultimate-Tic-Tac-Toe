@@ -12,12 +12,12 @@ public static class Evolve
 
         var largeGrid = EmptyLargeGrid();
 
-        var pool = new Pool<LargeBoardEvaluator>(genomes, (eval1, eval2) => Score(largeGrid, eval1, eval2), Random);
+        var pool = new Pool<LargeBoardEvaluator>(genomes, Random);
 
         for (int i = 0; i < 20; i++)
         {
             Console.WriteLine($"Generation number: {i}");
-            pool.RunGeneration(1);
+            pool.RunGeneration((eval1, eval2) => Score(largeGrid, eval1, eval2), 1);
         }
     }
     static List<LargeBoardEvaluator> RandomLargeBoardEvaluators(int count)
