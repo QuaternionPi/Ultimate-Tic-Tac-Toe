@@ -35,7 +35,7 @@ public class PlayerSerializationTests
 
         var symbol = Player.Symbol.O;
         var evaluator = new LargeBoardEvaluator(new(1, 2, 3, 4), new(5, 6, 7, 8), new(9, 10, 11, 12), 40);
-        Player player = new Bot(evaluator, symbol, Color.BLUE, 0);
+        Player player = new Bot(evaluator, new(0), symbol, Color.BLUE, 0);
         var json = JsonSerializer.Serialize(player, options);
         var newPlayer = JsonSerializer.Deserialize<Player>(json, options);
         Assert.Equal(player.Score, newPlayer?.Score);

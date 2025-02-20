@@ -21,7 +21,7 @@ public class GameSerializationTests
         options.Converters.Add(new LargeGridOfTConverter());
 
         var human = new Human(Player.Symbol.X, Color.RED, 0);
-        var bot = new Bot(new(), Player.Symbol.X, Color.RED, 0);
+        var bot = new Bot(new(), new(0), Player.Symbol.X, Color.RED, 0);
         var board = EmptyLargeGrid();
         var game = new Game(0, human, bot, board, board, new TimeSpan(0, 0, 1), new TimeSpan(0, 0, 2));
         var json = JsonSerializer.Serialize(game, options);
@@ -38,7 +38,7 @@ public class GameSerializationTests
         options.Converters.Add(new LargeGridOfTConverter());
 
         var human = new Human(Player.Symbol.X, Color.RED, 0);
-        var bot = new Bot(new(), Player.Symbol.X, Color.RED, 0);
+        var bot = new Bot(new(), new(0), Player.Symbol.X, Color.RED, 0);
         var board = EmptyLargeGrid();
         var game = new Game(0, human, bot, board, board, new TimeSpan(0, 0, 1), new TimeSpan(0, 0, 2));
         var json = JsonSerializer.Serialize(game, options);
