@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 
 namespace UltimateTicTacToe.Genetics;
 
@@ -6,12 +7,14 @@ public class Pool<TGenome>
 where TGenome : class, new()
 {
     private static int TournamentSize { get; } = 3;
-    private TGenome[] Genomes { get; set; }
+    public TGenome[] Genomes { get; private set; }
     private Crossover Crossover { get; set; }
-    private Random Random { get; }
-    public Pool(IEnumerable<TGenome> genomes, Random? random = null)
+    public Random Random { get; }
+    public int Generation { get; private set; }
+    public Pool(int generation, IEnumerable<TGenome> genomes, Random? random = null)
     {
         Debug.Assert(genomes.Count() > 2);
+        Generation = generation;
         Genomes = [.. genomes];
         Random = random ?? new Random(0);
         Crossover = new Crossover(typeof(TGenome));
@@ -99,5 +102,6 @@ where TGenome : class, new()
             let genome2 = pair.Item2
             select Crossover.Combine(genome1, genome2);
         Genomes = [.. newGenomes];
+        Generation++;
     }
 }

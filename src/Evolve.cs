@@ -1,6 +1,8 @@
-﻿using Raylib_cs;
+﻿using System.Text.Json;
+using Raylib_cs;
 using UltimateTicTacToe.Game;
 using UltimateTicTacToe.Genetics;
+using UltimateTicTacToe.Serialization.Json;
 
 namespace UltimateTicTacToe;
 public static class Evolve
@@ -8,17 +10,48 @@ public static class Evolve
     private static readonly Random Random = new(1);
     static void Main(string[] args)
     {
-        var genomes = RandomLargeBoardEvaluators(9);
+        string file = "../../../pool.json";
+        var options = new JsonSerializerOptions();
+        options.Converters.Add(new RandomConverter());
+        options.Converters.Add(new PoolOfTConverter());
+
+        Pool<LargeBoardEvaluator> pool;
+        var fileExists = File.Exists(file);
+        if (fileExists)
+        {
+            var json = File.ReadAllText(file);
+            var poolFound = JsonSerializer.Deserialize<Pool<LargeBoardEvaluator>>(json, options);
+            if (poolFound == null)
+            {
+                var size = 300;
+                pool = CreatePool(size);
+            }
+            else
+            {
+                pool = poolFound;
+            }
+        }
+        else
+        {
+            var size = 6;
+            pool = CreatePool(size);
+        }
 
         var largeGrid = EmptyLargeGrid();
-
-        var pool = new Pool<LargeBoardEvaluator>(genomes, Random);
-
-        for (int i = 0; i < 20; i++)
+        while (pool.Generation < 100)
         {
-            Console.WriteLine($"Generation number: {i}");
+            Console.WriteLine($"Generation number: {pool.Generation}");
             pool.RunGeneration((eval1, eval2) => Score(largeGrid, eval1, eval2), 1);
+            var json = JsonSerializer.Serialize(pool, options);
+            File.WriteAllText(file, json);
         }
+    }
+    static Pool<LargeBoardEvaluator> CreatePool(int size)
+    {
+        var genomes = RandomLargeBoardEvaluators(size);
+        var pool = new Pool<LargeBoardEvaluator>(0, genomes, Random);
+
+        return pool;
     }
     static List<LargeBoardEvaluator> RandomLargeBoardEvaluators(int count)
     {
