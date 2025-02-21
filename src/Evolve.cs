@@ -33,7 +33,7 @@ public static class Evolve
         }
         else
         {
-            var size = 6;
+            var size = 300;
             pool = CreatePool(size);
         }
 

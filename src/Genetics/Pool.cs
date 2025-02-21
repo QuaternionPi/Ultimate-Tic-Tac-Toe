@@ -55,52 +55,53 @@ where TGenome : class, new()
         IEnumerable<int> weights = scores.Values;
         return RouletteWheelSelection(genomes, weights, random, limit);
     }
-    public IEnumerable<(TGenome, TGenome)> Tournament(Func<TGenome, TGenome, int> rank, int replications)
+    private static (TGenome, TGenome) BestRanked(Func<TGenome, TGenome, int> rank, IEnumerable<TGenome> genomes, int replications)
     {
-        List<(TGenome, TGenome)> genomes = [];
-        foreach (var batch in Genomes.OrderBy(order => Random.Next()).Batch(TournamentSize))
+        Dictionary<TGenome, int> scores = [];
+        foreach (var genome in genomes)
         {
-            if (batch.Count() != TournamentSize)
-            {
-                break;
-            }
-            Dictionary<TGenome, int> scores = [];
-            foreach (var genome in batch)
-            {
-                scores[genome] = 0;
-            }
-            foreach (var pair in batch.Pairs())
-            {
-                var genome1 = pair.Item1;
-                var genome2 = pair.Item2;
-                var score = Enumerable
-                    .Range(0, replications)
-                    .Select((x) => rank(genome1, genome2))
-                    .Sum();
-                scores[genome1] += score;
-                scores[genome2] -= score;
-            }
-            var orderedGenomes =
-                from score in scores.AsEnumerable()
-                orderby score.Value descending
-                select score.Key;
-            var bestGenome = orderedGenomes.First();
-            var secondBestGenome = orderedGenomes.Skip(1).First();
-            genomes.Add((bestGenome, secondBestGenome));
+            scores[genome] = 0;
         }
+        foreach (var pair in genomes.Pairs())
+        {
+            var genome1 = pair.Item1;
+            var genome2 = pair.Item2;
+            var score = Enumerable
+                .Range(0, replications)
+                .Select((x) => rank(genome1, genome2))
+                .Sum();
+            scores[genome1] += score;
+            scores[genome2] -= score;
+        }
+        var orderedGenomes =
+            from score in scores.AsEnumerable()
+            orderby score.Value descending
+            select score.Key;
+        var bestGenome = orderedGenomes.First();
+        var secondBestGenome = orderedGenomes.Skip(1).First();
+        return (bestGenome, secondBestGenome);
+    }
+    private IEnumerable<(TGenome, TGenome)> Tournament(Func<TGenome, TGenome, int> rank, int replications)
+    {
+        List<(TGenome, TGenome)> genomes = [..
+            Genomes.OrderBy(order => Random.Next())
+            .Batch(TournamentSize)
+            .Where(batch => batch.Count() == TournamentSize)
+            .Select(batch => BestRanked(rank, batch, replications))
+        ];
         return genomes;
     }
     public void RunGeneration(Func<TGenome, TGenome, int> rank, int replications)
     {
-        var pairs = Enumerable
-            .Range(0, TournamentSize)
-            .SelectMany((x) => Tournament(rank, replications))
-            .ToArray();
-        var newGenomes =
+        var pairs = Tournament(rank, replications);
+
+        var newGenomeBatches =
             from pair in pairs
             let genome1 = pair.Item1
             let genome2 = pair.Item2
-            select Crossover.Combine(genome1, genome2);
+            select Enumerable.Range(0, TournamentSize).Select(x => Crossover.Combine(genome1, genome2));
+
+        var newGenomes = newGenomeBatches.SelectMany(batch => batch);
         Genomes = [.. newGenomes];
         Generation++;
     }
